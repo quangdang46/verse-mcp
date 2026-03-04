@@ -1,0 +1,378 @@
+{
+  "scanned_at": "2026-03-04T14:33:34.338Z",
+  "project_root": "E:\\Projects\\Testproject",
+  "total_files": 14,
+  "total_devices": 9,
+  "skipped": 5,
+  "device_types": [
+    "Device_Campfire_C",
+    "Device_CharacterSpawner_C",
+    "Unknown",
+    "button_device",
+    "player_spawner_device"
+  ],
+  "by_type": {
+    "player_spawner_device": [
+      {
+        "file": "Testproject/1/W3/IMPQLM30UGPYNFB1JJ6QU5.uasset",
+        "deviceType": "player_spawner_device",
+        "label": "Player 1 Spawn Pad",
+        "triggers": [
+          "OnAddedToMinigame",
+          "OnRemovedFromMinigame",
+          "OnSpawnComplete",
+          "OnSpawnedPlayerEliminated"
+        ],
+        "receivers": [
+          "ReceiverDisable",
+          "ReceiverEnable",
+          "ReceiverSpawn"
+        ],
+        "settings": {
+          "DisplayEnemyRange": "When Near",
+          "EnabledDuringPhase": "Always",
+          "EnemyRangeCheck": "0.000000",
+          "LabelOverride": "Player 1 Spawn Pad",
+          "PlayAudio": "No",
+          "PlayerClass": "(ClassType=Any,ClassSlot=1)",
+          "PlayerTeam": "(TeamType=Any,TeamIndex=1)",
+          "UseAsIslandStart": "True",
+          "VisibleInGame": "True"
+        }
+      },
+      {
+        "file": "Testproject/7/ZS/XQEJBGUNVMY63N4NZNXHYA.uasset",
+        "deviceType": "player_spawner_device",
+        "label": "Player 2 Spawn Pad",
+        "triggers": [
+          "OnAddedToMinigame",
+          "OnRemovedFromMinigame",
+          "OnSpawnComplete",
+          "OnSpawnedPlayerEliminated"
+        ],
+        "receivers": [
+          "ReceiverDisable",
+          "ReceiverEnable",
+          "ReceiverSpawn"
+        ],
+        "settings": {
+          "DisplayEnemyRange": "When Near",
+          "EnabledDuringPhase": "Always",
+          "EnemyRangeCheck": "0.000000",
+          "LabelOverride": "Player 2 Spawn Pad",
+          "PlayAudio": "No",
+          "PlayerClass": "(ClassType=Any,ClassSlot=1)",
+          "PlayerTeam": "(TeamType=Any,TeamIndex=1)",
+          "UseAsIslandStart": "True",
+          "VisibleInGame": "True"
+        }
+      }
+    ],
+    "button_device": [
+      {
+        "file": "Testproject/3/AT/6XH0LYZKKV045B10CAQD8P.uasset",
+        "deviceType": "button_device",
+        "label": "Button2",
+        "triggers": [
+          "OnAddedToMinigame",
+          "OnDisabled",
+          "OnEnabled",
+          "OnTriggered",
+          "TriggerOnInteracted"
+        ],
+        "receivers": [
+          "ReceiverDisable",
+          "ReceiverEnable",
+          "ReceiverReset"
+        ],
+        "settings": {
+          "ActivatingTeam": "(TeamType=Any,TeamIndex=1)",
+          "AllowedClass": "(ClassType=Any,ClassSlot=1)",
+          "Delay": "0.000000",
+          "EnabledAtGameStart": "True",
+          "InteractionRadius": "0.000000",
+          "InteractTime": "0.000000",
+          "InvertClassSelection": "False",
+          "InvertTeamSelection": "False",
+          "LabelOverride": "Button2",
+          "ResetDelay": "0.000000",
+          "TriggerSound": "True",
+          "VisibleDuringGame": "True"
+        }
+      },
+      {
+        "file": "Testproject/4/H4/VQ4QL3ZNB2VCB6CKM0914L.uasset",
+        "deviceType": "button_device",
+        "label": "Button",
+        "triggers": [
+          "OnAddedToMinigame",
+          "OnDisabled",
+          "OnEnabled",
+          "OnTriggered",
+          "TriggerOnInteracted"
+        ],
+        "receivers": [
+          "ReceiverDisable",
+          "ReceiverEnable",
+          "ReceiverReset"
+        ],
+        "settings": {
+          "ActivatingTeam": "(TeamType=Any,TeamIndex=1)",
+          "AllowedClass": "(ClassType=Any,ClassSlot=1)",
+          "Delay": "0.000000",
+          "EnabledAtGameStart": "True",
+          "InteractionRadius": "0.000000",
+          "InteractTime": "0.000000",
+          "InvertClassSelection": "False",
+          "InvertTeamSelection": "False",
+          "LabelOverride": "Button",
+          "ResetDelay": "0.000000",
+          "TriggerSound": "True",
+          "VisibleDuringGame": "True"
+        }
+      }
+    ],
+    "Device_Campfire_C": [
+      {
+        "file": "Testproject/5/TA/FMNZKYYL4NX47JRMFJ6H49.uasset",
+        "deviceType": "Device_Campfire_C",
+        "label": "game manager",
+        "triggers": [],
+        "receivers": [],
+        "settings": {
+          "LabelOverride": "game manager",
+          "VisibleInGame": "True"
+        }
+      },
+      {
+        "file": "Testproject/C/4L/ZE7SLONQXWKU55ATJ053HF.uasset",
+        "deviceType": "Device_Campfire_C",
+        "label": "Campfire2",
+        "triggers": [
+          "OnAddedToMinigame",
+          "OnDisabled",
+          "OnEnabled",
+          "OnRemovedFromMinigame",
+          "TriggerArea",
+          "TriggerOnEnterRadius",
+          "TriggerOnExtinguish",
+          "TriggerOnLeavingRadius",
+          "TriggerOnLight",
+          "TriggerOnTick",
+          "TriggerOnTickPerPlayer"
+        ],
+        "receivers": [
+          "DisableWhenReceiving",
+          "EnableWhenReceiving",
+          "ReceiverAddFuel",
+          "ReceiverExtinguish",
+          "ReceiverLight"
+        ],
+        "settings": {
+          "AffectedClass": "(ClassType=Any,ClassSlot=1)",
+          "AffectedTeam": "(TeamType=All,TeamIndex=1)",
+          "AffectsAI": "No Effect",
+          "AIDamagePerPulse": "2.000000",
+          "CampfireZoneSize": "7.680000",
+          "CanAffectVehicles": "True",
+          "CanBeExtinguished": "True",
+          "CanBeLit": "True",
+          "CanBeStoked": "False",
+          "EnabledDuringPhase": "Always",
+          "HealthPerPulse": "2.000000",
+          "InteractingClass": "(ClassType=Any,ClassSlot=1)",
+          "InteractingTeam": "(TeamType=All,TeamIndex=1)",
+          "InvertAffectedTeamSelection": "False",
+          "InvertInteractingTeamSelection": "False",
+          "LabelOverride": "Campfire2",
+          "PulseInterval": "1.000000",
+          "StartLit": "False",
+          "TimeToExtinguish": "1.000000",
+          "TimeToLight": "1.000000",
+          "UseAdvancedLighting": "True",
+          "UsesWood": "False",
+          "WoodConsumptionPerPulse": "1.000000",
+          "WoodToAddOnTrigger": "10.000000"
+        }
+      },
+      {
+        "file": "Testproject/E/HE/BPKN1GUL74YY49UFX81ONY.uasset",
+        "deviceType": "Device_Campfire_C",
+        "label": "Campfire",
+        "triggers": [
+          "OnAddedToMinigame",
+          "OnDisabled",
+          "OnEnabled",
+          "OnRemovedFromMinigame",
+          "TriggerArea",
+          "TriggerOnEnterRadius",
+          "TriggerOnExtinguish",
+          "TriggerOnLeavingRadius",
+          "TriggerOnLight",
+          "TriggerOnTick",
+          "TriggerOnTickPerPlayer"
+        ],
+        "receivers": [
+          "DisableWhenReceiving",
+          "EnableWhenReceiving",
+          "ReceiverAddFuel",
+          "ReceiverExtinguish",
+          "ReceiverLight"
+        ],
+        "settings": {
+          "AffectedClass": "(ClassType=Any,ClassSlot=1)",
+          "AffectedTeam": "(TeamType=All,TeamIndex=1)",
+          "AffectsAI": "No Effect",
+          "AIDamagePerPulse": "2.000000",
+          "CampfireZoneSize": "7.680000",
+          "CanAffectVehicles": "True",
+          "CanBeExtinguished": "True",
+          "CanBeLit": "True",
+          "CanBeStoked": "False",
+          "EnabledDuringPhase": "Always",
+          "HealthPerPulse": "2.000000",
+          "InteractingClass": "(ClassType=Any,ClassSlot=1)",
+          "InteractingTeam": "(TeamType=All,TeamIndex=1)",
+          "InvertAffectedTeamSelection": "False",
+          "InvertInteractingTeamSelection": "False",
+          "LabelOverride": "Campfire",
+          "PulseInterval": "1.000000",
+          "StartLit": "False",
+          "TimeToExtinguish": "1.000000",
+          "TimeToLight": "1.000000",
+          "UseAdvancedLighting": "True",
+          "UsesWood": "False",
+          "WoodConsumptionPerPulse": "1.000000",
+          "WoodToAddOnTrigger": "10.000000"
+        }
+      }
+    ],
+    "Unknown": [
+      {
+        "file": "Testproject/8/WW/NBJCCF09YLJUJ4XTG3T5C9.uasset",
+        "deviceType": "Unknown",
+        "label": null,
+        "triggers": [],
+        "receivers": [],
+        "settings": {
+          "HealthRechargePeriod": "1.000000",
+          "JoinInProgressBehavior": "SpawnDuringNewRound",
+          "KeepDroppedItemsBetweenRounds": "False",
+          "KeepLoadingScreen": "False",
+          "KeepSpectatorsInTeamChat": "False",
+          "LocomotionPreset": "Current BR",
+          "MantlingMinimumHeight": "Normal",
+          "MantlingMinimumHeightInWater": "Normal",
+          "MapScreenDisplay": "Creative_Scoreboard",
+          "MatchmakingPrivacy": "Public",
+          "MatchmakingType": "Off",
+          "MaxHealth": "100.000000",
+          "MaxShields": "100.000000",
+          "MaxSprintingJumpMultiplier": "1.200000",
+          "MaxSprintingSpeedMultiplier": "1.400000",
+          "MMSBackfill": "Enabled",
+          "MovementSpeedTunings": "Ch 5 Movement",
+          "NameplateClampToScreenMode": "DontOverride",
+          "OccludeBubble": "True",
+          "OvershieldMax": "50.000000",
+          "OvershieldRechargeApplicationAmount": "5.000000",
+          "OvershieldRechargeDelay": "6.500000",
+          "OvershieldRechargePeriod": "1.000000",
+          "PersistenceBehaviorEditSession": "ImportLiveData",
+          "PersistenceBehaviorPlaytestSession": "ImportLiveData",
+          "PlayerBuiltMetalStructureHealthMultiplier": "1.000000",
+          "PlayerBuiltStoneStructureHealthMultiplier": "1.000000",
+          "PlayerBuiltWoodStructureHealthMultiplier": "1.000000",
+          "PostGameCustomDefeatAnimationColorSet": "GoldenYellow",
+          "PostGameCustomDefeatAnimationStyle": "LightningBolt",
+          "PostGameCustomTieAnimationColorSet": "GoldenYellow",
+          "PostGameCustomTieAnimationStyle": "LightningBolt",
+          "PostGameCustomVictoryAnimationColorSet": "GoldenYellow",
+          "PostGameCustomVictoryAnimationStyle": "LightningBolt",
+          "PostGameSpawnLocation": "IslandStart",
+          "PostGameType": "Classic",
+          "ProximityChatDistanceInMeters": "5.000000",
+          "PublishedIslandCodeDisplay": "ShowWithWatermark",
+          "RevertToDefaultClassAt": "GameEnd",
+          "RoundScoreDisplayTime": "0.000000",
+          "RoundWinnerDisplayTime": "0.000000",
+          "ShieldRechargeApplicationAmount": "5.000000",
+          "ShieldRechargeDelay": "6.500000",
+          "ShieldRechargePeriod": "1.000000",
+          "ShouldPauseEnergyUseOnFalling": "True",
+          "ShowTopCenterScoreHUD": "False",
+          "SocialJoining": "Enabled",
+          "SpawnImmunityTime": "15.000000",
+          "SpawnLocation": "SpawnPads",
+          "SpawnPadSelection": "Random",
+          "SprintingEnergyCostPerSecond": "20.000000",
+          "StartingHealthPercentage": "100.000000",
+          "StartingShieldPercentage": "0.000000",
+          "TeamFillOption": "MustFill",
+          "Teams": "(TeamType=FreeForAll,TeamIndex=1)",
+          "TeamSize": "Dynamic",
+          "TeamVisualsDeterminedAt": "Round Start",
+          "TextChatScope": "All",
+          "TimeAliveStartPoint": "PawnCreated",
+          "TimeAliveTeamTrackingMethod": "Accumulate",
+          "TimerDirection": "Count Down",
+          "UITeamColors": "Relationship",
+          "UntilMinigameState": "InProgress",
+          "UseLatestHUD": "False",
+          "VictoryAnimation": "Default",
+          "VictorySound": "Default",
+          "VoiceChat": "All",
+          "AllowSpectateOtherTeams": "Disallow",
+          "AutoPickupAmmoItems": "Unset",
+          "AutoPickupConsumableItems": "Unset",
+          "AutoPickupDefaultItems": "Unset",
+          "AutoPickupTrapItems": "Unset",
+          "AutoPickupWeaponItems": "Unset",
+          "AutoPickupWorldResourceItems": "Unset",
+          "StatMultiplier": "0.000000",
+          "PickaxeDestructionPreset": "None",
+          "WeaponDestructionPercentage": "100.000000",
+          "WeaponDestructionPreset": "Percentage",
+          "AllowBuilding": "All",
+          "AllowedToEditFilter": "Default",
+          "EnvironmentDamagePreset": "All",
+          "TeamDamageFilter": "Default",
+          "MultiInteractionEnabledType": "On",
+          "PickaxeDamagePreset": "Players and Guards ",
+          "RespawnWaveType": "None",
+          "ScoreMultiplier": "1.000000",
+          "Enabled": "False",
+          "RangeMultiplier": "1.000000",
+          "FortPlayerSettingsComponentBase": "AssistsToScoreMultiplier",
+          "FortPlayerZoneSettingsComponent": "CameraFilter"
+        }
+      }
+    ],
+    "Device_CharacterSpawner_C": [
+      {
+        "file": "Testproject/B/1F/5A0AO0OA5BAFZOMYRF67BX.uasset",
+        "deviceType": "Device_CharacterSpawner_C",
+        "label": "NPC Spawner",
+        "triggers": [
+          "OnAddedToMinigame",
+          "OnRemovedFromMinigame"
+        ],
+        "receivers": [],
+        "settings": {
+          "NPCCharacterDefinition": "None",
+          "AllowInfiniteSpawn": "True",
+          "DespawnAIsWhenDisabled": "False",
+          "EnabledAtGameStart": "True",
+          "LabelOverride": "NPC Spawner",
+          "ShowSpawnRadius": "True",
+          "SpawnOnEnabled": "True",
+          "SpawnOnTimer": "True",
+          "SpawnRadius": "1.000000",
+          "SpawnThroughWalls": "True",
+          "SpawnTimer": "3.000000",
+          "UseDeviceSpawnLocation": "True"
+        }
+      }
+    ]
+  }
+}
