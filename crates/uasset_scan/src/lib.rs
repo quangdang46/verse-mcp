@@ -10,6 +10,9 @@ pub mod fingerprint;
 pub mod classify;
 pub mod parser;
 
+#[cfg(test)]
+mod scanner_tests;
+
 pub use types::{DeviceInfo, ScanOutput};
 pub use fingerprint::Fingerprint;
 pub use classify::{Classification, classify};
