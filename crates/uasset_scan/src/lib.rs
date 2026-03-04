@@ -39,8 +39,10 @@ pub enum ScanError {
     UnsupportedVersion,
 }
 
-/// Scan a UEFN project directory for devices
+/// Scan a UEFN project directory for devices (parallel implementation)
 pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
+    use rayon::prelude::*;
+
     let actors_root = project_path.join("Content").join("__ExternalActors__");
 
     if !actors_root.exists() {
@@ -50,31 +52,37 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
         )));
     }
 
-    let mut devices = Vec::new();
-    let mut skipped = 0;
-    let mut total_files = 0;
-
-    for entry in walkdir::WalkDir::new(&actors_root)
+    // Collect all .uasset files first
+    let files: Vec<_> = walkdir::WalkDir::new(&actors_root)
         .into_iter()
         .filter_map(|e| e.ok())
-    {
-        let path = entry.path();
-        if path.extension().map_or(false, |ext| ext == "uasset") {
-            total_files += 1;
-            match parse_file(path, &actors_root) {
-                Ok(Some(device)) => devices.push(device),
-                Ok(None) => skipped += 1,
-                Err(e) => {
-                    tracing::debug!("Skipping {}: {}", path.display(), e);
-                    skipped += 1;
-                }
-            }
+        .filter(|e| e.path().extension().map_or(false, |ext| ext == "uasset"))
+        .map(|e| e.path().to_path_buf())
+        .collect();
+
+    let total_files = files.len();
+
+    // Parse in parallel using rayon
+    let results: Vec<_> = files
+        .into_par_iter()
+        .map(|path| parse_file(&path, &actors_root))
+        .collect();
+
+    // Partition results into devices and skips
+    let mut devices = Vec::new();
+    let mut skipped = 0;
+
+    for result in results {
+        match result {
+            Ok(Some(device)) => devices.push(device),
+            Ok(None) => skipped += 1,
+            Err(_) => skipped += 1,
         }
     }
 
     // Group by device type
     let mut by_type: IndexMap<String, Vec<DeviceInfo>> = IndexMap::new();
-    for device in devices.clone() {
+    for device in devices {
         by_type
             .entry(device.device_type.clone())
             .or_default()
@@ -88,7 +96,7 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
         scanned_at: chrono_lite_now(),
         project_root: project_path.to_string_lossy().to_string(),
         total_files,
-        total_devices: devices.len(),
+        total_devices: by_type.values().map(|v| v.len()).sum(),
         skipped,
         device_types: by_type.keys().cloned().collect(),
         by_type,

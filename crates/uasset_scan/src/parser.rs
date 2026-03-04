@@ -128,6 +128,9 @@ pub fn extract_label(buf: &[u8]) -> Option<String> {
 }
 
 /// Extract property settings from PropertyOverrideData
+///
+/// Note: Uses 25-byte stride assumption which works for simple scalar properties.
+/// May need refinement for EnumProperty, StructProperty, ArrayProperty types.
 pub fn extract_settings(buf: &[u8], scan_start: usize) -> indexmap::IndexMap<String, String> {
     let mut result = indexmap::IndexMap::new();
 
