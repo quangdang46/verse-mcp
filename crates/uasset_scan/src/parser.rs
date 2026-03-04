@@ -222,12 +222,19 @@ pub fn parse_uasset(buf: &[u8], file_path: &str) -> Result<Option<DeviceInfo>, S
         }
     }
 
-    // Extract settings
+    // Extract settings BEFORE determining final device type
     let scan_start = std::cmp::max(name_map.end_offset, buf.len() / 2);
     let settings = extract_settings(buf, scan_start);
 
-    // Return Unknown if no device type found
-    let device_type = device_type.unwrap_or_else(|| "Unknown".to_string());
+    // Determine device type: try fingerprinting if no Device_*_C found
+    let device_type = match device_type {
+        Some(dt) => dt,
+        None => {
+            // Try fingerprint classification using settings
+            crate::fingerprint::fingerprint_device(&settings)
+                .unwrap_or_else(|| "Unknown".to_string())
+        }
+    };
 
     // Skip if no useful data
     if triggers.is_empty() && receivers.is_empty() && settings.is_empty() {

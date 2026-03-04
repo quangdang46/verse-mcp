@@ -81,6 +81,31 @@ pub fn classify_by_fingerprint(settings_keys: &[&str]) -> Option<&'static str> {
         .map(|fp| fp.device_type)
 }
 
+/// Classify device using settings map (handles ties - most matches wins)
+pub fn fingerprint_device(settings: &indexmap::IndexMap<String, String>) -> Option<String> {
+    let settings_keys: std::collections::HashSet<&str> = settings.keys().map(|s| s.as_str()).collect();
+
+    let mut best_match: Option<(&Fingerprint, usize)> = None;
+
+    for fp in FINGERPRINTS {
+        let matches = fp
+            .required_keys
+            .iter()
+            .filter(|k| settings_keys.contains(*k))
+            .count();
+
+        if matches >= fp.min_matches {
+            match best_match {
+                None => best_match = Some((fp, matches)),
+                Some((_, prev)) if matches > prev => best_match = Some((fp, matches)),
+                _ => {}
+            }
+        }
+    }
+
+    best_match.map(|(fp, _)| fp.device_type.to_string())
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -101,5 +126,33 @@ mod tests {
     fn test_no_match() {
         let keys = vec!["UnknownSetting"];
         assert_eq!(classify_by_fingerprint(&keys), None);
+    }
+
+    #[test]
+    fn test_fingerprint_device_button() {
+        let mut settings = indexmap::IndexMap::new();
+        settings.insert("InteractionRadius".to_string(), "100.0".to_string());
+        settings.insert("InteractTime".to_string(), "1.0".to_string());
+        assert_eq!(fingerprint_device(&settings), Some("button_device".to_string()));
+    }
+
+    #[test]
+    fn test_fingerprint_device_island_settings() {
+        let mut settings = indexmap::IndexMap::new();
+        settings.insert("MaxHealth".to_string(), "100.0".to_string());
+        settings.insert("SpawnLocation".to_string(), "SpawnPads".to_string());
+        settings.insert("Teams".to_string(), "FFA".to_string());
+        assert_eq!(fingerprint_device(&settings), Some("island_settings_device".to_string()));
+    }
+
+    #[test]
+    fn test_fingerprint_device_tie_breaker() {
+        // When multiple fingerprints could match, highest match count wins
+        let mut settings = indexmap::IndexMap::new();
+        settings.insert("InteractionRadius".to_string(), "100.0".to_string());
+        settings.insert("InteractTime".to_string(), "1.0".to_string());
+        settings.insert("TriggerSound".to_string(), "True".to_string());
+        // All 3 keys match button_device
+        assert_eq!(fingerprint_device(&settings), Some("button_device".to_string()));
     }
 }
