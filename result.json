@@ -1,5 +1,5 @@
 {
-  "scanned_at": "2026-03-04T14:33:34.338Z",
+  "scanned_at": "2026-03-04T15:17:23.541Z",
   "project_root": "E:\\Projects\\Testproject",
   "total_files": 14,
   "total_devices": 9,
@@ -7,28 +7,36 @@
   "device_types": [
     "Device_Campfire_C",
     "Device_CharacterSpawner_C",
-    "Unknown",
-    "button_device",
-    "player_spawner_device"
+    "Unknown"
   ],
   "by_type": {
-    "player_spawner_device": [
+    "Unknown": [
       {
         "file": "Testproject/1/W3/IMPQLM30UGPYNFB1JJ6QU5.uasset",
-        "deviceType": "player_spawner_device",
+        "deviceType": "Unknown",
         "label": "Player 1 Spawn Pad",
         "triggers": [
-          "OnAddedToMinigame",
-          "OnRemovedFromMinigame",
-          "OnSpawnComplete",
-          "OnSpawnedPlayerEliminated"
+          "Audio Loop",
+          "BoundsCheckSphere",
+          "Creative_Enabled_Component",
+          "EnemyRangeVisualization",
+          "FortMinigamePlayerStart",
+          "FortMinigameProgress",
+          "ForwardDirection",
+          "OnPlayerSpawned",
+          "OnReceiveDisable",
+          "OnReceiveEnable",
+          "OnReceiveSpawnPlayer",
+          "PlayerMesh",
+          "PlayerStartCreative",
+          "TeamNumberDisplay",
+          "ToyOptionsComponent",
+          "VisibleInEditorOnlyComponent",
+          "VisibleInGameComponent"
         ],
-        "receivers": [
-          "ReceiverDisable",
-          "ReceiverEnable",
-          "ReceiverSpawn"
-        ],
+        "receivers": [],
         "settings": {
+          "False": "bIsPlayerBuildable",
           "DisplayEnemyRange": "When Near",
           "EnabledDuringPhase": "Always",
           "EnemyRangeCheck": "0.000000",
@@ -41,51 +49,26 @@
         }
       },
       {
-        "file": "Testproject/7/ZS/XQEJBGUNVMY63N4NZNXHYA.uasset",
-        "deviceType": "player_spawner_device",
-        "label": "Player 2 Spawn Pad",
-        "triggers": [
-          "OnAddedToMinigame",
-          "OnRemovedFromMinigame",
-          "OnSpawnComplete",
-          "OnSpawnedPlayerEliminated"
-        ],
-        "receivers": [
-          "ReceiverDisable",
-          "ReceiverEnable",
-          "ReceiverSpawn"
-        ],
-        "settings": {
-          "DisplayEnemyRange": "When Near",
-          "EnabledDuringPhase": "Always",
-          "EnemyRangeCheck": "0.000000",
-          "LabelOverride": "Player 2 Spawn Pad",
-          "PlayAudio": "No",
-          "PlayerClass": "(ClassType=Any,ClassSlot=1)",
-          "PlayerTeam": "(TeamType=Any,TeamIndex=1)",
-          "UseAsIslandStart": "True",
-          "VisibleInGame": "True"
-        }
-      }
-    ],
-    "button_device": [
-      {
         "file": "Testproject/3/AT/6XH0LYZKKV045B10CAQD8P.uasset",
-        "deviceType": "button_device",
+        "deviceType": "Unknown",
         "label": "Button2",
         "triggers": [
-          "OnAddedToMinigame",
-          "OnDisabled",
-          "OnEnabled",
-          "OnTriggered",
-          "TriggerOnInteracted"
+          "ButtonMesh",
+          "Creative_UseRestriction_Component",
+          "DisableWhenReceived",
+          "Doorbell",
+          "EnableWhenReceived",
+          "FortLocalizableMessage",
+          "FortMinigameLogic",
+          "RangeSphere",
+          "SphereCollision",
+          "ToyOptionsComponent",
+          "VisibleInGameComponent",
+          "WhenInteractedWithTrigger"
         ],
-        "receivers": [
-          "ReceiverDisable",
-          "ReceiverEnable",
-          "ReceiverReset"
-        ],
+        "receivers": [],
         "settings": {
+          "False": "bIsPlayerBuildable",
           "ActivatingTeam": "(TeamType=Any,TeamIndex=1)",
           "AllowedClass": "(ClassType=Any,ClassSlot=1)",
           "Delay": "0.000000",
@@ -102,21 +85,25 @@
       },
       {
         "file": "Testproject/4/H4/VQ4QL3ZNB2VCB6CKM0914L.uasset",
-        "deviceType": "button_device",
+        "deviceType": "Unknown",
         "label": "Button",
         "triggers": [
-          "OnAddedToMinigame",
-          "OnDisabled",
-          "OnEnabled",
-          "OnTriggered",
-          "TriggerOnInteracted"
+          "ButtonMesh",
+          "Creative_UseRestriction_Component",
+          "DisableWhenReceived",
+          "Doorbell",
+          "EnableWhenReceived",
+          "FortLocalizableMessage",
+          "FortMinigameLogic",
+          "RangeSphere",
+          "SphereCollision",
+          "ToyOptionsComponent",
+          "VisibleInGameComponent",
+          "WhenInteractedWithTrigger"
         ],
-        "receivers": [
-          "ReceiverDisable",
-          "ReceiverEnable",
-          "ReceiverReset"
-        ],
+        "receivers": [],
         "settings": {
+          "False": "bIsPlayerBuildable",
           "ActivatingTeam": "(TeamType=Any,TeamIndex=1)",
           "AllowedClass": "(ClassType=Any,ClassSlot=1)",
           "Delay": "0.000000",
@@ -130,129 +117,54 @@
           "TriggerSound": "True",
           "VisibleDuringGame": "True"
         }
-      }
-    ],
-    "Device_Campfire_C": [
+      },
       {
-        "file": "Testproject/5/TA/FMNZKYYL4NX47JRMFJ6H49.uasset",
-        "deviceType": "Device_Campfire_C",
-        "label": "game manager",
-        "triggers": [],
+        "file": "Testproject/7/ZS/XQEJBGUNVMY63N4NZNXHYA.uasset",
+        "deviceType": "Unknown",
+        "label": "Player 2 Spawn Pad",
+        "triggers": [
+          "Audio Loop",
+          "BoundsCheckSphere",
+          "Creative_Enabled_Component",
+          "EnemyRangeVisualization",
+          "FortMinigamePlayerStart",
+          "FortMinigameProgress",
+          "ForwardDirection",
+          "OnPlayerSpawned",
+          "OnReceiveDisable",
+          "OnReceiveEnable",
+          "OnReceiveSpawnPlayer",
+          "PlayerMesh",
+          "PlayerStartCreative",
+          "TeamNumberDisplay",
+          "ToyOptionsComponent",
+          "VisibleInEditorOnlyComponent",
+          "VisibleInGameComponent"
+        ],
         "receivers": [],
         "settings": {
-          "LabelOverride": "game manager",
+          "False": "bIsPlayerBuildable",
+          "DisplayEnemyRange": "When Near",
+          "EnabledDuringPhase": "Always",
+          "EnemyRangeCheck": "0.000000",
+          "LabelOverride": "Player 2 Spawn Pad",
+          "PlayAudio": "No",
+          "PlayerClass": "(ClassType=Any,ClassSlot=1)",
+          "PlayerTeam": "(TeamType=Any,TeamIndex=1)",
+          "UseAsIslandStart": "True",
           "VisibleInGame": "True"
         }
       },
       {
-        "file": "Testproject/C/4L/ZE7SLONQXWKU55ATJ053HF.uasset",
-        "deviceType": "Device_Campfire_C",
-        "label": "Campfire2",
-        "triggers": [
-          "OnAddedToMinigame",
-          "OnDisabled",
-          "OnEnabled",
-          "OnRemovedFromMinigame",
-          "TriggerArea",
-          "TriggerOnEnterRadius",
-          "TriggerOnExtinguish",
-          "TriggerOnLeavingRadius",
-          "TriggerOnLight",
-          "TriggerOnTick",
-          "TriggerOnTickPerPlayer"
-        ],
-        "receivers": [
-          "DisableWhenReceiving",
-          "EnableWhenReceiving",
-          "ReceiverAddFuel",
-          "ReceiverExtinguish",
-          "ReceiverLight"
-        ],
-        "settings": {
-          "AffectedClass": "(ClassType=Any,ClassSlot=1)",
-          "AffectedTeam": "(TeamType=All,TeamIndex=1)",
-          "AffectsAI": "No Effect",
-          "AIDamagePerPulse": "2.000000",
-          "CampfireZoneSize": "7.680000",
-          "CanAffectVehicles": "True",
-          "CanBeExtinguished": "True",
-          "CanBeLit": "True",
-          "CanBeStoked": "False",
-          "EnabledDuringPhase": "Always",
-          "HealthPerPulse": "2.000000",
-          "InteractingClass": "(ClassType=Any,ClassSlot=1)",
-          "InteractingTeam": "(TeamType=All,TeamIndex=1)",
-          "InvertAffectedTeamSelection": "False",
-          "InvertInteractingTeamSelection": "False",
-          "LabelOverride": "Campfire2",
-          "PulseInterval": "1.000000",
-          "StartLit": "False",
-          "TimeToExtinguish": "1.000000",
-          "TimeToLight": "1.000000",
-          "UseAdvancedLighting": "True",
-          "UsesWood": "False",
-          "WoodConsumptionPerPulse": "1.000000",
-          "WoodToAddOnTrigger": "10.000000"
-        }
-      },
-      {
-        "file": "Testproject/E/HE/BPKN1GUL74YY49UFX81ONY.uasset",
-        "deviceType": "Device_Campfire_C",
-        "label": "Campfire",
-        "triggers": [
-          "OnAddedToMinigame",
-          "OnDisabled",
-          "OnEnabled",
-          "OnRemovedFromMinigame",
-          "TriggerArea",
-          "TriggerOnEnterRadius",
-          "TriggerOnExtinguish",
-          "TriggerOnLeavingRadius",
-          "TriggerOnLight",
-          "TriggerOnTick",
-          "TriggerOnTickPerPlayer"
-        ],
-        "receivers": [
-          "DisableWhenReceiving",
-          "EnableWhenReceiving",
-          "ReceiverAddFuel",
-          "ReceiverExtinguish",
-          "ReceiverLight"
-        ],
-        "settings": {
-          "AffectedClass": "(ClassType=Any,ClassSlot=1)",
-          "AffectedTeam": "(TeamType=All,TeamIndex=1)",
-          "AffectsAI": "No Effect",
-          "AIDamagePerPulse": "2.000000",
-          "CampfireZoneSize": "7.680000",
-          "CanAffectVehicles": "True",
-          "CanBeExtinguished": "True",
-          "CanBeLit": "True",
-          "CanBeStoked": "False",
-          "EnabledDuringPhase": "Always",
-          "HealthPerPulse": "2.000000",
-          "InteractingClass": "(ClassType=Any,ClassSlot=1)",
-          "InteractingTeam": "(TeamType=All,TeamIndex=1)",
-          "InvertAffectedTeamSelection": "False",
-          "InvertInteractingTeamSelection": "False",
-          "LabelOverride": "Campfire",
-          "PulseInterval": "1.000000",
-          "StartLit": "False",
-          "TimeToExtinguish": "1.000000",
-          "TimeToLight": "1.000000",
-          "UseAdvancedLighting": "True",
-          "UsesWood": "False",
-          "WoodConsumptionPerPulse": "1.000000",
-          "WoodToAddOnTrigger": "10.000000"
-        }
-      }
-    ],
-    "Unknown": [
-      {
         "file": "Testproject/8/WW/NBJCCF09YLJUJ4XTG3T5C9.uasset",
         "deviceType": "Unknown",
         "label": null,
-        "triggers": [],
+        "triggers": [
+          "Newton_UserOptionFilter",
+          "TestPlayerDefinitionComponent",
+          "ToyOptionsComponent",
+          "UserOptionComponent_Cosmetic"
+        ],
         "receivers": [],
         "settings": {
           "HealthRechargePeriod": "1.000000",
@@ -348,17 +260,181 @@
         }
       }
     ],
+    "Device_Campfire_C": [
+      {
+        "file": "Testproject/5/TA/FMNZKYYL4NX47JRMFJ6H49.uasset",
+        "deviceType": "Device_Campfire_C",
+        "label": "game manager",
+        "triggers": [
+          "EnabledComponent",
+          "ToyOptionsComponent",
+          "VisibleInGameComponent"
+        ],
+        "receivers": [],
+        "settings": {
+          "False": "bIsPlayerBuildable",
+          "LabelOverride": "game manager",
+          "VisibleInGame": "True"
+        }
+      },
+      {
+        "file": "Testproject/C/4L/ZE7SLONQXWKU55ATJ053HF.uasset",
+        "deviceType": "Device_Campfire_C",
+        "label": "Campfire2",
+        "triggers": [
+          "AbilitySystem",
+          "AffectRestrictionComponent",
+          "AreaRangeVisualization",
+          "Campfire_Fire_Loop_Cue",
+          "EnabledComponent",
+          "FireCollisionSphere",
+          "FireLoc",
+          "FortMinigameLogic",
+          "FortMinigameProgress",
+          "FortPointLight",
+          "InteractRestrictionComponent",
+          "OnDisabled",
+          "OnEnabled",
+          "P_Athena_Campfire",
+          "ToyOptionsComponent",
+          "TriggerArea",
+          "TriggerOnEnterRadius",
+          "TriggerOnExtinguish",
+          "TriggerOnLeavingRadius",
+          "TriggerOnLight",
+          "TriggerOnTick",
+          "TriggerOnTickPerPlayer",
+          "VisibleInGameComponent"
+        ],
+        "receivers": [
+          "DisableWhenReceiving",
+          "EnableWhenReceiving",
+          "ReceiverAddFuel",
+          "ReceiverExtinguish",
+          "ReceiverLight"
+        ],
+        "settings": {
+          "False": "bIsPlayerBuildable",
+          "AffectedClass": "(ClassType=Any,ClassSlot=1)",
+          "AffectedTeam": "(TeamType=All,TeamIndex=1)",
+          "AffectsAI": "No Effect",
+          "AIDamagePerPulse": "2.000000",
+          "CampfireZoneSize": "7.680000",
+          "CanAffectVehicles": "True",
+          "CanBeExtinguished": "True",
+          "CanBeLit": "True",
+          "CanBeStoked": "False",
+          "EnabledDuringPhase": "Always",
+          "HealthPerPulse": "2.000000",
+          "InteractingClass": "(ClassType=Any,ClassSlot=1)",
+          "InteractingTeam": "(TeamType=All,TeamIndex=1)",
+          "InvertAffectedTeamSelection": "False",
+          "InvertInteractingTeamSelection": "False",
+          "LabelOverride": "Campfire2",
+          "PulseInterval": "1.000000",
+          "StartLit": "False",
+          "TimeToExtinguish": "1.000000",
+          "TimeToLight": "1.000000",
+          "UseAdvancedLighting": "True",
+          "UsesWood": "False",
+          "WoodConsumptionPerPulse": "1.000000",
+          "WoodToAddOnTrigger": "10.000000"
+        }
+      },
+      {
+        "file": "Testproject/E/HE/BPKN1GUL74YY49UFX81ONY.uasset",
+        "deviceType": "Device_Campfire_C",
+        "label": "Campfire",
+        "triggers": [
+          "AbilitySystem",
+          "AffectRestrictionComponent",
+          "AreaRangeVisualization",
+          "Campfire_Fire_Loop_Cue",
+          "EnabledComponent",
+          "FireCollisionSphere",
+          "FireLoc",
+          "FortMinigameLogic",
+          "FortMinigameProgress",
+          "FortPointLight",
+          "InteractRestrictionComponent",
+          "OnDisabled",
+          "OnEnabled",
+          "P_Athena_Campfire",
+          "ToyOptionsComponent",
+          "TriggerArea",
+          "TriggerOnEnterRadius",
+          "TriggerOnExtinguish",
+          "TriggerOnLeavingRadius",
+          "TriggerOnLight",
+          "TriggerOnTick",
+          "TriggerOnTickPerPlayer",
+          "VisibleInGameComponent"
+        ],
+        "receivers": [
+          "DisableWhenReceiving",
+          "EnableWhenReceiving",
+          "ReceiverAddFuel",
+          "ReceiverExtinguish",
+          "ReceiverLight"
+        ],
+        "settings": {
+          "False": "bIsPlayerBuildable",
+          "AffectedClass": "(ClassType=Any,ClassSlot=1)",
+          "AffectedTeam": "(TeamType=All,TeamIndex=1)",
+          "AffectsAI": "No Effect",
+          "AIDamagePerPulse": "2.000000",
+          "CampfireZoneSize": "7.680000",
+          "CanAffectVehicles": "True",
+          "CanBeExtinguished": "True",
+          "CanBeLit": "True",
+          "CanBeStoked": "False",
+          "EnabledDuringPhase": "Always",
+          "HealthPerPulse": "2.000000",
+          "InteractingClass": "(ClassType=Any,ClassSlot=1)",
+          "InteractingTeam": "(TeamType=All,TeamIndex=1)",
+          "InvertAffectedTeamSelection": "False",
+          "InvertInteractingTeamSelection": "False",
+          "LabelOverride": "Campfire",
+          "PulseInterval": "1.000000",
+          "StartLit": "False",
+          "TimeToExtinguish": "1.000000",
+          "TimeToLight": "1.000000",
+          "UseAdvancedLighting": "True",
+          "UsesWood": "False",
+          "WoodConsumptionPerPulse": "1.000000",
+          "WoodToAddOnTrigger": "10.000000"
+        }
+      }
+    ],
     "Device_CharacterSpawner_C": [
       {
         "file": "Testproject/B/1F/5A0AO0OA5BAFZOMYRF67BX.uasset",
         "deviceType": "Device_CharacterSpawner_C",
         "label": "NPC Spawner",
         "triggers": [
-          "OnAddedToMinigame",
-          "OnRemovedFromMinigame"
+          "AthenaNavPresenceDetector",
+          "AttenuationInnerVis",
+          "AttenuationOuterVis",
+          "CharacterSkeletalMesh",
+          "CreativeAttenuationViz",
+          "CreativeEditOnlyBase",
+          "CreativeEditOnlyMeshMannequin",
+          "CreativeEditOnlyMeshSignPreviewOnly",
+          "CreativeEditOnlyRadiusCylinder",
+          "CreativeVersion",
+          "EnabledComponent",
+          "FortAISpawnerUtility",
+          "FortMinigameProgress",
+          "HearingRangeVis",
+          "LiveLinkComponentController",
+          "NPCBehaviorScriptComponent",
+          "NPCCharacterDefinitionComponent",
+          "ToyOptionsComponent",
+          "VisibleInGameComponent"
         ],
         "receivers": [],
         "settings": {
+          "False": "bIsPlayerBuildable",
           "NPCCharacterDefinition": "None",
           "AllowInfiniteSpawn": "True",
           "DespawnAIsWhenDisabled": "False",

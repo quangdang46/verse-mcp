@@ -1,12 +1,12 @@
 #!/usr/bin/env node
 /**
  * scan-verse.js — verse-mcp v4
- * Parse UE5 .uasset binary trực tiếp. Zero dependencies.
+ * Parse UE5 .uasset binary directly. Zero dependencies.
  *
- * Binary format confirmed từ UAssetAPI + real file analysis:
- *   - Name Map: FString[] + uint32 hash mỗi entry (bắt đầu bằng /Script/ path)
- *   - Label: FString("ActorLabel\0") ngay tiếp theo FString(label_value) trong export data
- *   - Config: FString(key) + 25 bytes metadata + FString(value) trong PropertyOverrideData
+ * Binary format confirmed from UAssetAPI + real file analysis:
+ *   - Name Map: FString[] + uint32 hash for each entry (start with /Script/ path)
+ *   - Label: FString("ActorLabel\0") next to FString(label_value) from export data
+ *   - Config: FString(key) + 25 bytes metadata + FString(value) from PropertyOverrideData
  *
  * Usage:
  *   node scan-verse.js --dir "E:\Projects\Testproject"
@@ -33,38 +33,6 @@ if (!fs.existsSync(actorsRoot)) {
 
 const UE_MAGIC = 0x9E2A83C1;
 const GEN      = "_GEN_VARIABLE";
-
-// ── NOISE: invalid label strings ──────────────────────────────
-const NOISE = new Set([
-  "ArrayProperty","BoolProperty","ByteProperty","DoubleProperty","EnumProperty",
-  "FloatProperty","IntProperty","NameProperty","ObjectProperty","StrProperty",
-  "StructProperty","SoftObjectProperty","MulticastInlineDelegateProperty",
-  "MulticastSparseDelegateProperty","ActorTemplateID","Class","Package","Level",
-  "World","None","PersistentLevel","RootComponent","Owner","AttachParent",
-  "True","False","Always","Never",
-]);
-
-// ── DEVICE FINGERPRINTS from settings keys ────────────────────
-const FINGERPRINTS = [
-  { type: "player_spawner_device",    keys: ["UseAsIslandStart","EnemyRangeCheck","PlayerTeam"] },
-  { type: "button_device",            keys: ["InteractionRadius","InteractTime","ActivatingTeam","TriggerSound"] },
-  { type: "trigger_device",           keys: ["TriggerRadius","ActivatingTeam","TriggerOnce"] },
-  { type: "item_spawner_device",      keys: ["SpawnRadius","SpawnTimer","AllowInfiniteSpawn"] },
-  { type: "character_spawner_device", keys: ["NPCCharacterDefinition","DespawnAIsWhenDisabled"] },
-  { type: "timer_device",             keys: ["TimerDuration","AutoStart","CountdownTime"] },
-  { type: "tracker_device",           keys: ["TrackingType","CountToWin"] },
-  { type: "score_manager_device",     keys: ["ScoreIncrement","MaxScore","WinCondition"] },
-];
-
-// ── VERSE API per device type ─────────────────────────────────
-const VERSE_API = {
-  player_spawner_device:    { triggers: ["OnSpawnedPlayerEliminated","OnSpawnComplete"],        receivers: ["ReceiverSpawn","ReceiverEnable","ReceiverDisable"] },
-  button_device:            { triggers: ["OnTriggered","TriggerOnInteracted","OnEnabled","OnDisabled"], receivers: ["ReceiverEnable","ReceiverDisable","ReceiverReset"] },
-  trigger_device:           { triggers: ["OnTriggered","TriggerOnEnterZone","TriggerOnExitZone"], receivers: ["ReceiverEnable","ReceiverDisable","ReceiverReset"] },
-  character_spawner_device: { triggers: ["OnSpawnedCharacterEliminated","OnAllCharactersEliminated"], receivers: ["ReceiverEnable","ReceiverDisable","ReceiverSpawnCharacter"] },
-  timer_device:             { triggers: ["OnTimerExpired","OnReset"],                           receivers: ["ReceiverStart","ReceiverStop","ReceiverReset"] },
-  tracker_device:           { triggers: ["OnTargetCountReached","OnCountUpdated"],              receivers: ["ReceiverIncrement","ReceiverDecrement","ReceiverReset"] },
-};
 
 // ── readFString ────────────────────────────────────────────────
 function readFString(buf, off) {
@@ -118,7 +86,7 @@ function extractLabel(buf) {
     // Immediately after = FString(label_value)
     const labelOff = i + needle.length;
     const r = readFString(buf, labelOff);
-    if (!r || !r.str || NOISE.has(r.str)) continue;
+    if (!r || !r.str) continue;
     if (/^[A-Za-z][A-Za-z0-9 _-]{0,40}$/.test(r.str)) return r.str;
   }
   return null;
@@ -136,8 +104,6 @@ function extractConfigValues(buf, scanStart) {
     const key = kResult.str;
     // Strict PascalCase key: starts uppercase, only letters, 4-50 chars
     if (!/^[A-Z][A-Za-z]{3,49}$/.test(key)) continue;
-    // Skip noise
-    if (NOISE.has(key)) continue;
 
     const vOff = kResult.nextOff + 25;
     if (vOff + 4 >= buf.length) continue;
@@ -170,19 +136,25 @@ function parseFile(filePath) {
   if (!nm || nm.names.length < 5) return null;
   const { names, endOff } = nm;
 
-  // Classify from name map
+  // Classify from name map using _GEN_VARIABLE as the signal.
+  // Every Verse-accessible event (trigger/receiver) has a _GEN_VARIABLE twin in the Name Map.
+  // Internal UE names (ArrayProperty, StaticMeshComponent, etc.) never do.
+  // So: if "X_GEN_VARIABLE" exists → X is a real Verse event. No regex patterns needed.
+  const genSet = new Set(names.filter(n => n.endsWith(GEN)).map(n => n.slice(0, -GEN.length)));
+
   let deviceType = null;
   const triggers  = [];
   const receivers = [];
 
   for (const n of names) {
     if (n.endsWith(GEN)) continue;
-    if (!deviceType && /^Device_[A-Za-z0-9]+_C$/.test(n))
+    if (!deviceType && /^Device_[A-Za-z0-9]+_C$/.test(n)) {
       deviceType = n;
-    else if (/^(OnDisabled|OnEnabled|OnAddedToMinigame|OnRemovedFromMinigame|Trigger[A-Z][A-Za-z0-9]+)$/.test(n))
-      triggers.push(n);
-    else if (/^(Receiver[A-Z][A-Za-z0-9]+|EnableWhenReceiving|DisableWhenReceiving)$/.test(n))
-      receivers.push(n);
+    } else if (genSet.has(n)) {
+      // Classify by naming convention from the binary itself
+      if (n.startsWith("Receiver") || n.endsWith("WhenReceiving")) receivers.push(n);
+      else triggers.push(n);
+    }
   }
 
   // Config values (second half of file)
@@ -191,23 +163,8 @@ function parseFile(filePath) {
 
   if (!deviceType && triggers.length === 0 && Object.keys(settings).length === 0) return null;
 
-  // Fingerprint unknown device type
-  if (!deviceType) {
-    const keys = Object.keys(settings);
-    let best = null, bestScore = 0;
-    for (const fp of FINGERPRINTS) {
-      const score = fp.keys.filter(k => keys.includes(k)).length;
-      if (score >= 2 && score > bestScore) { best = fp.type; bestScore = score; }
-    }
-    deviceType = best ?? "Unknown";
-  }
-
-  // Merge Verse API for fingerprinted types
-  const api = VERSE_API[deviceType];
-  if (api) {
-    api.triggers.forEach(t  => { if (!triggers.includes(t))  triggers.push(t); });
-    api.receivers.forEach(r => { if (!receivers.includes(r)) receivers.push(r); });
-  }
+  // Device type not found in Name Map — mark as Unknown
+  if (!deviceType) deviceType = "Unknown";
 
   // Extract real label from binary
   const label = extractLabel(buf);
