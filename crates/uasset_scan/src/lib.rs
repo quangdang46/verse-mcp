@@ -8,6 +8,7 @@ use indexmap::IndexMap;
 pub mod types;
 pub mod fingerprint;
 pub mod classify;
+pub mod parser;
 
 pub use types::{DeviceInfo, ScanOutput};
 pub use fingerprint::Fingerprint;
@@ -95,7 +96,7 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
 }
 
 /// Parse a single .uasset file
-fn parse_file(path: &std::path::Path, _base_path: &std::path::Path) -> Result<Option<DeviceInfo>> {
+fn parse_file(path: &std::path::Path, base_path: &std::path::Path) -> Result<Option<DeviceInfo>> {
     use std::fs::File;
     use std::io::Read;
 
@@ -103,19 +104,12 @@ fn parse_file(path: &std::path::Path, _base_path: &std::path::Path) -> Result<Op
     let mut buf = Vec::new();
     file.read_to_end(&mut buf)?;
 
-    if buf.len() < 64 {
-        return Ok(None);
-    }
+    let relative_path = path.strip_prefix(base_path)
+        .unwrap_or(path)
+        .to_string_lossy()
+        .replace('\\', "/");
 
-    // Check magic number
-    let magic = u32::from_le_bytes([buf[0], buf[1], buf[2], buf[3]]);
-    if magic != UE_MAGIC {
-        return Ok(None);
-    }
-
-    // TODO: Implement actual parsing using unreal_asset crate or custom parser
-    // For now, return None to indicate file structure is valid but parsing not complete
-    Ok(None)
+    parser::parse_uasset(&buf, &relative_path)
 }
 
 /// Simple timestamp function (no chrono dependency needed)
