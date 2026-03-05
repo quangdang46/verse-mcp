@@ -111,10 +111,12 @@ async fn main() -> Result<()> {
     let digest_index = load_digest(&project_path);
 
     // Create server handler
+    let templates_dir = project_path.join("templates");
     let handler = VerseMcpHandler {
         project_path,
         cache: Mutex::new(None),
         digest: RwLock::new(digest_index),
+        templates_dir,
     };
 
     // Use stdio transport (rmcp expects (stdin, stdout) tuple)
@@ -268,6 +270,63 @@ impl ServerHandler for VerseMcpHandler {
         );
         diff_schema.insert("required".to_string(), serde_json::json!(["old_content", "new_content"]));
 
+        // Build input schema for list_templates
+        let list_templates_schema = rmcp::model::JsonObject::new();
+
+        // Build input schema for load_template
+        let mut load_template_schema = rmcp::model::JsonObject::new();
+        load_template_schema.insert("type".to_string(), serde_json::json!("object"));
+        load_template_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "name": {
+                    "type": "string",
+                    "description": "Template name to load"
+                }
+            }),
+        );
+        load_template_schema.insert("required".to_string(), serde_json::json!(["name"]));
+
+        // Build input schema for save_template
+        let mut save_template_schema = rmcp::model::JsonObject::new();
+        save_template_schema.insert("type".to_string(), serde_json::json!("object"));
+        save_template_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "name": {
+                    "type": "string",
+                    "description": "Template name"
+                },
+                "description": {
+                    "type": "string",
+                    "description": "Template description"
+                },
+                "from_scan": {
+                    "type": "boolean",
+                    "description": "Create template from current scan output (default: false)"
+                },
+                "template_json": {
+                    "type": "string",
+                    "description": "Full template JSON (if not using from_scan)"
+                }
+            }),
+        );
+        save_template_schema.insert("required".to_string(), serde_json::json!(["name"]));
+
+        // Build input schema for delete_template
+        let mut delete_template_schema = rmcp::model::JsonObject::new();
+        delete_template_schema.insert("type".to_string(), serde_json::json!("object"));
+        delete_template_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "name": {
+                    "type": "string",
+                    "description": "Template name to delete"
+                }
+            }),
+        );
+        delete_template_schema.insert("required".to_string(), serde_json::json!(["name"]));
+
         Ok(rmcp::model::ListToolsResult {
             tools: vec![
                 rmcp::model::Tool {
@@ -304,6 +363,26 @@ impl ServerHandler for VerseMcpHandler {
                     name: "diff_digests".into(),
                     description: "Compare two Fortnite.digest.verse versions to detect breaking changes and additions. Useful for tracking API changes across Fortnite updates.".into(),
                     input_schema: Arc::new(diff_schema),
+                },
+                rmcp::model::Tool {
+                    name: "list_templates".into(),
+                    description: "List all available composition templates (saved device wiring patterns).".into(),
+                    input_schema: Arc::new(list_templates_schema),
+                },
+                rmcp::model::Tool {
+                    name: "load_template".into(),
+                    description: "Load a composition template by name. Returns the template with devices, wiring, and settings.".into(),
+                    input_schema: Arc::new(load_template_schema),
+                },
+                rmcp::model::Tool {
+                    name: "save_template".into(),
+                    description: "Save a composition template. Can create from current scan output or from provided JSON.".into(),
+                    input_schema: Arc::new(save_template_schema),
+                },
+                rmcp::model::Tool {
+                    name: "delete_template".into(),
+                    description: "Delete a composition template by name.".into(),
+                    input_schema: Arc::new(delete_template_schema),
                 },
             ],
             next_cursor: None,
@@ -787,6 +866,242 @@ impl ServerHandler for VerseMcpHandler {
                     )],
                     is_error: Some(false),
                 })
+            }
+            "list_templates" => {
+                let manager = uasset_scan::TemplateManager::new(self.templates_dir.clone());
+                match manager.list() {
+                    Ok(templates) => {
+                        let result_json = serde_json::json!({
+                            "templates": templates,
+                            "count": templates.len(),
+                            "templates_dir": self.templates_dir.display().to_string(),
+                        });
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(
+                                serde_json::to_string_pretty(&result_json).unwrap(),
+                            )],
+                            is_error: Some(false),
+                        })
+                    }
+                    Err(e) => Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": e.to_string()
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    }),
+                }
+            }
+            "load_template" => {
+                let template_name = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("name"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("");
+
+                if template_name.is_empty() {
+                    return Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": "name parameter is required"
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    });
+                }
+
+                let manager = uasset_scan::TemplateManager::new(self.templates_dir.clone());
+                match manager.load(template_name) {
+                    Ok(template) => {
+                        let result_json = serde_json::to_value(&template)
+                            .unwrap_or_else(|_| serde_json::json!({"error": "serialization failed"}));
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(
+                                serde_json::to_string_pretty(&result_json).unwrap(),
+                            )],
+                            is_error: Some(false),
+                        })
+                    }
+                    Err(e) => Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": e.to_string()
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    }),
+                }
+            }
+            "save_template" => {
+                let template_name = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("name"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("");
+
+                if template_name.is_empty() {
+                    return Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": "name parameter is required"
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    });
+                }
+
+                let from_scan = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("from_scan"))
+                    .and_then(|v| v.as_bool())
+                    .unwrap_or(false);
+
+                let description = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("description"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("")
+                    .to_string();
+
+                let manager = uasset_scan::TemplateManager::new(self.templates_dir.clone());
+
+                let template = if from_scan {
+                    // Create template from current scan output
+                    let cache_guard = self.cache.lock().unwrap();
+                    match &*cache_guard {
+                        Some(cached) => uasset_scan::TemplateManager::from_scan_output(
+                            template_name.to_string(),
+                            description,
+                            &cached.output,
+                        ),
+                        None => {
+                            return Ok(rmcp::model::CallToolResult {
+                                content: vec![Annotated::text(
+                                    serde_json::to_string_pretty(&serde_json::json!({
+                                        "error": "No scan data available. Run scan_map_devices first."
+                                    }))
+                                    .unwrap(),
+                                )],
+                                is_error: Some(true),
+                            });
+                        }
+                    }
+                } else {
+                    // Parse from template_json
+                    let template_json = params
+                        .arguments
+                        .as_ref()
+                        .and_then(|args| args.get("template_json"))
+                        .and_then(|v| v.as_str())
+                        .unwrap_or("");
+
+                    if template_json.is_empty() {
+                        return Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(
+                                serde_json::to_string_pretty(&serde_json::json!({
+                                    "error": "Either from_scan=true or template_json is required"
+                                }))
+                                .unwrap(),
+                            )],
+                            is_error: Some(true),
+                        });
+                    }
+
+                    match serde_json::from_str::<uasset_scan::Template>(template_json) {
+                        Ok(t) => t,
+                        Err(e) => {
+                            return Ok(rmcp::model::CallToolResult {
+                                content: vec![Annotated::text(
+                                    serde_json::to_string_pretty(&serde_json::json!({
+                                        "error": format!("Invalid template JSON: {}", e)
+                                    }))
+                                    .unwrap(),
+                                )],
+                                is_error: Some(true),
+                            });
+                        }
+                    }
+                };
+
+                match manager.save(&template) {
+                    Ok(()) => {
+                        let result_json = serde_json::json!({
+                            "saved": true,
+                            "name": template.name,
+                            "devices": template.devices.len(),
+                            "wiring": template.wiring.len(),
+                        });
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(
+                                serde_json::to_string_pretty(&result_json).unwrap(),
+                            )],
+                            is_error: Some(false),
+                        })
+                    }
+                    Err(e) => Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": e.to_string()
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    }),
+                }
+            }
+            "delete_template" => {
+                let template_name = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("name"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("");
+
+                if template_name.is_empty() {
+                    return Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": "name parameter is required"
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    });
+                }
+
+                let manager = uasset_scan::TemplateManager::new(self.templates_dir.clone());
+                match manager.delete(template_name) {
+                    Ok(()) => {
+                        let result_json = serde_json::json!({
+                            "deleted": true,
+                            "name": template_name,
+                        });
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(
+                                serde_json::to_string_pretty(&result_json).unwrap(),
+                            )],
+                            is_error: Some(false),
+                        })
+                    }
+                    Err(e) => Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": e.to_string()
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    }),
+                }
             }
             _ => Err(rmcp::Error::method_not_found::<CallToolRequestMethod>()),
         }
