@@ -77,15 +77,16 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 ---
 
-## MCP Tools (Phase 1)
+## MCP Tools
 
 | Tool | Input | Output |
 |---|---|---|
 | `scan_map_devices` | Project path | All placed devices with triggers, receivers, settings |
-| `get_device_props` | Device type name | Full property and event list |
+| `get_device_props` | Device type name | Full property and event list from digest |
 | `query_digest` | Symbol name or keyword | Matching entries from digest with signatures |
-| `list_editables` | Project path | All `@editable` fields with wiring checklist |
-| `scaffold_ui` | UI intent (e.g. "round timer HUD") | Valid Verse UI code using canvas/text_block patterns |
+| `validate_wiring` | - | Wiring issues (orphaned channels, conflicts) |
+| `list_editables` | Project path | All `@editable` fields with wiring checklist (planned) |
+| `scaffold_ui` | UI intent (e.g. "round timer HUD") | Valid Verse UI code (planned) |
 
 ---
 
@@ -107,15 +108,23 @@ The `.uasset` parser reads binary files directly — no external tools required.
 - [x] Tested against real UEFN project files
 - [x] Wiring validator for connection analysis
 
-### Phase 2 — In Progress 🚧
+### Phase 2 — Complete ✅
 - [x] MCP server with stdio transport (rmcp)
 - [x] `scan_map_devices` tool with mtime-based caching
 - [x] `validate_wiring` tool for connection validation
-- [ ] `get_device_props` tool (Phase 3)
-- [ ] `query_digest` tool (Phase 3)
-- [ ] `list_editables` tool
-- [ ] `scaffold_ui` tool
-- [ ] Claude Desktop and Cursor config examples
+- [x] Claude Desktop and Cursor config examples
+
+### Phase 3 — Complete ✅
+- [x] Digest parser for Fortnite.digest.verse
+- [x] `get_device_props` tool (digest lookup)
+- [x] `query_digest` tool (symbol search)
+- [ ] `list_editables` tool (planned)
+- [ ] `scaffold_ui` tool (planned)
+
+### Phase 4 — Planned
+- [ ] Pre-built binary releases
+- [ ] Integration tests with real UEFN projects
+- [ ] Documentation website
 
 ## Installation
 
@@ -180,8 +189,8 @@ Set the `VERSE_PROJECT_PATH` environment variable to specify your UEFN project p
 |------|-------------|-------|
 | `scan_map_devices` | Scan UEFN project for all placed devices | ✅ Ready |
 | `validate_wiring` | Validate device wiring for issues | ✅ Ready |
-| `get_device_props` | Get device properties from digest | 🚧 Phase 3 |
-| `query_digest` | Search digest for symbols | 🚧 Phase 3 |
+| `get_device_props` | Get device properties from digest | ✅ Ready |
+| `query_digest` | Search digest for symbols | ✅ Ready |
 | `list_editables` | Find @editable fields in .verse files | 📝 Planned |
 | `scaffold_ui` | Generate Verse UI scaffolding code | 📝 Planned |
 
@@ -225,6 +234,27 @@ I found 2 wiring issues:
 2. Channel "game_start" has 3 senders (potential conflict)
 ```
 
+### Querying Device Properties
+
+```
+User: What events does the campfire device have?
+AI: [Uses get_device_props tool]
+The device_campfire_device has:
+- Triggers: TriggerOnEnterRadius, OnDisabled, OnEnabled
+- Receivers: ReceiverAddFuel, EnableWhenReceiving
+- Methods: AddFuel, Extinguish, Light
+```
+
+### Searching the Digest
+
+```
+User: How do I use the score manager?
+AI: [Uses query_digest tool with query="score"]
+Found device_score_manager_device with:
+- ScoreChanged event
+- AddScore, GetScore, ResetScore methods
+```
+
 ### Debugging Multiplayer UI
 
 ```
@@ -249,9 +279,10 @@ Try using `canvas.SetMyWidget[player] = value` pattern instead.
 - [x] `validate_wiring` tool
 - [x] Claude Desktop / Cursor config examples
 
-**Phase 3 — Generation** 🚧 IN PROGRESS
-- [ ] `get_device_props` tool (digest lookup)
-- [ ] `query_digest` tool (symbol search)
+**Phase 3 — Digest Integration** ✅ COMPLETE
+- [x] Digest parser for Fortnite.digest.verse
+- [x] `get_device_props` tool (digest lookup)
+- [x] `query_digest` tool (symbol search)
 - [ ] `list_editables` tool
 - [ ] `scaffold_ui` tool
 

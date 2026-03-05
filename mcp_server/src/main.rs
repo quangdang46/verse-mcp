@@ -7,11 +7,12 @@
 //! - UI scaffolding
 
 use anyhow::Result;
-use rmcp::{ServerHandler, ServiceExt};
 use rmcp::model::{Annotated, CallToolRequestMethod};
+use rmcp::{ServerHandler, ServiceExt};
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::Mutex;
+use std::sync::RwLock;
 use std::time::SystemTime;
 use tracing_subscriber::EnvFilter;
 
@@ -30,13 +31,17 @@ struct ScanCache {
 }
 
 /// Get the maximum modification time of the ExternalActors directory
-fn get_max_mtime(project_path: &PathBuf) -> SystemTime {
+fn get_max_mtime(project_path: &std::path::Path) -> SystemTime {
     let external_actors = project_path.join("Content").join("__ExternalActors__");
     let mut max_mtime = SystemTime::UNIX_EPOCH;
 
     if let Ok(entries) = std::fs::read_dir(&external_actors) {
         for entry in entries.flatten() {
-            if entry.path().extension().map_or(false, |ext| ext == "uasset") {
+            if entry
+                .path()
+                .extension()
+                .is_some_and(|ext| ext == "uasset")
+            {
                 if let Ok(metadata) = entry.metadata() {
                     if let Ok(mtime) = metadata.modified() {
                         if mtime > max_mtime {
@@ -49,6 +54,43 @@ fn get_max_mtime(project_path: &PathBuf) -> SystemTime {
     }
 
     max_mtime
+}
+
+/// Load digest index from file
+fn load_digest(project_path: &PathBuf) -> Option<uasset_scan::DigestIndex> {
+    // Try common locations for Fortnite.digest.verse
+    let digest_paths = vec![
+        project_path.join("Fortnite.digest.verse"),
+        project_path.join("Content").join("Fortnite.digest.verse"),
+        project_path.join("..").join("Fortnite.digest.verse"),
+    ];
+
+    for digest_path in digest_paths {
+        if digest_path.exists() {
+            tracing::info!("Loading digest from: {}", digest_path.display());
+            match std::fs::read_to_string(&digest_path) {
+                Ok(content) => match uasset_scan::DigestIndex::parse(&content) {
+                    Ok(index) => {
+                        tracing::info!(
+                            "Digest loaded: {} devices, {} symbols",
+                            index.devices.len(),
+                            index.symbols.len()
+                        );
+                        return Some(index);
+                    }
+                    Err(e) => {
+                        tracing::warn!("Failed to parse digest: {}", e);
+                    }
+                },
+                Err(e) => {
+                    tracing::warn!("Failed to read digest file: {}", e);
+                }
+            }
+        }
+    }
+
+    tracing::info!("No digest file found, digest tools will return empty results");
+    None
 }
 
 /// MCP server entry point
@@ -69,10 +111,14 @@ async fn main() -> Result<()> {
 
     tracing::info!("Project path: {}", project_path.display());
 
+    // Load digest index
+    let digest_index = load_digest(&project_path);
+
     // Create server handler
     let handler = VerseMcpHandler {
         project_path,
         cache: Mutex::new(None),
+        digest: RwLock::new(digest_index),
     };
 
     // Use stdio transport (rmcp expects (stdin, stdout) tuple)
@@ -96,6 +142,8 @@ struct VerseMcpHandler {
     project_path: PathBuf,
     /// Cache for scan results (uses Mutex for interior mutability)
     cache: Mutex<Option<ScanCache>>,
+    /// Digest index for API validation
+    digest: RwLock<Option<uasset_scan::DigestIndex>>,
 }
 
 impl Clone for VerseMcpHandler {
@@ -103,6 +151,7 @@ impl Clone for VerseMcpHandler {
         Self {
             project_path: self.project_path.clone(),
             cache: Mutex::new(self.cache.lock().unwrap().clone()),
+            digest: RwLock::new(self.digest.read().unwrap().clone()),
         }
     }
 }
@@ -119,7 +168,7 @@ impl ServerHandler for VerseMcpHandler {
                 name: "verse-mcp".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_string(),
             },
-            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for devices.".to_string()),
+            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for devices, query_digest to search the Verse API, and get_device_props to get device properties.".to_string()),
         }
     }
 
@@ -141,6 +190,39 @@ impl ServerHandler for VerseMcpHandler {
             }),
         );
 
+        // Build input schema for get_device_props
+        let mut device_props_schema = rmcp::model::JsonObject::new();
+        device_props_schema.insert("type".to_string(), serde_json::json!("object"));
+        device_props_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "device_type": {
+                    "type": "string",
+                    "description": "Device type name (e.g., device_campfire_device, Device_Campfire_C)"
+                }
+            }),
+        );
+        device_props_schema.insert("required".to_string(), serde_json::json!(["device_type"]));
+
+        // Build input schema for query_digest
+        let mut query_digest_schema = rmcp::model::JsonObject::new();
+        query_digest_schema.insert("type".to_string(), serde_json::json!("object"));
+        query_digest_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "query": {
+                    "type": "string",
+                    "description": "Search term (device name, event, method, etc.)"
+                },
+                "search_type": {
+                    "type": "string",
+                    "enum": ["device", "event", "method", "all"],
+                    "description": "Type of symbol to search for (default: all)"
+                }
+            }),
+        );
+        query_digest_schema.insert("required".to_string(), serde_json::json!(["query"]));
+
         Ok(rmcp::model::ListToolsResult {
             tools: vec![
                 rmcp::model::Tool {
@@ -150,13 +232,13 @@ impl ServerHandler for VerseMcpHandler {
                 },
                 rmcp::model::Tool {
                     name: "get_device_props".into(),
-                    description: "Get device properties from Fortnite.digest.verse (not yet implemented)".into(),
-                    input_schema: Arc::new(rmcp::model::JsonObject::new()),
+                    description: "Get all events, methods, and properties for a device type from Fortnite.digest.verse. Handles both Verse naming (device_campfire_device) and UE naming (Device_Campfire_C).".into(),
+                    input_schema: Arc::new(device_props_schema),
                 },
                 rmcp::model::Tool {
                     name: "query_digest".into(),
-                    description: "Search Fortnite.digest.verse for symbols (not yet implemented)".into(),
-                    input_schema: Arc::new(rmcp::model::JsonObject::new()),
+                    description: "Search Fortnite.digest.verse for device types, events, methods, or symbols. Returns matching entries with formatted signatures.".into(),
+                    input_schema: Arc::new(query_digest_schema),
                 },
                 rmcp::model::Tool {
                     name: "validate_wiring".into(),
@@ -177,7 +259,9 @@ impl ServerHandler for VerseMcpHandler {
         match name {
             "scan_map_devices" => {
                 // Parse force_refresh from arguments
-                let force_refresh = params.arguments.as_ref()
+                let force_refresh = params
+                    .arguments
+                    .as_ref()
                     .and_then(|args| args.get("force_refresh"))
                     .and_then(|v| v.as_bool())
                     .unwrap_or(false);
@@ -244,27 +328,166 @@ impl ServerHandler for VerseMcpHandler {
                             "error_type": std::any::type_name_of_val(&e)
                         });
                         Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(serde_json::to_string_pretty(&error_json).unwrap())],
+                            content: vec![Annotated::text(
+                                serde_json::to_string_pretty(&error_json).unwrap(),
+                            )],
                             is_error: Some(true),
                         })
                     }
                 }
             }
-            "get_device_props" | "query_digest" => {
-                Ok(rmcp::model::CallToolResult {
-                    content: vec![Annotated::text("This tool is not yet implemented. Check back in Phase 3.".to_string())],
-                    is_error: Some(false),
-                })
+            "get_device_props" => {
+                // Get device_type from arguments
+                let device_type = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("device_type"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("");
+
+                if device_type.is_empty() {
+                    return Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": "device_type parameter is required"
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    });
+                }
+
+                // Read digest index
+                let digest_guard = self.digest.read().unwrap();
+                match &*digest_guard {
+                    Some(index) => {
+                        match index.get_device(device_type) {
+                            Some(device) => {
+                                // Separate triggers and receivers
+                                let triggers: Vec<_> = device.events.iter()
+                                    .filter(|e| !e.is_receiver)
+                                    .map(|e| e.name.clone())
+                                    .collect();
+                                let receivers: Vec<_> = device.events.iter()
+                                    .filter(|e| e.is_receiver)
+                                    .map(|e| e.name.clone())
+                                    .collect();
+                                let methods: Vec<_> = device.methods.iter()
+                                    .map(|m| m.name.clone())
+                                    .collect();
+
+                                let result = serde_json::json!({
+                                    "name": device.name,
+                                    "triggers": triggers,
+                                    "receivers": receivers,
+                                    "methods": methods,
+                                    "events": device.events.iter().map(|e| serde_json::json!({
+                                        "name": e.name,
+                                        "params": e.params.iter().map(|p| format!("{}:{}", p.name, p.type_name)).collect::<Vec<_>>(),
+                                        "return_type": e.return_type,
+                                        "is_receiver": e.is_receiver
+                                    })).collect::<Vec<_>>(),
+                                    "method_signatures": device.methods.iter().map(|m| serde_json::json!({
+                                        "name": m.name,
+                                        "params": m.params.iter().map(|p| format!("{}:{}", p.name, p.type_name)).collect::<Vec<_>>(),
+                                        "return_type": m.return_type
+                                    })).collect::<Vec<_>>()
+                                });
+
+                                Ok(rmcp::model::CallToolResult {
+                                    content: vec![Annotated::text(serde_json::to_string_pretty(&result).unwrap())],
+                                    is_error: Some(false),
+                                })
+                            }
+                            None => {
+                                Ok(rmcp::model::CallToolResult {
+                                    content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
+                                        "error": format!("Device not found: {}", device_type),
+                                        "suggestion": "Try using query_digest to search for available devices"
+                                    })).unwrap())],
+                                    is_error: Some(true),
+                                })
+                            }
+                        }
+                    }
+                    None => {
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
+                                "error": "Digest not loaded. Ensure Fortnite.digest.verse is in the project directory."
+                            })).unwrap())],
+                            is_error: Some(true),
+                        })
+                    }
+                }
+            }
+            "query_digest" => {
+                // Get query from arguments
+                let query = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("query"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("");
+
+                let search_type = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("search_type"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("all");
+
+                if query.is_empty() {
+                    return Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": "query parameter is required"
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    });
+                }
+
+                // Read digest index
+                let digest_guard = self.digest.read().unwrap();
+                match &*digest_guard {
+                    Some(index) => {
+                        let results = match search_type {
+                            "device" => index.search_devices(query),
+                            "event" => index.search_events(query),
+                            "method" => index.search_methods(query),
+                            _ => index.search_all(query),
+                        };
+
+                        let result = serde_json::json!({
+                            "query": query,
+                            "search_type": search_type,
+                            "total": results.len(),
+                            "results": results
+                        });
+
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(serde_json::to_string_pretty(&result).unwrap())],
+                            is_error: Some(false),
+                        })
+                    }
+                    None => {
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
+                                "error": "Digest not loaded. Ensure Fortnite.digest.verse is in the project directory."
+                            })).unwrap())],
+                            is_error: Some(true),
+                        })
+                    }
+                }
             }
             "validate_wiring" => {
                 // Get all devices from cache or scan
                 let devices: Vec<uasset_scan::DeviceInfo> = {
                     let cache_guard = self.cache.lock().unwrap();
                     if let Some(ref cached) = *cache_guard {
-                        let all_devices: Vec<_> = cached.output.by_type.values()
-                            .flatten()
-                            .cloned()
-                            .collect();
+                        let all_devices: Vec<_> =
+                            cached.output.by_type.values().flatten().cloned().collect();
                         all_devices
                     } else {
                         // Need to scan first - drop the lock before scanning
@@ -272,10 +495,8 @@ impl ServerHandler for VerseMcpHandler {
 
                         match uasset_scan::scan_project(&self.project_path) {
                             Ok(output) => {
-                                let devices: Vec<_> = output.by_type.values()
-                                    .flatten()
-                                    .cloned()
-                                    .collect();
+                                let devices: Vec<_> =
+                                    output.by_type.values().flatten().cloned().collect();
                                 devices
                             }
                             Err(e) => {
@@ -284,7 +505,9 @@ impl ServerHandler for VerseMcpHandler {
                                     "error_type": std::any::type_name_of_val(&e)
                                 });
                                 return Ok(rmcp::model::CallToolResult {
-                                    content: vec![Annotated::text(serde_json::to_string_pretty(&error_json).unwrap())],
+                                    content: vec![Annotated::text(
+                                        serde_json::to_string_pretty(&error_json).unwrap(),
+                                    )],
                                     is_error: Some(true),
                                 });
                             }
@@ -301,7 +524,9 @@ impl ServerHandler for VerseMcpHandler {
                 });
 
                 Ok(rmcp::model::CallToolResult {
-                    content: vec![Annotated::text(serde_json::to_string_pretty(&result_json).unwrap())],
+                    content: vec![Annotated::text(
+                        serde_json::to_string_pretty(&result_json).unwrap(),
+                    )],
                     is_error: Some(false),
                 })
             }

@@ -5,19 +5,24 @@
 
 use indexmap::IndexMap;
 
-pub mod types;
-pub mod fingerprint;
 pub mod classify;
+pub mod digest;
+pub mod fingerprint;
 pub mod parser;
+pub mod types;
 pub mod validator;
 
 #[cfg(test)]
 mod scanner_tests;
 
-pub use types::{DeviceInfo, ScanOutput};
+pub use classify::{classify, Classification};
+pub use digest::{
+    normalize_device_name, DeviceDef, DigestError, DigestIndex, Event, Method, Param, Property,
+    SearchResult, SymbolKind, SymbolLocation,
+};
 pub use fingerprint::Fingerprint;
-pub use classify::{Classification, classify};
-pub use validator::{WiringValidator, WiringIssue, IssueKind};
+pub use types::{DeviceInfo, ScanOutput};
+pub use validator::{IssueKind, WiringIssue, WiringValidator};
 
 /// Magic number for UE5 asset files
 pub const UE_MAGIC: u32 = 0x9E2A83C1;
@@ -53,7 +58,10 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
     if !actors_root.exists() {
         return Err(ScanError::Io(std::io::Error::new(
             std::io::ErrorKind::NotFound,
-            format!("ExternalActors directory not found: {}", actors_root.display()),
+            format!(
+                "ExternalActors directory not found: {}",
+                actors_root.display()
+            ),
         )));
     }
 
@@ -61,7 +69,7 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
     let files: Vec<_> = walkdir::WalkDir::new(&actors_root)
         .into_iter()
         .filter_map(|e| e.ok())
-        .filter(|e| e.path().extension().map_or(false, |ext| ext == "uasset"))
+        .filter(|e| e.path().extension().is_some_and(|ext| ext == "uasset"))
         .map(|e| e.path().to_path_buf())
         .collect();
 
@@ -117,7 +125,8 @@ fn parse_file(path: &std::path::Path, base_path: &std::path::Path) -> Result<Opt
     let mut buf = Vec::new();
     file.read_to_end(&mut buf)?;
 
-    let relative_path = path.strip_prefix(base_path)
+    let relative_path = path
+        .strip_prefix(base_path)
         .unwrap_or(path)
         .to_string_lossy()
         .replace('\\', "/");
