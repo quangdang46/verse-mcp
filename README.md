@@ -100,9 +100,90 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 ## Project Status
 
-The `.uasset` parser is complete and validated against real project files. It correctly extracts device type, all triggers and receivers, and 20+ configured settings from binary assets — using direct binary parsing, no third-party tools.
+### Phase 1 — Complete ✅
+- [x] `.uasset` binary parser with full property extraction
+- [x] Device classification and fingerprinting system
+- [x] Parallel scanning with rayon
+- [x] Tested against real UEFN project files
+- [x] Wiring validator for connection analysis
 
-MCP server scaffolding is in progress.
+### Phase 2 — In Progress 🚧
+- [x] MCP server with stdio transport (rmcp)
+- [x] `scan_map_devices` tool with mtime-based caching
+- [x] `validate_wiring` tool for connection validation
+- [ ] `get_device_props` tool (Phase 3)
+- [ ] `query_digest` tool (Phase 3)
+- [ ] `list_editables` tool
+- [ ] `scaffold_ui` tool
+- [ ] Claude Desktop and Cursor config examples
+
+## Installation
+
+### From Release (Recommended)
+
+Download the latest release for your platform:
+- Windows: `verse-mcp-x86_64-pc-windows-msvc.zip`
+- macOS: `verse-mcp-aarch64-apple-darwin.tar.gz`
+- Linux: `verse-mcp-x86_64-unknown-linux-gnu.tar.gz`
+
+Extract and add to PATH.
+
+### From Source
+
+```bash
+cargo install --path .
+cargo build --release
+```
+
+The binary will be at `target/release/verse-mcp`.
+
+## Configuration
+
+### Claude Desktop
+
+Add to your Claude Desktop config file:
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+
+```json
+{
+  "mcpServers": {
+    "verse": {
+      "command": "/path/to/verse-mcp",
+      "env": {
+        "VERSE_PROJECT_PATH": "/path/to/your/uefn/project"
+      }
+    }
+  }
+}
+```
+
+### Cursor IDE
+
+Add to `~/.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "verse": {
+      "command": "/path/to/verse-mcp"
+    }
+  }
+}
+```
+
+Set the `VERSE_PROJECT_PATH` environment variable to specify your UEFN project path.
+
+## MCP Tools
+
+| Tool | Description | Status |
+|------|-------------|-------|
+| `scan_map_devices` | Scan UEFN project for all placed devices | ✅ Ready |
+| `validate_wiring` | Validate device wiring for issues | ✅ Ready |
+| `get_device_props` | Get device properties from digest | 🚧 Phase 3 |
+| `query_digest` | Search digest for symbols | 🚧 Phase 3 |
+| `list_editables` | Find @editable fields in .verse files | 📝 Planned |
+| `scaffold_ui` | Generate Verse UI scaffolding code | 📝 Planned |
 
 ---
 
