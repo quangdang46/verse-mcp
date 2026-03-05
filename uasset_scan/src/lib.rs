@@ -6,6 +6,7 @@
 use indexmap::IndexMap;
 
 pub mod classify;
+pub mod device_grapher;
 pub mod digest;
 pub mod fingerprint;
 pub mod parser;
@@ -25,6 +26,7 @@ pub use fingerprint::Fingerprint;
 pub use types::{DeviceInfo, ScanOutput};
 pub use validator::{IssueKind, WiringIssue, WiringValidator};
 pub use verse_validator::{Severity, ValidationIssue, VerseValidator};
+pub use device_grapher::{DeviceConnection, DeviceGrapher, GraphFormat};
 
 /// Magic number for UE5 asset files
 pub const UE_MAGIC: u32 = 0x9E2A83C1;

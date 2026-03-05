@@ -233,6 +233,20 @@ impl ServerHandler for VerseMcpHandler {
         );
         validate_verse_schema.insert("required".to_string(), serde_json::json!(["code"]));
 
+        // Build input schema for generate_device_graph
+        let mut graph_schema = rmcp::model::JsonObject::new();
+        graph_schema.insert("type".to_string(), serde_json::json!("object"));
+        graph_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "format": {
+                    "type": "string",
+                    "enum": ["mermaid", "dot"],
+                    "description": "Output format (default: mermaid)"
+                }
+            }),
+        );
+
         Ok(rmcp::model::ListToolsResult {
             tools: vec![
                 rmcp::model::Tool {
@@ -259,6 +273,11 @@ impl ServerHandler for VerseMcpHandler {
                     name: "validate_verse".into(),
                     description: "Validate Verse code against Fortnite.digest.verse to detect hallucinated API names (unknown methods, events, or device types). Returns issues with suggestions.".into(),
                     input_schema: Arc::new(validate_verse_schema),
+                },
+                rmcp::model::Tool {
+                    name: "generate_device_graph".into(),
+                    description: "Generate a diagram showing device connections in the project. Outputs Mermaid or DOT format for visualization.".into(),
+                    input_schema: Arc::new(graph_schema),
                 },
             ],
             next_cursor: None,
@@ -594,6 +613,74 @@ impl ServerHandler for VerseMcpHandler {
                         })
                     }
                 }
+            }
+            "generate_device_graph" => {
+                // Get format from arguments
+                let format_str = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("format"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("mermaid");
+
+                let format = match format_str {
+                    "dot" => uasset_scan::GraphFormat::Dot,
+                    _ => uasset_scan::GraphFormat::Mermaid,
+                };
+
+                // Get all devices from cache or scan
+                let output = {
+                    let cache_guard = self.cache.lock().unwrap();
+                    if let Some(ref cached) = *cache_guard {
+                        cached.output.clone()
+                    } else {
+                        // Need to scan first - drop the lock before scanning
+                        std::mem::drop(cache_guard);
+
+                        match uasset_scan::scan_project(&self.project_path) {
+                            Ok(output) => {
+                                // Update cache
+                                {
+                                    let mut cache_guard = self.cache.lock().unwrap();
+                                    *cache_guard = Some(ScanCache {
+                                        max_mtime: get_max_mtime(&self.project_path),
+                                        cached_at: SystemTime::now(),
+                                        output: output.clone(),
+                                    });
+                                }
+                                output
+                            }
+                            Err(e) => {
+                                let error_json = serde_json::json!({
+                                    "error": e.to_string(),
+                                    "error_type": std::any::type_name_of_val(&e)
+                                });
+                                return Ok(rmcp::model::CallToolResult {
+                                    content: vec![Annotated::text(
+                                        serde_json::to_string_pretty(&error_json).unwrap(),
+                                    )],
+                                    is_error: Some(true),
+                                });
+                            }
+                        }
+                    }
+                };
+
+                // Generate graph
+                let graph = uasset_scan::DeviceGrapher::generate(&output, format);
+
+                let result_json = serde_json::json!({
+                    "format": format_str,
+                    "graph": graph,
+                    "device_count": output.total_devices,
+                });
+
+                Ok(rmcp::model::CallToolResult {
+                    content: vec![Annotated::text(
+                        serde_json::to_string_pretty(&result_json).unwrap(),
+                    )],
+                    is_error: Some(false),
+                })
             }
             _ => Err(rmcp::Error::method_not_found::<CallToolRequestMethod>()),
         }
