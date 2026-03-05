@@ -9,6 +9,7 @@ pub mod types;
 pub mod fingerprint;
 pub mod classify;
 pub mod parser;
+pub mod validator;
 
 #[cfg(test)]
 mod scanner_tests;
@@ -16,6 +17,7 @@ mod scanner_tests;
 pub use types::{DeviceInfo, ScanOutput};
 pub use fingerprint::Fingerprint;
 pub use classify::{Classification, classify};
+pub use validator::{WiringValidator, WiringIssue, IssueKind};
 
 /// Magic number for UE5 asset files
 pub const UE_MAGIC: u32 = 0x9E2A83C1;
