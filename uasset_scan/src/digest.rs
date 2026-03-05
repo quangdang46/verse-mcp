@@ -103,6 +103,62 @@ pub struct SearchResult {
     pub signature: String,
 }
 
+/// Kind of change in a diff
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub enum ChangeKind {
+    /// Symbol was added
+    Added,
+    /// Symbol was removed
+    Removed,
+    /// Symbol signature changed
+    Modified,
+}
+
+/// A single change between two digest versions
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DigestChange {
+    /// Kind of change
+    pub kind: ChangeKind,
+    /// Symbol type (device, event, method)
+    pub symbol_type: String,
+    /// Symbol name
+    pub name: String,
+    /// Device this belongs to (if applicable)
+    pub device: Option<String>,
+    /// Old signature (for modified/removed)
+    pub old_signature: Option<String>,
+    /// New signature (for modified/added)
+    pub new_signature: Option<String>,
+}
+
+/// Result of comparing two digest versions
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DigestDiff {
+    /// Breaking changes (removed/modified APIs)
+    pub breaking_changes: Vec<DigestChange>,
+    /// Non-breaking changes (new APIs)
+    pub additions: Vec<DigestChange>,
+    /// Summary stats
+    pub stats: DiffStats,
+}
+
+/// Summary statistics for a diff
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct DiffStats {
+    /// Total devices added
+    pub devices_added: usize,
+    /// Total devices removed
+    pub devices_removed: usize,
+    /// Total events added
+    pub events_added: usize,
+    /// Total events removed
+    pub events_removed: usize,
+    /// Total methods added
+    pub methods_added: usize,
+    /// Total methods removed
+    pub methods_removed: usize,
+}
+
 // Regex patterns for parsing (compiled once)
 static DEVICE_DECL_RE: LazyLock<Regex> = LazyLock::new(|| {
     Regex::new(r"^([a-z][a-z0-9_]*_device)\s*=\s*class\s*\(\s*\)\s*:")
@@ -352,6 +408,216 @@ impl DigestIndex {
     pub fn symbol_exists(&self, symbol: &str) -> bool {
         self.symbols.contains_key(symbol) || self.devices.values().any(|d| d.name == symbol)
     }
+
+    /// Compare this digest with another version
+    pub fn diff(&self, other: &Self) -> DigestDiff {
+        let mut breaking_changes = Vec::new();
+        let mut additions = Vec::new();
+        let mut stats = DiffStats::default();
+
+        // Compare devices
+        for device_name in self.devices.keys() {
+            if !other.devices.contains_key(device_name) {
+                // Device removed
+                let device = &self.devices[device_name];
+                breaking_changes.push(DigestChange {
+                    kind: ChangeKind::Removed,
+                    symbol_type: "device".to_string(),
+                    name: device.name.clone(),
+                    device: None,
+                    old_signature: Some(format_device(device)),
+                    new_signature: None,
+                });
+                stats.devices_removed += 1;
+            } else {
+                // Device exists in both, compare events/methods
+                let old_device = &self.devices[device_name];
+                let new_device = &other.devices[device_name];
+
+                // Compare events
+                let old_events: std::collections::HashMap<&str, &Event> =
+                    old_device.events.iter().map(|e| (e.name.as_str(), e)).collect();
+                let new_events: std::collections::HashMap<&str, &Event> =
+                    new_device.events.iter().map(|e| (e.name.as_str(), e)).collect();
+
+                for (name, event) in &old_events {
+                    if !new_events.contains_key(*name) {
+                        // Event removed
+                        breaking_changes.push(DigestChange {
+                            kind: ChangeKind::Removed,
+                            symbol_type: if event.is_receiver {
+                                "receiver"
+                            } else {
+                                "trigger"
+                            }
+                            .to_string(),
+                            name: event.name.clone(),
+                            device: Some(device_name.clone()),
+                            old_signature: Some(format_event(event)),
+                            new_signature: None,
+                        });
+                        stats.events_removed += 1;
+                    } else {
+                        // Event exists in both, check if modified
+                        let new_event = new_events[*name];
+                        if event_signature_changed(event, new_event) {
+                            breaking_changes.push(DigestChange {
+                                kind: ChangeKind::Modified,
+                                symbol_type: if event.is_receiver {
+                                    "receiver"
+                                } else {
+                                    "trigger"
+                                }
+                                .to_string(),
+                                name: event.name.clone(),
+                                device: Some(device_name.clone()),
+                                old_signature: Some(format_event(event)),
+                                new_signature: Some(format_event(new_event)),
+                            });
+                        }
+                    }
+                }
+
+                for (name, event) in &new_events {
+                    if !old_events.contains_key(*name) {
+                        // Event added
+                        additions.push(DigestChange {
+                            kind: ChangeKind::Added,
+                            symbol_type: if event.is_receiver {
+                                "receiver"
+                            } else {
+                                "trigger"
+                            }
+                            .to_string(),
+                            name: event.name.clone(),
+                            device: Some(device_name.clone()),
+                            old_signature: None,
+                            new_signature: Some(format_event(event)),
+                        });
+                        stats.events_added += 1;
+                    }
+                }
+
+                // Compare methods
+                let old_methods: std::collections::HashMap<&str, &Method> =
+                    old_device.methods.iter().map(|m| (m.name.as_str(), m)).collect();
+                let new_methods: std::collections::HashMap<&str, &Method> =
+                    new_device.methods.iter().map(|m| (m.name.as_str(), m)).collect();
+
+                for (name, method) in &old_methods {
+                    if !new_methods.contains_key(*name) {
+                        // Method removed
+                        breaking_changes.push(DigestChange {
+                            kind: ChangeKind::Removed,
+                            symbol_type: "method".to_string(),
+                            name: method.name.clone(),
+                            device: Some(device_name.clone()),
+                            old_signature: Some(format_method(method)),
+                            new_signature: None,
+                        });
+                        stats.methods_removed += 1;
+                    } else {
+                        // Method exists in both, check if modified
+                        let new_method = new_methods[*name];
+                        if method_signature_changed(method, new_method) {
+                            breaking_changes.push(DigestChange {
+                                kind: ChangeKind::Modified,
+                                symbol_type: "method".to_string(),
+                                name: method.name.clone(),
+                                device: Some(device_name.clone()),
+                                old_signature: Some(format_method(method)),
+                                new_signature: Some(format_method(new_method)),
+                            });
+                        }
+                    }
+                }
+
+                for (name, method) in &new_methods {
+                    if !old_methods.contains_key(*name) {
+                        // Method added
+                        additions.push(DigestChange {
+                            kind: ChangeKind::Added,
+                            symbol_type: "method".to_string(),
+                            name: method.name.clone(),
+                            device: Some(device_name.clone()),
+                            old_signature: None,
+                            new_signature: Some(format_method(method)),
+                        });
+                        stats.methods_added += 1;
+                    }
+                }
+            }
+        }
+
+        // Check for new devices
+        for device_name in other.devices.keys() {
+            if !self.devices.contains_key(device_name) {
+                // Device added
+                let device = &other.devices[device_name];
+                additions.push(DigestChange {
+                    kind: ChangeKind::Added,
+                    symbol_type: "device".to_string(),
+                    name: device.name.clone(),
+                    device: None,
+                    old_signature: None,
+                    new_signature: Some(format_device(device)),
+                });
+                stats.devices_added += 1;
+            }
+        }
+
+        DigestDiff {
+            breaking_changes,
+            additions,
+            stats,
+        }
+    }
+}
+
+/// Default implementation for DiffStats
+impl Default for DiffStats {
+    fn default() -> Self {
+        Self {
+            devices_added: 0,
+            devices_removed: 0,
+            events_added: 0,
+            events_removed: 0,
+            methods_added: 0,
+            methods_removed: 0,
+        }
+    }
+}
+
+/// Check if event signature changed (params or return type)
+fn event_signature_changed(old: &Event, new: &Event) -> bool {
+    if old.return_type != new.return_type {
+        return true;
+    }
+    if old.params.len() != new.params.len() {
+        return true;
+    }
+    for (o, n) in old.params.iter().zip(new.params.iter()) {
+        if o.name != n.name || o.type_name != n.type_name {
+            return true;
+        }
+    }
+    false
+}
+
+/// Check if method signature changed (params or return type)
+fn method_signature_changed(old: &Method, new: &Method) -> bool {
+    if old.return_type != new.return_type {
+        return true;
+    }
+    if old.params.len() != new.params.len() {
+        return true;
+    }
+    for (o, n) in old.params.iter().zip(new.params.iter()) {
+        if o.name != n.name || o.type_name != n.type_name {
+            return true;
+        }
+    }
+    false
 }
 
 /// Parse parameter string into Param structs

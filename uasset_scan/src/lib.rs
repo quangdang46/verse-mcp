@@ -10,6 +10,7 @@ pub mod device_grapher;
 pub mod digest;
 pub mod fingerprint;
 pub mod parser;
+pub mod template_manager;
 pub mod types;
 pub mod validator;
 pub mod verse_validator;
@@ -27,6 +28,9 @@ pub use types::{DeviceInfo, ScanOutput};
 pub use validator::{IssueKind, WiringIssue, WiringValidator};
 pub use verse_validator::{Severity, ValidationIssue, VerseValidator};
 pub use device_grapher::{DeviceConnection, DeviceGrapher, GraphFormat};
+pub use template_manager::{
+    Template, TemplateDevice, TemplateError, TemplateManager, TemplateWire,
+};
 
 /// Magic number for UE5 asset files
 pub const UE_MAGIC: u32 = 0x9E2A83C1;

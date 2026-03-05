@@ -140,6 +140,8 @@ struct VerseMcpHandler {
     cache: Mutex<Option<ScanCache>>,
     /// Digest index for API validation
     digest: RwLock<Option<uasset_scan::DigestIndex>>,
+    /// Directory for composition templates
+    templates_dir: PathBuf,
 }
 
 impl Clone for VerseMcpHandler {
@@ -148,6 +150,7 @@ impl Clone for VerseMcpHandler {
             project_path: self.project_path.clone(),
             cache: Mutex::new(self.cache.lock().unwrap().clone()),
             digest: RwLock::new(self.digest.read().unwrap().clone()),
+            templates_dir: self.templates_dir.clone(),
         }
     }
 }
@@ -247,6 +250,24 @@ impl ServerHandler for VerseMcpHandler {
             }),
         );
 
+        // Build input schema for diff_digests
+        let mut diff_schema = rmcp::model::JsonObject::new();
+        diff_schema.insert("type".to_string(), serde_json::json!("object"));
+        diff_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "old_content": {
+                    "type": "string",
+                    "description": "Content of the old Fortnite.digest.verse file"
+                },
+                "new_content": {
+                    "type": "string",
+                    "description": "Content of the new Fortnite.digest.verse file"
+                }
+            }),
+        );
+        diff_schema.insert("required".to_string(), serde_json::json!(["old_content", "new_content"]));
+
         Ok(rmcp::model::ListToolsResult {
             tools: vec![
                 rmcp::model::Tool {
@@ -278,6 +299,11 @@ impl ServerHandler for VerseMcpHandler {
                     name: "generate_device_graph".into(),
                     description: "Generate a diagram showing device connections in the project. Outputs Mermaid or DOT format for visualization.".into(),
                     input_schema: Arc::new(graph_schema),
+                },
+                rmcp::model::Tool {
+                    name: "diff_digests".into(),
+                    description: "Compare two Fortnite.digest.verse versions to detect breaking changes and additions. Useful for tracking API changes across Fortnite updates.".into(),
+                    input_schema: Arc::new(diff_schema),
                 },
             ],
             next_cursor: None,
@@ -673,6 +699,86 @@ impl ServerHandler for VerseMcpHandler {
                     "format": format_str,
                     "graph": graph,
                     "device_count": output.total_devices,
+                });
+
+                Ok(rmcp::model::CallToolResult {
+                    content: vec![Annotated::text(
+                        serde_json::to_string_pretty(&result_json).unwrap(),
+                    )],
+                    is_error: Some(false),
+                })
+            }
+            "diff_digests" => {
+                // Get old_content and new_content from arguments
+                let old_content = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("old_content"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("");
+
+                let new_content = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("new_content"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("");
+
+                if old_content.is_empty() || new_content.is_empty() {
+                    return Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": "old_content and new_content parameters are required"
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    });
+                }
+
+                // Parse both digest contents
+                let old_index = match uasset_scan::DigestIndex::parse(old_content) {
+                    Ok(index) => index,
+                    Err(e) => {
+                        return Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(
+                                serde_json::to_string_pretty(&serde_json::json!({
+                                    "error": format!("Failed to parse old digest: {}", e)
+                                }))
+                                .unwrap(),
+                            )],
+                            is_error: Some(true),
+                        });
+                    }
+                };
+
+                let new_index = match uasset_scan::DigestIndex::parse(new_content) {
+                    Ok(index) => index,
+                    Err(e) => {
+                        return Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(
+                                serde_json::to_string_pretty(&serde_json::json!({
+                                    "error": format!("Failed to parse new digest: {}", e)
+                                }))
+                                .unwrap(),
+                            )],
+                            is_error: Some(true),
+                        });
+                    }
+                };
+
+                // Perform diff
+                let diff = old_index.diff(&new_index);
+
+                let result_json = serde_json::json!({
+                    "breaking_changes": diff.breaking_changes,
+                    "additions": diff.additions,
+                    "stats": diff.stats,
+                    "summary": format!(
+                        "{} breaking changes, {} additions",
+                        diff.breaking_changes.len(),
+                        diff.additions.len()
+                    )
                 });
 
                 Ok(rmcp::model::CallToolResult {
