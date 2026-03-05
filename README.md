@@ -51,6 +51,11 @@ The MCP provides UI scaffolding based on proven Verse patterns:
 - Per-player widget storage patterns (prevents UI overlap and state bleed between players)
 - Clean update/remove templates with correct lifecycle handling
 
+### 4. "What is this device called in Verse?"
+
+If I want to use the TRACK DUMMY device, I need to know its device name in Verse, but in Verse, the device name isn't the same as "TRACK DUMMY."
+So, how can I find the name that's used for this device in Verse?
+
 ---
 
 ## How It Works
