@@ -48,7 +48,10 @@ fn main() -> Result<()> {
 
     eprintln!("[verse-scan] Files: {} .uasset", output.total_files);
     eprintln!("[verse-scan] Devices: {} parsed", output.total_devices);
-    eprintln!("[verse-scan] Skipped: {} (non-device assets)", output.skipped);
+    eprintln!(
+        "[verse-scan] Skipped: {} (non-device assets)",
+        output.skipped
+    );
 
     let json = serde_json::to_string_pretty(&output)?;
 
