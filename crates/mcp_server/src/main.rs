@@ -8,8 +8,9 @@
 
 use anyhow::Result;
 use rmcp::{ServerHandler, serve_server};
-use rmcp::model::{Annotated, RawContent};
+use rmcp::model::{Annotated, CallToolRequestMethod};
 use std::path::PathBuf;
+use std::sync::Arc;
 use tracing_subscriber::EnvFilter;
 
 mod tools;
@@ -76,17 +77,17 @@ impl ServerHandler for VerseMcpHandler {
                 rmcp::model::Tool {
                     name: "scan_map_devices".into(),
                     description: "Scan UEFN project for all placed devices. Returns device types, triggers, receivers, and settings.".into(),
-                    input_schema: rmcp::model::JsonObject::new(),
+                    input_schema: Arc::new(rmcp::model::JsonObject::new()),
                 },
                 rmcp::model::Tool {
                     name: "get_device_props".into(),
                     description: "Get device properties from Fortnite.digest.verse (not yet implemented)".into(),
-                    input_schema: rmcp::model::JsonObject::new(),
+                    input_schema: Arc::new(rmcp::model::JsonObject::new()),
                 },
                 rmcp::model::Tool {
                     name: "query_digest".into(),
                     description: "Search Fortnite.digest.verse for symbols (not yet implemented)".into(),
-                    input_schema: rmcp::model::JsonObject::new(),
+                    input_schema: Arc::new(rmcp::model::JsonObject::new()),
                 },
             ],
             next_cursor: None,
@@ -98,21 +99,21 @@ impl ServerHandler for VerseMcpHandler {
         params: rmcp::model::CallToolRequestParam,
         _context: rmcp::service::RequestContext<rmcp::service::RoleServer>,
     ) -> Result<rmcp::model::CallToolResult, rmcp::Error> {
-        let name = &params.name;
-        match name.0.as_str() {
+        let name = params.name.as_ref();
+        match name {
             "scan_map_devices" => {
                 match uasset_scan::scan_project(&self.project_path) {
                     Ok(output) => {
                         let json = serde_json::to_string_pretty(&output)
                             .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
                         Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated { content: RawContent::text(json), annotations: None }],
+                            content: vec![Annotated::text(json)],
                             is_error: Some(false),
                         })
                     }
                     Err(e) => {
                         Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated { content: RawContent::text(format!("Error: {}", e)), annotations: None }],
+                            content: vec![Annotated::text(format!("Error: {}", e))],
                             is_error: Some(true),
                         })
                     }
@@ -120,14 +121,11 @@ impl ServerHandler for VerseMcpHandler {
             }
             "get_device_props" | "query_digest" => {
                 Ok(rmcp::model::CallToolResult {
-                    content: vec![Annotated {
-                        content: RawContent::text("This tool is not yet implemented. Check back in Phase 3.".to_string()),
-                        annotations: None
-                    }],
+                    content: vec![Annotated::text("This tool is not yet implemented. Check back in Phase 3.".to_string())],
                     is_error: Some(false),
                 })
             }
-            _ => Err(rmcp::Error::method_not_found()),
+            _ => Err(rmcp::Error::method_not_found::<CallToolRequestMethod>()),
         }
     }
 }
