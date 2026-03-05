@@ -1,6 +1,14 @@
 //! Verse MCP Server - MCP server for UEFN/Verse development
+//!
+//! Provides tools for:
+//! - Scanning UEFN projects for devices
+//! - Querying Fortnite.digest.verse
+//! - Listing @editable fields
+//! - UI scaffolding
 
 use anyhow::Result;
+use rmcp::{ServerHandler, serve_server};
+use rmcp::model::{Annotated, RawContent};
 use std::path::PathBuf;
 use tracing_subscriber::EnvFilter;
 
@@ -24,29 +32,14 @@ async fn main() -> Result<()> {
 
     tracing::info!("Project path: {}", project_path.display());
 
-    // Run the MCP server
-    run_server(project_path).await
-}
-
-/// Run the MCP server with stdio transport
-async fn run_server(project_path: PathBuf) -> Result<()> {
-    use rmcp::{ServerHandler, RoleState};
-    use rmcp::transport::{TokioChildProcess, ConfigureSessionExt};
-    use tokio::io::{stdin, stdout};
-
     // Create server handler
     let handler = VerseMcpHandler { project_path };
 
-    // Create server with handler
-    let server = rmcp::Server::new(handler);
+    // Use stdio transport (rmcp expects (stdin, stdout) tuple)
+    let transport = rmcp::transport::stdio();
 
     // Serve over stdio
-    let service = server
-        .connect(stdin(), stdout())
-        .await?;
-
-    // Keep running
-    service.waiting().await?;
+    serve_server(handler, transport).await?;
 
     Ok(())
 }
@@ -58,34 +51,83 @@ struct VerseMcpHandler {
 }
 
 impl ServerHandler for VerseMcpHandler {
-    type Error = anyhow::Error;
-
     fn get_info(&self) -> rmcp::model::ServerInfo {
-        rmcp::model::ServerInfo::default()
+        rmcp::model::ServerInfo {
+            protocol_version: rmcp::model::ProtocolVersion::default(),
+            capabilities: rmcp::model::ServerCapabilities {
+                tools: Some(rmcp::model::ToolsCapability { list_changed: None }),
+                ..Default::default()
+            },
+            server_info: rmcp::model::Implementation {
+                name: "verse-mcp".to_string(),
+                version: env!("CARGO_PKG_VERSION").to_string(),
+            },
+            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for devices.".to_string()),
+        }
     }
 
-    async fn list_tools(&self) -> Result<Vec<rmcp::model::Tool>, Self::Error> {
-        Ok(vec![
-            rmcp::model::Tool {
-                name: "scan_map_devices".into(),
-                description: "Scan UEFN project for all devices".into(),
-                input_schema: Default::default(),
-            },
-        ])
+    async fn list_tools(
+        &self,
+        _pagination: Option<rmcp::model::PaginatedRequestParamInner>,
+        _context: rmcp::service::RequestContext<rmcp::service::RoleServer>,
+    ) -> Result<rmcp::model::ListToolsResult, rmcp::Error> {
+        Ok(rmcp::model::ListToolsResult {
+            tools: vec![
+                rmcp::model::Tool {
+                    name: "scan_map_devices".into(),
+                    description: "Scan UEFN project for all placed devices. Returns device types, triggers, receivers, and settings.".into(),
+                    input_schema: rmcp::model::JsonObject::new(),
+                },
+                rmcp::model::Tool {
+                    name: "get_device_props".into(),
+                    description: "Get device properties from Fortnite.digest.verse (not yet implemented)".into(),
+                    input_schema: rmcp::model::JsonObject::new(),
+                },
+                rmcp::model::Tool {
+                    name: "query_digest".into(),
+                    description: "Search Fortnite.digest.verse for symbols (not yet implemented)".into(),
+                    input_schema: rmcp::model::JsonObject::new(),
+                },
+            ],
+            next_cursor: None,
+        })
     }
 
     async fn call_tool(
         &self,
-        name: &str,
-        _arguments: serde_json::Value,
-    ) -> Result<Vec<rmcp::model::RawContent>, Self::Error> {
-        match name {
+        params: rmcp::model::CallToolRequestParam,
+        _context: rmcp::service::RequestContext<rmcp::service::RoleServer>,
+    ) -> Result<rmcp::model::CallToolResult, rmcp::Error> {
+        let name = &params.name;
+        match name.0.as_str() {
             "scan_map_devices" => {
-                let output = uasset_scan::scan_project(&self.project_path)?;
-                let json = serde_json::to_string_pretty(&output)?;
-                Ok(vec![rmcp::model::RawContent::text(json)])
+                match uasset_scan::scan_project(&self.project_path) {
+                    Ok(output) => {
+                        let json = serde_json::to_string_pretty(&output)
+                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated { content: RawContent::text(json), annotations: None }],
+                            is_error: Some(false),
+                        })
+                    }
+                    Err(e) => {
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated { content: RawContent::text(format!("Error: {}", e)), annotations: None }],
+                            is_error: Some(true),
+                        })
+                    }
+                }
             }
-            _ => anyhow::bail!("Unknown tool: {}", name),
+            "get_device_props" | "query_digest" => {
+                Ok(rmcp::model::CallToolResult {
+                    content: vec![Annotated {
+                        content: RawContent::text("This tool is not yet implemented. Check back in Phase 3.".to_string()),
+                        annotations: None
+                    }],
+                    is_error: Some(false),
+                })
+            }
+            _ => Err(rmcp::Error::method_not_found()),
         }
     }
 }
