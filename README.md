@@ -91,9 +91,9 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 ## Tech Stack
 
-- **Go** — MCP server (stdio transport, fast startup, single binary)
-- **mark3labs/mcp-go** — MCP protocol implementation
-- **Node.js** — `.uasset` binary parser (pure, no external dependencies)
+- **Rust** — MCP server + `.uasset` binary parser (fast, single binary)
+- **rmcp** — MCP protocol implementation (stdio transport)
+- **rayon** — parallel scanning
 - **Fortnite.digest.verse** — source of truth for all device/API definitions
 
 ---

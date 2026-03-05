@@ -1,9 +1,9 @@
 [workspace]
 resolver = "2"
 members = [
-    "crates/uasset_scan",
-    "crates/uefn_scan_cli",
-    "crates/mcp_server",
+    "uasset_scan",
+    "uefn_scan_cli",
+    "mcp_server",
 ]
 exclude = [
     "spike-unreal-asset",
@@ -43,4 +43,4 @@ tracing = "0.1"
 tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # Internal crates
-uasset_scan = { path = "crates/uasset_scan" }
+uasset_scan = { path = "uasset_scan" }
