@@ -60,11 +60,7 @@ pub const FINGERPRINTS: &[Fingerprint] = &[
         2,
     ),
     // Tracker device - identified by tracking settings
-    Fingerprint::new(
-        "tracker_device",
-        &["TrackingType", "CountToWin"],
-        2,
-    ),
+    Fingerprint::new("tracker_device", &["TrackingType", "CountToWin"], 2),
     // Island settings - identified by game settings
     Fingerprint::new(
         "island_settings_device",
@@ -83,7 +79,8 @@ pub fn classify_by_fingerprint(settings_keys: &[&str]) -> Option<&'static str> {
 
 /// Classify device using settings map (handles ties - most matches wins)
 pub fn fingerprint_device(settings: &indexmap::IndexMap<String, String>) -> Option<String> {
-    let settings_keys: std::collections::HashSet<&str> = settings.keys().map(|s| s.as_str()).collect();
+    let settings_keys: std::collections::HashSet<&str> =
+        settings.keys().map(|s| s.as_str()).collect();
 
     let mut best_match: Option<(&Fingerprint, usize)> = None;
 
@@ -119,7 +116,10 @@ mod tests {
     #[test]
     fn test_player_spawner_fingerprint() {
         let keys = vec!["UseAsIslandStart", "PlayerTeam", "OtherSetting"];
-        assert_eq!(classify_by_fingerprint(&keys), Some("player_spawner_device"));
+        assert_eq!(
+            classify_by_fingerprint(&keys),
+            Some("player_spawner_device")
+        );
     }
 
     #[test]
@@ -133,7 +133,10 @@ mod tests {
         let mut settings = indexmap::IndexMap::new();
         settings.insert("InteractionRadius".to_string(), "100.0".to_string());
         settings.insert("InteractTime".to_string(), "1.0".to_string());
-        assert_eq!(fingerprint_device(&settings), Some("button_device".to_string()));
+        assert_eq!(
+            fingerprint_device(&settings),
+            Some("button_device".to_string())
+        );
     }
 
     #[test]
@@ -142,7 +145,10 @@ mod tests {
         settings.insert("MaxHealth".to_string(), "100.0".to_string());
         settings.insert("SpawnLocation".to_string(), "SpawnPads".to_string());
         settings.insert("Teams".to_string(), "FFA".to_string());
-        assert_eq!(fingerprint_device(&settings), Some("island_settings_device".to_string()));
+        assert_eq!(
+            fingerprint_device(&settings),
+            Some("island_settings_device".to_string())
+        );
     }
 
     #[test]
@@ -153,6 +159,9 @@ mod tests {
         settings.insert("InteractTime".to_string(), "1.0".to_string());
         settings.insert("TriggerSound".to_string(), "True".to_string());
         // All 3 keys match button_device
-        assert_eq!(fingerprint_device(&settings), Some("button_device".to_string()));
+        assert_eq!(
+            fingerprint_device(&settings),
+            Some("button_device".to_string())
+        );
     }
 }

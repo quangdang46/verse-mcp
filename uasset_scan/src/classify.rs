@@ -135,13 +135,19 @@ pub fn classify(names: &[String]) -> Classification {
 
 /// Check if a name matches receiver patterns
 fn is_receiver(name: &str) -> bool {
-    RECEIVER_PREFIXES.iter().any(|prefix| name.starts_with(prefix))
-        || RECEIVER_SUFFIXES.iter().any(|suffix| name.ends_with(suffix))
+    RECEIVER_PREFIXES
+        .iter()
+        .any(|prefix| name.starts_with(prefix))
+        || RECEIVER_SUFFIXES
+            .iter()
+            .any(|suffix| name.ends_with(suffix))
 }
 
 /// Check if a name matches trigger patterns
 fn is_trigger(name: &str) -> bool {
-    TRIGGER_PREFIXES.iter().any(|prefix| name.starts_with(prefix))
+    TRIGGER_PREFIXES
+        .iter()
+        .any(|prefix| name.starts_with(prefix))
 }
 
 /// Check if a name is a component that should be filtered out
@@ -195,7 +201,9 @@ mod tests {
         let names = make_names();
         let result = classify(&names);
 
-        assert!(result.triggers.contains(&"TriggerOnEnterRadius".to_string()));
+        assert!(result
+            .triggers
+            .contains(&"TriggerOnEnterRadius".to_string()));
         assert!(result.triggers.contains(&"OnDisabled".to_string()));
         assert!(result.triggers.contains(&"OnEnabled".to_string()));
         // Noise should be filtered
@@ -209,8 +217,12 @@ mod tests {
         let result = classify(&names);
 
         assert!(result.receivers.contains(&"ReceiverLight".to_string()));
-        assert!(result.receivers.contains(&"EnableWhenReceiving".to_string()));
-        assert!(result.receivers.contains(&"DisableWhenReceiving".to_string()));
+        assert!(result
+            .receivers
+            .contains(&"EnableWhenReceiving".to_string()));
+        assert!(result
+            .receivers
+            .contains(&"DisableWhenReceiving".to_string()));
     }
 
     #[test]

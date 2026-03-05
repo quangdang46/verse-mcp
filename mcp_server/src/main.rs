@@ -37,11 +37,7 @@ fn get_max_mtime(project_path: &std::path::Path) -> SystemTime {
 
     if let Ok(entries) = std::fs::read_dir(&external_actors) {
         for entry in entries.flatten() {
-            if entry
-                .path()
-                .extension()
-                .is_some_and(|ext| ext == "uasset")
-            {
+            if entry.path().extension().is_some_and(|ext| ext == "uasset") {
                 if let Ok(metadata) = entry.metadata() {
                     if let Ok(mtime) = metadata.modified() {
                         if mtime > max_mtime {
@@ -57,7 +53,7 @@ fn get_max_mtime(project_path: &std::path::Path) -> SystemTime {
 }
 
 /// Load digest index from file
-fn load_digest(project_path: &PathBuf) -> Option<uasset_scan::DigestIndex> {
+fn load_digest(project_path: &std::path::Path) -> Option<uasset_scan::DigestIndex> {
     // Try common locations for Fortnite.digest.verse
     let digest_paths = vec![
         project_path.join("Fortnite.digest.verse"),

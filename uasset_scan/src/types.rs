@@ -1,7 +1,7 @@
 //! Core data types for device scanning
 
-use serde::{Deserialize, Serialize};
 use indexmap::IndexMap;
+use serde::{Deserialize, Serialize};
 
 /// Extracted device info from a single .uasset file
 #[derive(Debug, Clone, Serialize, Deserialize)]

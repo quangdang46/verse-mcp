@@ -37,7 +37,8 @@ mod tests {
 
     #[test]
     fn test_device_info_with_data() {
-        let mut device = DeviceInfo::new("test.uasset".to_string(), "Device_Campfire_C".to_string());
+        let mut device =
+            DeviceInfo::new("test.uasset".to_string(), "Device_Campfire_C".to_string());
         device.label = Some("Test Campfire".to_string());
         device.triggers = vec!["OnEnabled".to_string(), "OnDisabled".to_string()];
         device.receivers = vec!["ReceiverLight".to_string()];

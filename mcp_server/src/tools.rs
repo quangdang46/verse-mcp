@@ -13,11 +13,13 @@
 use std::path::Path;
 
 /// Tool: Scan a UEFN project for all placed devices
+#[allow(dead_code)]
 pub fn scan_map_devices(project_path: &Path) -> anyhow::Result<uasset_scan::ScanOutput> {
     uasset_scan::scan_project(project_path).map_err(Into::into)
 }
 
 /// Tool: Get device properties from Fortnite.digest.verse
+#[allow(dead_code)]
 pub fn get_device_props<'a>(
     index: &'a uasset_scan::DigestIndex,
     device_type: &str,
@@ -26,6 +28,7 @@ pub fn get_device_props<'a>(
 }
 
 /// Tool: Query Fortnite.digest.verse for symbols
+#[allow(dead_code)]
 pub fn query_digest(
     index: &uasset_scan::DigestIndex,
     query: &str,
@@ -40,18 +43,21 @@ pub fn query_digest(
 }
 
 /// Tool: List all @editable fields in a project
+#[allow(dead_code)]
 pub fn list_editables(_project_path: &Path) -> anyhow::Result<Vec<EditableField>> {
     // TODO: Implement Verse file parsing
     Ok(Vec::new())
 }
 
 /// Tool: Generate Verse UI scaffolding code
+#[allow(dead_code)]
 pub fn scaffold_ui(_intent: &str) -> anyhow::Result<String> {
     // TODO: Implement UI scaffolding
     Ok("// UI scaffolding not yet implemented".to_string())
 }
 
 /// Represents an @editable field found in Verse source
+#[allow(dead_code)]
 #[derive(Debug, Clone)]
 pub struct EditableField {
     /// Field name

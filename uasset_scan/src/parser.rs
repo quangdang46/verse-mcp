@@ -3,7 +3,6 @@
 //! Based on reverse-engineered UE5 format from scan-verse.js POC.
 
 use crate::{DeviceInfo, ScanError, UE_MAGIC};
-use std::io::Read;
 
 /// FString from UE binary format
 #[derive(Debug, Clone)]
@@ -19,10 +18,20 @@ impl FString {
             return None;
         }
 
-        let len = i32::from_le_bytes([buf[offset], buf[offset + 1], buf[offset + 2], buf[offset + 3]]);
+        let len = i32::from_le_bytes([
+            buf[offset],
+            buf[offset + 1],
+            buf[offset + 2],
+            buf[offset + 3],
+        ]);
 
         if len == 0 {
-            return Some((FString { value: String::new() }, offset + 4));
+            return Some((
+                FString {
+                    value: String::new(),
+                },
+                offset + 4,
+            ));
         }
 
         if len > 0 {
@@ -32,12 +41,14 @@ impl FString {
                 return None;
             }
             // Validate ASCII
-            for i in (offset + 4)..(end - 1) {
-                if buf[i] < 0x20 || buf[i] > 0x7e {
+            for &byte in &buf[offset + 4..end - 1] {
+                if !(0x20..=0x7e).contains(&byte) {
                     return None;
                 }
             }
-            let s = std::str::from_utf8(&buf[offset + 4..end - 1]).ok()?.to_string();
+            let s = std::str::from_utf8(&buf[offset + 4..end - 1])
+                .ok()?
+                .to_string();
             Some((FString { value: s }, end))
         } else {
             // UTF-16 string (negative length)
@@ -119,7 +130,12 @@ pub fn extract_label(buf: &[u8]) -> Option<String> {
         if buf[i..i + needle.len()] == *needle {
             let (fs, _) = FString::read(buf, i + needle.len())?;
             // Validate label format
-            if fs.value.len() <= 40 && fs.value.chars().all(|c| c.is_alphanumeric() || c == ' ' || c == '_' || c == '-') {
+            if fs.value.len() <= 40
+                && fs
+                    .value
+                    .chars()
+                    .all(|c| c.is_alphanumeric() || c == ' ' || c == '_' || c == '-')
+            {
                 return Some(fs.value);
             }
         }
@@ -144,7 +160,12 @@ pub fn extract_settings(buf: &[u8], scan_start: usize) -> indexmap::IndexMap<Str
         if !key.chars().all(|c| c.is_ascii_alphabetic()) || key.len() < 4 || key.len() > 50 {
             continue;
         }
-        if !key.chars().next().map(|c| c.is_uppercase()).unwrap_or(false) {
+        if !key
+            .chars()
+            .next()
+            .map(|c| c.is_uppercase())
+            .unwrap_or(false)
+        {
             continue;
         }
 
@@ -157,10 +178,18 @@ pub fn extract_settings(buf: &[u8], scan_start: usize) -> indexmap::IndexMap<Str
 
         // Validate value format
         let valid = value.parse::<f64>().is_ok()
-            || value == "True" || value == "False"
-            || matches!(value.as_str(), "Always" | "Never" | "No Effect" | "Yes" | "No")
+            || value == "True"
+            || value == "False"
+            || matches!(
+                value.as_str(),
+                "Always" | "Never" | "No Effect" | "Yes" | "No"
+            )
             || value.starts_with('(')
-            || (value.len() > 1 && value.len() <= 30 && value.chars().all(|c| c.is_alphanumeric() || c == ' ' || c == '_'));
+            || (value.len() > 1
+                && value.len() <= 30
+                && value
+                    .chars()
+                    .all(|c| c.is_alphanumeric() || c == ' ' || c == '_'));
 
         if valid && !result.contains_key(&key) {
             result.insert(key, value);
@@ -253,6 +282,10 @@ pub fn parse_uasset(buf: &[u8], file_path: &str) -> Result<Option<DeviceInfo>, S
         label,
         triggers,
         receivers,
-        settings: if settings.is_empty() { None } else { Some(settings) },
+        settings: if settings.is_empty() {
+            None
+        } else {
+            Some(settings)
+        },
     }))
 }

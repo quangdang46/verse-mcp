@@ -6,9 +6,9 @@
 //! - Missing connections (device has triggers/receivers but no wiring)
 //! - Cycles (A → B → C → A)
 
+use crate::DeviceInfo;
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
-use crate::DeviceInfo;
 
 /// Kind of wiring issue detected
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
@@ -72,7 +72,9 @@ impl WiringValidator {
     /// Build internal maps of senders and receivers
     fn build_channel_maps(&mut self, devices: &[DeviceInfo]) {
         for device in devices {
-            let label = device.label.as_deref()
+            let label = device
+                .label
+                .as_deref()
                 .unwrap_or(&device.device_type)
                 .to_string();
 
@@ -84,8 +86,11 @@ impl WiringValidator {
                     let key_lower = key.to_lowercase();
 
                     // Detect channel senders (triggers)
-                    if key_lower.contains("channel") &&
-                       (key_lower.contains("trigger") || key_lower.contains("transmit") || key_lower.contains("send")) {
+                    if key_lower.contains("channel")
+                        && (key_lower.contains("trigger")
+                            || key_lower.contains("transmit")
+                            || key_lower.contains("send"))
+                    {
                         self.senders
                             .entry(value.clone())
                             .or_default()
@@ -94,8 +99,11 @@ impl WiringValidator {
                     }
 
                     // Detect channel receivers
-                    if key_lower.contains("channel") &&
-                       (key_lower.contains("receiv") || key_lower.contains("listen") || key_lower.contains("when")) {
+                    if key_lower.contains("channel")
+                        && (key_lower.contains("receiv")
+                            || key_lower.contains("listen")
+                            || key_lower.contains("when"))
+                    {
                         self.receivers
                             .entry(value.clone())
                             .or_default()
@@ -126,8 +134,14 @@ impl WiringValidator {
                     kind: IssueKind::OrphanedSender,
                     channel: Some(channel.clone()),
                     devices: senders.clone(),
-                    message: format!("Channel '{}' has {} sender(s) but no receivers", channel, senders.len()),
-                    suggestion: Some("Add a device to receive on this channel, or remove the sender".to_string()),
+                    message: format!(
+                        "Channel '{}' has {} sender(s) but no receivers",
+                        channel,
+                        senders.len()
+                    ),
+                    suggestion: Some(
+                        "Add a device to receive on this channel, or remove the sender".to_string(),
+                    ),
                 });
             }
         }
@@ -139,8 +153,14 @@ impl WiringValidator {
                     kind: IssueKind::OrphanedReceiver,
                     channel: Some(channel.clone()),
                     devices: receivers.clone(),
-                    message: format!("Channel '{}' has {} receiver(s) but no senders", channel, receivers.len()),
-                    suggestion: Some("Add a device to send on this channel, or remove the receiver".to_string()),
+                    message: format!(
+                        "Channel '{}' has {} receiver(s) but no senders",
+                        channel,
+                        receivers.len()
+                    ),
+                    suggestion: Some(
+                        "Add a device to send on this channel, or remove the receiver".to_string(),
+                    ),
                 });
             }
         }
@@ -175,7 +195,10 @@ impl WiringValidator {
                 kind: IssueKind::UnconfiguredReceiver,
                 channel: None,
                 devices: vec![device.clone()],
-                message: format!("Device '{}' has receivers but no channel configured", device),
+                message: format!(
+                    "Device '{}' has receivers but no channel configured",
+                    device
+                ),
                 suggestion: Some("Configure a channel in the device settings".to_string()),
             });
         }
@@ -188,22 +211,34 @@ impl WiringValidator {
 mod tests {
     use super::*;
 
-    fn make_device(label: &str, triggers: Vec<&str>, receivers: Vec<&str>, settings: Option<Vec<(&str, &str)>>) -> DeviceInfo {
+    fn make_device(
+        label: &str,
+        triggers: Vec<&str>,
+        receivers: Vec<&str>,
+        settings: Option<Vec<(&str, &str)>>,
+    ) -> DeviceInfo {
         DeviceInfo {
             file: format!("{}.uasset", label),
             device_type: "TestDevice".to_string(),
             label: Some(label.to_string()),
             triggers: triggers.into_iter().map(String::from).collect(),
             receivers: receivers.into_iter().map(String::from).collect(),
-            settings: settings.map(|s| s.into_iter().map(|(k, v)| (k.to_string(), v.to_string())).collect()),
+            settings: settings.map(|s| {
+                s.into_iter()
+                    .map(|(k, v)| (k.to_string(), v.to_string()))
+                    .collect()
+            }),
         }
     }
 
     #[test]
     fn test_orphaned_sender() {
-        let devices = vec![
-            make_device("Button", vec!["OnPressed"], vec![], Some(vec![("TriggerChannel", "game_start")])),
-        ];
+        let devices = vec![make_device(
+            "Button",
+            vec!["OnPressed"],
+            vec![],
+            Some(vec![("TriggerChannel", "game_start")]),
+        )];
 
         let issues = WiringValidator::validate(&devices);
         assert_eq!(issues.len(), 1);
@@ -212,9 +247,12 @@ mod tests {
 
     #[test]
     fn test_orphaned_receiver() {
-        let devices = vec![
-            make_device("Spawner", vec![], vec!["OnSpawn"], Some(vec![("ReceiverChannel", "game_start")])),
-        ];
+        let devices = vec![make_device(
+            "Spawner",
+            vec![],
+            vec!["OnSpawn"],
+            Some(vec![("ReceiverChannel", "game_start")]),
+        )];
 
         let issues = WiringValidator::validate(&devices);
         assert_eq!(issues.len(), 1);
@@ -224,13 +262,31 @@ mod tests {
     #[test]
     fn test_channel_conflict() {
         let devices = vec![
-            make_device("Button1", vec!["OnPressed"], vec![], Some(vec![("TriggerChannel", "fire")])),
-            make_device("Button2", vec!["OnPressed"], vec![], Some(vec![("TriggerChannel", "fire")])),
-            make_device("Spawner", vec![], vec!["OnSpawn"], Some(vec![("ReceiverChannel", "fire")])),
+            make_device(
+                "Button1",
+                vec!["OnPressed"],
+                vec![],
+                Some(vec![("TriggerChannel", "fire")]),
+            ),
+            make_device(
+                "Button2",
+                vec!["OnPressed"],
+                vec![],
+                Some(vec![("TriggerChannel", "fire")]),
+            ),
+            make_device(
+                "Spawner",
+                vec![],
+                vec!["OnSpawn"],
+                Some(vec![("ReceiverChannel", "fire")]),
+            ),
         ];
 
         let issues = WiringValidator::validate(&devices);
-        let conflict: Vec<_> = issues.iter().filter(|i| i.kind == IssueKind::ChannelConflict).collect();
+        let conflict: Vec<_> = issues
+            .iter()
+            .filter(|i| i.kind == IssueKind::ChannelConflict)
+            .collect();
         assert_eq!(conflict.len(), 1);
         assert_eq!(conflict[0].devices.len(), 2);
     }
@@ -238,15 +294,37 @@ mod tests {
     #[test]
     fn test_valid_connection() {
         let devices = vec![
-            make_device("Button", vec!["OnPressed"], vec![], Some(vec![("TriggerChannel", "game_start")])),
-            make_device("Spawner", vec![], vec!["OnSpawn"], Some(vec![("ReceiverChannel", "game_start")])),
+            make_device(
+                "Button",
+                vec!["OnPressed"],
+                vec![],
+                Some(vec![("TriggerChannel", "game_start")]),
+            ),
+            make_device(
+                "Spawner",
+                vec![],
+                vec!["OnSpawn"],
+                Some(vec![("ReceiverChannel", "game_start")]),
+            ),
         ];
 
         let issues = WiringValidator::validate(&devices);
         // Should have no orphan or conflict issues
-        let critical: Vec<_> = issues.iter().filter(|i| {
-            matches!(i.kind, IssueKind::OrphanedSender | IssueKind::OrphanedReceiver | IssueKind::ChannelConflict)
-        }).collect();
-        assert!(critical.is_empty(), "Expected no critical issues, got {:?}", critical);
+        let critical: Vec<_> = issues
+            .iter()
+            .filter(|i| {
+                matches!(
+                    i.kind,
+                    IssueKind::OrphanedSender
+                        | IssueKind::OrphanedReceiver
+                        | IssueKind::ChannelConflict
+                )
+            })
+            .collect();
+        assert!(
+            critical.is_empty(),
+            "Expected no critical issues, got {:?}",
+            critical
+        );
     }
 }
