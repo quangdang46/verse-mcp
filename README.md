@@ -201,23 +201,64 @@ The parser reads the UE5 asset binary format directly: verifies the magic header
 
 ---
 
+## AI Usage Examples
+
+### Finding Device Types
+
+```
+User: What devices are in my map?
+AI: [Uses scan_map_devices tool]
+I found 47 devices in your map across 15 types:
+- Button_device: 5
+- player_spawner_device: 3
+- campfire_device: 2
+- ...
+```
+
+### Validating Wiring
+
+```
+User: Are all my buttons connected properly?
+AI: [Uses validate_wiring tool]
+I found 2 wiring issues:
+1. Button1 has OnTriggered but no channel configured
+2. Channel "game_start" has 3 senders (potential conflict)
+```
+
+### Debugging Multiplayer UI
+
+```
+User: My timer display isn't syncing between players
+AI: Let me check your canvas setup... [Uses scan_map_devices]
+The issue is your timer canvas uses a single shared widget instead of per-player storage.
+Try using `canvas.SetMyWidget[player] = value` pattern instead.
+```
+
+---
+
 ## Roadmap
 
-**Phase 1 — Core (current)**
+**Phase 1 — Core** ✅ COMPLETE
 - [x] `.uasset` binary parser with full property extraction
-- [ ] Go MCP server with stdio transport
-- [ ] `scan_map_devices` tool
-- [ ] `query_digest` tool
+- [x] Device classification and fingerprinting
+- [x] Parallel scanning with rayon
 
-**Phase 2 — Generation**
-- [ ] `scaffold_ui` with multiplayer-safe patterns
-- [ ] `list_editables` with wiring checklist
-- [ ] Event wiring code generator
+**Phase 2 — MCP Server** ✅ COMPLETE
+- [x] MCP server with stdio transport (rmcp)
+- [x] `scan_map_devices` tool with caching
+- [x] `validate_wiring` tool
+- [x] Claude Desktop / Cursor config examples
 
-**Phase 3 — Polish**
-- [ ] README and install guide
-- [ ] Cursor / Claude Desktop config examples
+**Phase 3 — Generation** 🚧 IN PROGRESS
+- [ ] `get_device_props` tool (digest lookup)
+- [ ] `query_digest` tool (symbol search)
+- [ ] `list_editables` tool
+- [ ] `scaffold_ui` tool
+
+**Phase 4 — Polish**
 - [ ] Pre-built binary releases
+- [ ] Integration tests with real UEFN projects
+- [ ] Documentation website
 
 ---
 
