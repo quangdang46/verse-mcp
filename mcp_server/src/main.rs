@@ -219,6 +219,20 @@ impl ServerHandler for VerseMcpHandler {
         );
         query_digest_schema.insert("required".to_string(), serde_json::json!(["query"]));
 
+        // Build input schema for validate_verse
+        let mut validate_verse_schema = rmcp::model::JsonObject::new();
+        validate_verse_schema.insert("type".to_string(), serde_json::json!("object"));
+        validate_verse_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "code": {
+                    "type": "string",
+                    "description": "Verse source code to validate"
+                }
+            }),
+        );
+        validate_verse_schema.insert("required".to_string(), serde_json::json!(["code"]));
+
         Ok(rmcp::model::ListToolsResult {
             tools: vec![
                 rmcp::model::Tool {
@@ -240,6 +254,11 @@ impl ServerHandler for VerseMcpHandler {
                     name: "validate_wiring".into(),
                     description: "Validate device wiring for issues like orphaned channels, conflicts, and missing connections.".into(),
                     input_schema: Arc::new(rmcp::model::JsonObject::new()),
+                },
+                rmcp::model::Tool {
+                    name: "validate_verse".into(),
+                    description: "Validate Verse code against Fortnite.digest.verse to detect hallucinated API names (unknown methods, events, or device types). Returns issues with suggestions.".into(),
+                    input_schema: Arc::new(validate_verse_schema),
                 },
             ],
             next_cursor: None,
@@ -525,6 +544,56 @@ impl ServerHandler for VerseMcpHandler {
                     )],
                     is_error: Some(false),
                 })
+            }
+            "validate_verse" => {
+                // Get code from arguments
+                let code = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("code"))
+                    .and_then(|v| v.as_str())
+                    .unwrap_or("");
+
+                if code.is_empty() {
+                    return Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(
+                            serde_json::to_string_pretty(&serde_json::json!({
+                                "error": "code parameter is required"
+                            }))
+                            .unwrap(),
+                        )],
+                        is_error: Some(true),
+                    });
+                }
+
+                // Read digest index
+                let digest_guard = self.digest.read().unwrap();
+                match &*digest_guard {
+                    Some(index) => {
+                        let validator = uasset_scan::VerseValidator::new(index.clone());
+                        let issues = validator.validate(code);
+
+                        let result_json = serde_json::json!({
+                            "total_issues": issues.len(),
+                            "issues": issues,
+                        });
+
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(
+                                serde_json::to_string_pretty(&result_json).unwrap(),
+                            )],
+                            is_error: Some(false),
+                        })
+                    }
+                    None => {
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
+                                "error": "Digest not loaded. Ensure Fortnite.digest.verse is in the project directory."
+                            })).unwrap())],
+                            is_error: Some(true),
+                        })
+                    }
+                }
             }
             _ => Err(rmcp::Error::method_not_found::<CallToolRequestMethod>()),
         }
