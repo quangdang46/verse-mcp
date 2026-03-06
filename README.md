@@ -65,7 +65,8 @@ The MCP server indexes two sources of truth from your local machine:
 | Source | What it provides |
 |---|---|
 | `Fortnite.digest.verse` | All device types, method signatures, event names |
-| `__ExternalActors__/*.uasset` | Every placed device in your map with real property values |
+| `__ExternalActors__/**/*.uasset` | Every placed device in your map with real property values |
+| `__ExternalObjects__/**/*.uasset` | Every placed device in your map with real property values |
 | `*.verse` in your project | Your own `@editable` fields, modules, and code context |
 
 The `.uasset` parser reads binary files directly — no external tools required. It extracts:
@@ -85,17 +86,110 @@ The `.uasset` parser reads binary files directly — no external tools required.
 | `get_device_props` | Device type name | Full property and event list from digest |
 | `query_digest` | Symbol name or keyword | Matching entries from digest with signatures |
 | `validate_wiring` | - | Wiring issues (orphaned channels, conflicts) |
-| `list_editables` | Project path | All `@editable` fields with wiring checklist (planned) |
-| `scaffold_ui` | UI intent (e.g. "round timer HUD") | Valid Verse UI code (planned) |
+| `validate_verse` | Verse source code | Validation issues and hallucinated APIs |
+| `generate_device_graph` | - | Device connection graph (Mermaid/DOT) |
+| `diff_digests` | Old/new digest content | API changes between digest versions |
+| `list_templates` | - | Saved composition templates |
+| `load_template` | Template name | Load a template by name |
+| `save_template` | Template JSON/from scan | Save a composition template |
+| `delete_template` | Template name | Delete a template |
 
 ---
 
 ## Tech Stack
 
 - **Rust** — MCP server + `.uasset` binary parser (fast, single binary)
-- **rmcp** — MCP protocol implementation (stdio transport)
+- **rmcp** — MCP protocol implementation with stdio and HTTP (SSE) transport
 - **rayon** — parallel scanning
+- **axum** — HTTP server for SSE transport
+- **tokio-util** — Async runtime utilities
 - **Fortnite.digest.verse** — source of truth for all device/API definitions
+
+---
+
+## Installation
+
+### From Release (Recommended)
+
+Download the latest release for your platform:
+- Windows: `vm-x86_64-pc-windows-msvc.zip`
+- macOS: `vm-aarch64-apple-darwin.tar.gz`
+- Linux: `vm-x86_64-unknown-linux-gnu.tar.gz`
+
+Extract and add to PATH.
+
+### From Source
+
+```bash
+cargo install --path .
+cargo build --release
+```
+
+The binary will be at `target/release/vm`.
+
+---
+
+## Usage
+
+### CLI Options
+
+```bash
+# Show help
+vm --help
+
+# Run with stdio (default)
+vm
+
+# Run with HTTP transport
+vm --transport http --host 127.0.0.1 --port 2003
+
+# Use custom port
+vm --transport http --port 8080
+```
+
+### Environment Variable
+
+Set `VERSE_PROJECT_PATH` to point to your UEFN project:
+
+```bash
+export VERSE_PROJECT_PATH=/path/to/your/uefn/project
+vm --transport http
+```
+
+---
+
+## Configuration
+
+### HTTP Transport (Claude Desktop / Cursor)
+
+Add to your MCP client config file:
+
+**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "verse-mcp": {
+      "type": "http",
+      "url": "http://localhost:2003"
+    }
+  }
+}
+```
+
+**Cursor IDE** (`~/.cursor/mcp.json`):
+
+```json
+{
+  "mcpServers": {
+    "verse-mcp": {
+      "command": "/path/to/vm"
+    }
+  }
+}
+```
+
+For Cursor, set the `VERSE_PROJECT_PATH` environment variable to point to your UEFN project.
 
 ---
 
@@ -107,9 +201,10 @@ The `.uasset` parser reads binary files directly — no external tools required.
 - [x] Parallel scanning with rayon
 - [x] Tested against real UEFN project files
 - [x] Wiring validator for connection analysis
+- [x] Scans both `__ExternalActors__` and `__ExternalObjects__` directories
 
 ### Phase 2 — Complete ✅
-- [x] MCP server with stdio transport (rmcp)
+- [x] MCP server with stdio and HTTP (SSE) transport
 - [x] `scan_map_devices` tool with mtime-based caching
 - [x] `validate_wiring` tool for connection validation
 - [x] Claude Desktop and Cursor config examples
@@ -126,79 +221,11 @@ The `.uasset` parser reads binary files directly — no external tools required.
 - [ ] Integration tests with real UEFN projects
 - [ ] Documentation website
 
-## Installation
-
-### From Release (Recommended)
-
-Download the latest release for your platform:
-- Windows: `verse-mcp-x86_64-pc-windows-msvc.zip`
-- macOS: `verse-mcp-aarch64-apple-darwin.tar.gz`
-- Linux: `verse-mcp-x86_64-unknown-linux-gnu.tar.gz`
-
-Extract and add to PATH.
-
-### From Source
-
-```bash
-cargo install --path .
-cargo build --release
-```
-
-The binary will be at `target/release/verse-mcp`.
-
-## Configuration
-
-### Claude Desktop
-
-Add to your Claude Desktop config file:
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-
-```json
-{
-  "mcpServers": {
-    "verse": {
-      "command": "/path/to/verse-mcp",
-      "env": {
-        "VERSE_PROJECT_PATH": "/path/to/your/uefn/project"
-      }
-    }
-  }
-}
-```
-
-### Cursor IDE
-
-Add to `~/.cursor/mcp.json`:
-
-```json
-{
-  "mcpServers": {
-    "verse": {
-      "command": "/path/to/verse-mcp"
-    }
-  }
-}
-```
-
-Set the `VERSE_PROJECT_PATH` environment variable to specify your UEFN project path.
-
-## MCP Tools
-
-| Tool | Description | Status |
-|------|-------------|-------|
-| `scan_map_devices` | Scan UEFN project for all placed devices | ✅ Ready |
-| `validate_wiring` | Validate device wiring for issues | ✅ Ready |
-| `get_device_props` | Get device properties from digest | ✅ Ready |
-| `query_digest` | Search digest for symbols | ✅ Ready |
-| `list_editables` | Find @editable fields in .verse files | 📝 Planned |
-| `scaffold_ui` | Generate Verse UI scaffolding code | 📝 Planned |
-
 ---
 
 ## Background: The `.uasset` Discovery
 
-One of the key findings during research: UEFN stores placed device state in `Content/__ExternalActors__/**/*.uasset` — binary files, one per placed actor. These files contain the **actual runtime configuration** of every device in your map, including all receiver/trigger channel assignments and editable property values.
+One of the key findings during research: UEFN stores placed device state in `Content/__ExternalActors__/**/*.uasset` and `Content/__ExternalObjects__/**/*.uasset` — binary files, one per placed actor. These files contain the **actual runtime configuration** of every device in your map, including all receiver/trigger channel assignments and editable property values.
 
 This is more useful than the digest alone, because:
 
@@ -272,17 +299,18 @@ Try using `canvas.SetMyWidget[player] = value` pattern instead.
 - [x] `.uasset` binary parser with full property extraction
 - [x] Device classification and fingerprinting
 - [x] Parallel scanning with rayon
+- [x] Scans both `__ExternalActors__` and `__ExternalObjects__` directories
 
 **Phase 2 — MCP Server** ✅ COMPLETE
-- [x] MCP server with stdio transport (rmcp)
+- [x] MCP server with stdio and HTTP (SSE) transport
 - [x] `scan_map_devices` tool with caching
 - [x] `validate_wiring` tool
 - [x] Claude Desktop / Cursor config examples
 
 **Phase 3 — Digest Integration** ✅ COMPLETE
 - [x] Digest parser for Fortnite.digest.verse
-- [x] `get_device_props` tool (digest lookup)
-- [x] `query_digest` tool (symbol search)
+- [x] `get_device_props` tool
+- [x] `query_digest` tool
 - [ ] `list_editables` tool
 - [ ] `scaffold_ui` tool
 
