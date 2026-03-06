@@ -7,6 +7,7 @@
 //! - UI scaffolding
 
 use anyhow::Result;
+use clap::Parser;
 use rmcp::model::{Annotated, CallToolRequestMethod};
 use rmcp::{ServerHandler, ServiceExt};
 use std::path::PathBuf;
@@ -15,8 +16,27 @@ use std::sync::Mutex;
 use std::sync::RwLock;
 use std::time::SystemTime;
 use tracing_subscriber::EnvFilter;
+use tokio_util::sync::CancellationToken;
 
 mod tools;
+
+/// CLI arguments for the MCP server
+#[derive(Parser, Debug)]
+#[command(name = "vm")]
+#[command(about = "Verse MCP Server for UEFN/Verse development", long_about = None)]
+struct Cli {
+    /// Transport type: stdio or http
+    #[arg(short, long, default_value = "stdio")]
+    transport: String,
+
+    /// Host for HTTP transport (ignored for stdio)
+    #[arg(short, long, default_value = "127.0.0.1")]
+    host: String,
+
+    /// Port for HTTP transport (ignored for stdio)
+    #[arg(short, long, default_value = "2003")]
+    port: u16,
+}
 
 /// Cache entry for scan results
 #[derive(Debug, Clone)]
@@ -30,18 +50,26 @@ struct ScanCache {
     cached_at: SystemTime,
 }
 
-/// Get the maximum modification time of the ExternalActors directory
+/// Get the maximum modification time of scanned directories
+///
+/// Scans both __ExternalActors__ and __ExternalObjects__ for cache invalidation.
 fn get_max_mtime(project_path: &std::path::Path) -> SystemTime {
-    let external_actors = project_path.join("Content").join("__ExternalActors__");
+    let content_root = project_path.join("Content");
+    let scan_dirs = vec![
+        content_root.join("__ExternalActors__"),
+        content_root.join("__ExternalObjects__"),
+    ];
     let mut max_mtime = SystemTime::UNIX_EPOCH;
 
-    if let Ok(entries) = std::fs::read_dir(&external_actors) {
-        for entry in entries.flatten() {
-            if entry.path().extension().is_some_and(|ext| ext == "uasset") {
-                if let Ok(metadata) = entry.metadata() {
-                    if let Ok(mtime) = metadata.modified() {
-                        if mtime > max_mtime {
-                            max_mtime = mtime;
+    for scan_dir in scan_dirs {
+        if let Ok(entries) = std::fs::read_dir(&scan_dir) {
+            for entry in entries.flatten() {
+                if entry.path().extension().is_some_and(|ext| ext == "uasset") {
+                    if let Ok(metadata) = entry.metadata() {
+                        if let Ok(mtime) = metadata.modified() {
+                            if mtime > max_mtime {
+                                max_mtime = mtime;
+                            }
                         }
                     }
                 }
@@ -92,13 +120,16 @@ fn load_digest(project_path: &std::path::Path) -> Option<uasset_scan::DigestInde
 /// MCP server entry point
 #[tokio::main]
 async fn main() -> Result<()> {
+    // Parse CLI arguments first - this handles --help before any logging
+    let cli = Cli::parse();
+
     // Initialize logging to stderr (NEVER stdout - MCP uses stdout for protocol)
     tracing_subscriber::fmt()
         .with_env_filter(EnvFilter::from_default_env().add_directive("info".parse()?))
         .with_writer(std::io::stderr)
         .init();
 
-    tracing::info!("Starting Verse MCP Server...");
+    tracing::info!("Starting Verse MCP Server with transport: {}", cli.transport);
 
     // Get project path from environment or use current directory
     let project_path = std::env::var("VERSE_PROJECT_PATH")
@@ -119,17 +150,31 @@ async fn main() -> Result<()> {
         templates_dir,
     };
 
-    // Use stdio transport (rmcp expects (stdin, stdout) tuple)
-    let transport = rmcp::transport::stdio();
+    // Select transport mode
+    match cli.transport.as_str() {
+        "http" => {
+            let addr = format!("{}:{}", cli.host, cli.port);
+            tracing::info!("Starting HTTP server on {}", addr);
 
-    // Serve over stdio and wait for server shutdown
-    // The serve() method completes initialization, waiting() keeps server running
-    let server = handler.serve(transport).await?;
-    tracing::info!("Server initialized, waiting for requests...");
+            let bind_addr: std::net::SocketAddr = addr.parse()?;
+            let sse_server: rmcp::transport::SseServer = rmcp::transport::SseServer::serve(bind_addr).await?;
+            let token: CancellationToken = sse_server.with_service(move || handler.clone());
 
-    // Keep the server running until shutdown
-    let quit_reason = server.waiting().await?;
-    tracing::info!("Server shutdown: {:?}", quit_reason);
+            tracing::info!("HTTP server listening on {}", addr);
+            tokio::signal::ctrl_c().await?;
+            tracing::info!("Shutting down HTTP server...");
+            token.cancel();
+            token.cancelled().await;
+        }
+        _ => {
+            tracing::info!("Using stdio transport");
+            let transport = rmcp::transport::stdio();
+            let server = handler.serve(transport).await?;
+            tracing::info!("Server initialized, waiting for requests...");
+            let quit_reason = server.waiting().await?;
+            tracing::info!("Server shutdown: {:?}", quit_reason);
+        }
+    }
 
     Ok(())
 }

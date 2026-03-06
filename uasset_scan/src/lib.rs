@@ -58,35 +58,54 @@ pub enum ScanError {
 }
 
 /// Scan a UEFN project directory for devices (parallel implementation)
+///
+/// Scans both __ExternalActors__ and __ExternalObjects__ directories for .uasset files.
 pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
     use rayon::prelude::*;
 
-    let actors_root = project_path.join("Content").join("__ExternalActors__");
+    let content_root = project_path.join("Content");
 
-    if !actors_root.exists() {
+    // Scan both __ExternalActors__ and __ExternalObjects__
+    let scan_dirs = vec![
+        content_root.join("__ExternalActors__"),
+        content_root.join("__ExternalObjects__"),
+    ];
+
+    let mut all_files = Vec::new();
+
+    for scan_dir in scan_dirs {
+        if scan_dir.exists() {
+            tracing::info!("Scanning directory: {}", scan_dir.display());
+            let files: Vec<_> = walkdir::WalkDir::new(&scan_dir)
+                .into_iter()
+                .filter_map(|e| e.ok())
+                .filter(|e| e.path().extension().is_some_and(|ext| ext == "uasset"))
+                .map(|e| e.path().to_path_buf())
+                .collect();
+            tracing::info!("Found {} .uasset files in {}", files.len(), scan_dir.display());
+            all_files.extend(files);
+        } else {
+            tracing::debug!("Directory not found: {}", scan_dir.display());
+        }
+    }
+
+    if all_files.is_empty() {
         return Err(ScanError::Io(std::io::Error::new(
             std::io::ErrorKind::NotFound,
             format!(
-                "ExternalActors directory not found: {}",
-                actors_root.display()
+                "No __ExternalActors__ or __ExternalObjects__ directories found in {}",
+                content_root.display()
             ),
         )));
     }
 
-    // Collect all .uasset files first
-    let files: Vec<_> = walkdir::WalkDir::new(&actors_root)
-        .into_iter()
-        .filter_map(|e| e.ok())
-        .filter(|e| e.path().extension().is_some_and(|ext| ext == "uasset"))
-        .map(|e| e.path().to_path_buf())
-        .collect();
-
-    let total_files = files.len();
+    let total_files = all_files.len();
+    tracing::info!("Total .uasset files to scan: {}", total_files);
 
     // Parse in parallel using rayon
-    let results: Vec<_> = files
+    let results: Vec<_> = all_files
         .into_par_iter()
-        .map(|path| parse_file(&path, &actors_root))
+        .map(|path| parse_file(&path, &content_root))
         .collect();
 
     // Partition results into devices and skips
@@ -133,6 +152,7 @@ fn parse_file(path: &std::path::Path, base_path: &std::path::Path) -> Result<Opt
     let mut buf = Vec::new();
     file.read_to_end(&mut buf)?;
 
+    // Get relative path from Content/ directory (includes __ExternalActors__ or __ExternalObjects__)
     let relative_path = path
         .strip_prefix(base_path)
         .unwrap_or(path)
