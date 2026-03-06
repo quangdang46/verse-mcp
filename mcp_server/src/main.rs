@@ -213,6 +213,7 @@ impl ServerHandler for VerseMcpHandler {
             server_info: rmcp::model::Implementation {
                 name: "verse-mcp".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_string(),
+                ..Default::default()
             },
             instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for devices, query_digest to search the Verse API, and get_device_props to get device properties.".to_string()),
         }
@@ -315,8 +316,9 @@ impl ServerHandler for VerseMcpHandler {
         );
         diff_schema.insert("required".to_string(), serde_json::json!(["old_content", "new_content"]));
 
-        // Build input schema for list_templates
-        let list_templates_schema = rmcp::model::JsonObject::new();
+        // Build input schema for list_templates (no parameters required)
+        let mut list_templates_schema = rmcp::model::JsonObject::new();
+        list_templates_schema.insert("type".to_string(), serde_json::json!("object"));
 
         // Build input schema for load_template
         let mut load_template_schema = rmcp::model::JsonObject::new();
@@ -392,7 +394,11 @@ impl ServerHandler for VerseMcpHandler {
                 rmcp::model::Tool {
                     name: "validate_wiring".into(),
                     description: "Validate device wiring for issues like orphaned channels, conflicts, and missing connections.".into(),
-                    input_schema: Arc::new(rmcp::model::JsonObject::new()),
+                    input_schema: Arc::new({
+                        let mut schema = rmcp::model::JsonObject::new();
+                        schema.insert("type".to_string(), serde_json::json!("object"));
+                        schema
+                    }),
                 },
                 rmcp::model::Tool {
                     name: "validate_verse".into(),

@@ -8,6 +8,7 @@ license.workspace = true
 name = "vm"
 path = "src/main.rs"
 
+
 [dependencies]
 uasset_scan = { workspace = true }
 rmcp = { version = "0.1", features = ["server", "transport-io", "transport-sse-server"] }
