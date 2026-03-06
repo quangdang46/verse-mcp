@@ -52,7 +52,8 @@ impl FString {
             Some((FString { value: s }, end))
         } else {
             // UTF-16 string (negative length)
-            let char_count = (-len) as usize;
+            // Cast to i64 first to avoid overflow when negating i32::MIN
+            let char_count = (-(len as i64)) as usize;
             let end = offset + 4 + char_count * 2;
             if end > buf.len() {
                 return None;
@@ -79,44 +80,51 @@ impl NameMap {
     pub fn read(buf: &[u8]) -> Option<Self> {
         // Probe bytes 100-2000 for Name Map start
         for probe in 100..std::cmp::min(buf.len(), 2000) {
-            let (s, _) = FString::read(buf, probe)?;
-            if !s.value.starts_with("/Script/") && !s.value.starts_with("/Game/") {
-                continue;
-            }
+            if let Some((s, _)) = FString::read(buf, probe) {
+                if s.value.starts_with("/Script/") || s.value.starts_with("/Game/") {
+                    // Verify run of valid strings
+                    let mut offset = probe;
+                    let mut run = 0;
+                    let mut names = Vec::new();
 
-            // Verify run of valid strings
-            let mut offset = probe;
-            let mut run = 0;
-            let mut names = Vec::new();
+                    while offset < buf.len().saturating_sub(8) && run < 10 {
+                        match FString::read(buf, offset) {
+                            Some((fs, next)) => {
+                                if fs.value.is_empty() {
+                                    break;
+                                }
+                                run += 1;
+                                offset = next + 4; // Skip hash
+                            }
+                            None => break,
+                        }
+                    }
 
-            while offset < buf.len().saturating_sub(8) && run < 10 {
-                let (fs, next) = FString::read(buf, offset)?;
-                if fs.value.is_empty() {
-                    break;
+                    if run < 5 {
+                        continue;
+                    }
+
+                    // Read all names
+                    offset = probe;
+                    while offset < buf.len().saturating_sub(8) {
+                        match FString::read(buf, offset) {
+                            Some((fs, next)) => {
+                                if fs.value.is_empty() {
+                                    break;
+                                }
+                                names.push(fs.value);
+                                offset = next + 4;
+                            }
+                            None => break,
+                        }
+                    }
+
+                    return Some(NameMap {
+                        names,
+                        end_offset: offset,
+                    });
                 }
-                run += 1;
-                offset = next + 4; // Skip hash
             }
-
-            if run < 5 {
-                continue;
-            }
-
-            // Read all names
-            offset = probe;
-            while offset < buf.len().saturating_sub(8) {
-                let (fs, next) = FString::read(buf, offset)?;
-                if fs.value.is_empty() {
-                    break;
-                }
-                names.push(fs.value);
-                offset = next + 4;
-            }
-
-            return Some(NameMap {
-                names,
-                end_offset: offset,
-            });
         }
         None
     }
@@ -258,6 +266,9 @@ pub fn parse_uasset(buf: &[u8], file_path: &str) -> Result<Option<DeviceInfo>, S
     let scan_start = std::cmp::max(name_map.end_offset, buf.len() / 2);
     let settings = extract_settings(buf, scan_start);
 
+    // Don't skip - include all files, even those without device information
+    // Everything is useful for the user
+
     // Determine device type: try fingerprinting if no Device_*_C found
     let device_type = match device_type {
         Some(dt) => dt,
@@ -267,11 +278,6 @@ pub fn parse_uasset(buf: &[u8], file_path: &str) -> Result<Option<DeviceInfo>, S
                 .unwrap_or_else(|| "Unknown".to_string())
         }
     };
-
-    // Skip if no useful data
-    if triggers.is_empty() && receivers.is_empty() && settings.is_empty() {
-        return Ok(None);
-    }
 
     // Extract label
     let label = extract_label(buf);

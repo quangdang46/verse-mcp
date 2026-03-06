@@ -108,17 +108,19 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
         .map(|path| parse_file(&path, &content_root))
         .collect();
 
-    // Partition results into devices and skips
+    // Include all parsed files (no skipping)
     let mut devices = Vec::new();
     let mut skipped = 0;
 
     for result in results {
         match result {
             Ok(Some(device)) => devices.push(device),
-            Ok(None) => skipped += 1,
-            Err(_) => skipped += 1,
+            Ok(None) => skipped += 1,  // Failed to parse (not skipped for lack of data)
+            Err(_) => skipped += 1,    // Parse error
         }
     }
+
+    let total_devices = devices.len();  // Count before moving
 
     // Group by device type
     let mut by_type: IndexMap<String, Vec<DeviceInfo>> = IndexMap::new();
@@ -136,8 +138,8 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
         scanned_at: chrono_lite_now(),
         project_root: project_path.to_string_lossy().to_string(),
         total_files,
-        total_devices: by_type.values().map(|v| v.len()).sum(),
-        skipped,
+        total_devices,  // All successfully parsed files
+        skipped,  // Only files that failed to parse
         device_types: by_type.keys().cloned().collect(),
         by_type,
     })
