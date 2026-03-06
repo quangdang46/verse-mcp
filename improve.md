@@ -48,10 +48,3 @@ vm --transport http --host 127.0.0.1 --port 2003
 vm --help
 ```
 
-### 6. Environment Variable
-Set `VERSE_PROJECT_PATH` to point to your UEFN project:
-
-```bash
-export VERSE_PROJECT_PATH=/path/to/your/uefn/project
-vm --transport http
-```

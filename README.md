@@ -82,12 +82,12 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 | Tool | Input | Output |
 |---|---|---|
-| `scan_map_devices` | Project path | All placed devices with triggers, receivers, settings |
+| `scan_map_devices` | project_path, force_refresh (optional) | All placed devices with triggers, receivers, settings |
 | `get_device_props` | Device type name | Full property and event list from digest |
 | `query_digest` | Symbol name or keyword | Matching entries from digest with signatures |
-| `validate_wiring` | - | Wiring issues (orphaned channels, conflicts) |
+| `validate_wiring` | project_path | Wiring issues (orphaned channels, conflicts) |
 | `validate_verse` | Verse source code | Validation issues and hallucinated APIs |
-| `generate_device_graph` | - | Device connection graph (Mermaid/DOT) |
+| `generate_device_graph` | project_path, format (optional) | Device connection graph (Mermaid/DOT) |
 | `diff_digests` | Old/new digest content | API changes between digest versions |
 | `list_templates` | - | Saved composition templates |
 | `load_template` | Template name | Load a template by name |
@@ -147,15 +147,6 @@ vm --transport http --host 127.0.0.1 --port 2003
 vm --transport http --port 8080
 ```
 
-### Environment Variable
-
-Set `VERSE_PROJECT_PATH` to point to your UEFN project:
-
-```bash
-export VERSE_PROJECT_PATH=/path/to/your/uefn/project
-vm --transport http
-```
-
 ---
 
 ## Configuration
@@ -189,7 +180,6 @@ Add to your MCP client config file:
 }
 ```
 
-For Cursor, set the `VERSE_PROJECT_PATH` environment variable to point to your UEFN project.
 
 ---
 

@@ -131,17 +131,15 @@ async fn main() -> Result<()> {
 
     tracing::info!("Starting Verse MCP Server with transport: {}", cli.transport);
 
-    // Get project path from environment or use current directory
-    let project_path = std::env::var("VERSE_PROJECT_PATH")
-        .map(PathBuf::from)
-        .unwrap_or_else(|_| std::env::current_dir().unwrap_or_default());
+    // Use current directory for templates (templates_dir only)
+    let project_path = std::env::current_dir().unwrap_or_default();
 
-    tracing::info!("Project path: {}", project_path.display());
+    tracing::info!("Templates directory: {}", project_path.display());
 
-    // Load digest index
+    // Load digest index from project path (or None if not found)
     let digest_index = load_digest(&project_path);
 
-    // Create server handler
+    // Create server handler (project_path is default for templates only)
     let templates_dir = project_path.join("templates");
     let handler = VerseMcpHandler {
         project_path,
@@ -224,18 +222,23 @@ impl ServerHandler for VerseMcpHandler {
         _pagination: Option<rmcp::model::PaginatedRequestParamInner>,
         _context: rmcp::service::RequestContext<rmcp::service::RoleServer>,
     ) -> Result<rmcp::model::ListToolsResult, rmcp::Error> {
-        // Build input schema for scan_map_devices with force_refresh parameter
+        // Build input schema for scan_map_devices with project_path and force_refresh parameters
         let mut scan_schema = rmcp::model::JsonObject::new();
         scan_schema.insert("type".to_string(), serde_json::json!("object"));
         scan_schema.insert(
             "properties".to_string(),
             serde_json::json!({
+                "project_path": {
+                    "type": "string",
+                    "description": "Path to UEFN project (e.g., E:\\\\Projects\\\\Testproject or /mnt/e/Projects/Testproject)"
+                },
                 "force_refresh": {
                     "type": "boolean",
                     "description": "Force re-scan even if results are cached"
                 }
             }),
         );
+        scan_schema.insert("required".to_string(), serde_json::json!(["project_path"]));
 
         // Build input schema for get_device_props
         let mut device_props_schema = rmcp::model::JsonObject::new();
@@ -290,6 +293,10 @@ impl ServerHandler for VerseMcpHandler {
         graph_schema.insert(
             "properties".to_string(),
             serde_json::json!({
+                "project_path": {
+                    "type": "string",
+                    "description": "Path to UEFN project"
+                },
                 "format": {
                     "type": "string",
                     "enum": ["mermaid", "dot"],
@@ -297,6 +304,7 @@ impl ServerHandler for VerseMcpHandler {
                 }
             }),
         );
+        graph_schema.insert("required".to_string(), serde_json::json!(["project_path"]));
 
         // Build input schema for diff_digests
         let mut diff_schema = rmcp::model::JsonObject::new();
@@ -397,6 +405,16 @@ impl ServerHandler for VerseMcpHandler {
                     input_schema: Arc::new({
                         let mut schema = rmcp::model::JsonObject::new();
                         schema.insert("type".to_string(), serde_json::json!("object"));
+                        schema.insert(
+                            "properties".to_string(),
+                            serde_json::json!({
+                                "project_path": {
+                                    "type": "string",
+                                    "description": "Path to UEFN project"
+                                }
+                            }),
+                        );
+                        schema.insert("required".to_string(), serde_json::json!(["project_path"]));
                         schema
                     }),
                 },
@@ -448,6 +466,17 @@ impl ServerHandler for VerseMcpHandler {
         let name = params.name.as_ref();
         match name {
             "scan_map_devices" => {
+                // Parse project_path from arguments (required)
+                let scan_path = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("project_path"))
+                    .and_then(|v| v.as_str())
+                    .map(PathBuf::from)
+                    .ok_or_else(|| rmcp::Error::invalid_params("project_path is required", None))?;
+
+                tracing::info!("Scanning project at: {}", scan_path.display());
+
                 // Parse force_refresh from arguments
                 let force_refresh = params
                     .arguments
@@ -464,7 +493,7 @@ impl ServerHandler for VerseMcpHandler {
                         true
                     } else if let Some(ref cached) = *cache_guard {
                         // Check if files have changed since last scan
-                        let current_mtime = get_max_mtime(&self.project_path);
+                        let current_mtime = get_max_mtime(&scan_path);
                         if current_mtime > cached.max_mtime {
                             tracing::info!("Cache invalidated: files modified since last scan");
                             true
@@ -492,13 +521,13 @@ impl ServerHandler for VerseMcpHandler {
                 }
 
                 // Perform fresh scan
-                match uasset_scan::scan_project(&self.project_path) {
+                match uasset_scan::scan_project(&scan_path) {
                     Ok(output) => {
                         // Update cache
                         {
                             let mut cache_guard = self.cache.lock().unwrap();
                             *cache_guard = Some(ScanCache {
-                                max_mtime: get_max_mtime(&self.project_path),
+                                max_mtime: get_max_mtime(&scan_path),
                                 cached_at: SystemTime::now(),
                                 output: output.clone(),
                             });
@@ -672,6 +701,15 @@ impl ServerHandler for VerseMcpHandler {
                 }
             }
             "validate_wiring" => {
+                // Parse project_path from arguments (required)
+                let scan_path = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("project_path"))
+                    .and_then(|v| v.as_str())
+                    .map(PathBuf::from)
+                    .ok_or_else(|| rmcp::Error::invalid_params("project_path is required", None))?;
+
                 // Get all devices from cache or scan
                 let devices: Vec<uasset_scan::DeviceInfo> = {
                     let cache_guard = self.cache.lock().unwrap();
@@ -683,7 +721,7 @@ impl ServerHandler for VerseMcpHandler {
                         // Need to scan first - drop the lock before scanning
                         std::mem::drop(cache_guard);
 
-                        match uasset_scan::scan_project(&self.project_path) {
+                        match uasset_scan::scan_project(&scan_path) {
                             Ok(output) => {
                                 let devices: Vec<_> =
                                     output.by_type.values().flatten().cloned().collect();
@@ -771,6 +809,15 @@ impl ServerHandler for VerseMcpHandler {
                 }
             }
             "generate_device_graph" => {
+                // Parse project_path from arguments (required)
+                let scan_path = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("project_path"))
+                    .and_then(|v| v.as_str())
+                    .map(PathBuf::from)
+                    .ok_or_else(|| rmcp::Error::invalid_params("project_path is required", None))?;
+
                 // Get format from arguments
                 let format_str = params
                     .arguments
@@ -793,13 +840,13 @@ impl ServerHandler for VerseMcpHandler {
                         // Need to scan first - drop the lock before scanning
                         std::mem::drop(cache_guard);
 
-                        match uasset_scan::scan_project(&self.project_path) {
+                        match uasset_scan::scan_project(&scan_path) {
                             Ok(output) => {
                                 // Update cache
                                 {
                                     let mut cache_guard = self.cache.lock().unwrap();
                                     *cache_guard = Some(ScanCache {
-                                        max_mtime: get_max_mtime(&self.project_path),
+                                        max_mtime: get_max_mtime(&scan_path),
                                         cached_at: SystemTime::now(),
                                         output: output.clone(),
                                     });
