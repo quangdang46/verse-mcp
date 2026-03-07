@@ -4,6 +4,12 @@ on:
   push:
     tags:
       - 'v*'
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Tag to build/publish (e.g., v0.1.0)'
+        required: true
+        default: 'v0.1.0'
 
 env:
   CARGO_TERM_COLOR: always
@@ -29,6 +35,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag != '' && inputs.tag || github.ref_name }}
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -106,9 +114,10 @@ jobs:
       - name: List artifacts
         run: find artifacts -type f
 
-      - name: Create release
+      - name: Create/update release
         uses: softprops/action-gh-release@v2
         with:
+          tag_name: ${{ inputs.tag != '' && inputs.tag || github.ref_name }}
           files: |
             artifacts/**/vm-*
             artifacts/install-scripts/install.sh
@@ -117,4 +126,4 @@ jobs:
             artifacts/install-scripts/install.ps1.sha256
           generate_release_notes: true
           draft: false
-          prerelease: ${{ contains(github.ref, '-alpha') || contains(github.ref, '-beta') || contains(github.ref, '-rc') }}
+          prerelease: ${{ contains(inputs.tag != '' && inputs.tag || github.ref_name, '-alpha') || contains(inputs.tag != '' && inputs.tag || github.ref_name, '-beta') || contains(inputs.tag != '' && inputs.tag || github.ref_name, '-rc') }}
