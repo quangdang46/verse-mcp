@@ -48,8 +48,7 @@ static DEVICE_TYPE_RE: LazyLock<Regex> = LazyLock::new(|| {
 
 static METHOD_CALL_RE: LazyLock<Regex> = LazyLock::new(|| {
     // Match method calls: DeviceName.MethodName(
-    Regex::new(r"(\w+)\.([A-Za-z][A-Za-z0-9_]*)\s*\(")
-        .expect("Invalid method call regex")
+    Regex::new(r"(\w+)\.([A-Za-z][A-Za-z0-9_]*)\s*\(").expect("Invalid method call regex")
 });
 
 static EVENT_SUBSCRIBE_RE: LazyLock<Regex> = LazyLock::new(|| {
@@ -173,10 +172,14 @@ impl VerseValidator {
                                     symbol_kind: "event_as_method".to_string(),
                                 });
                             } else {
-                                let suggestion = self.find_similar_method(device_type, &method_name);
+                                let suggestion =
+                                    self.find_similar_method(device_type, &method_name);
                                 issues.push(ValidationIssue {
                                     severity: Severity::Error,
-                                    message: format!("Unknown method: {}.{}", var_name, method_name),
+                                    message: format!(
+                                        "Unknown method: {}.{}",
+                                        var_name, method_name
+                                    ),
                                     line: line_num,
                                     column,
                                     suggestion,
@@ -401,7 +404,11 @@ MyCampfire.Extenguish()
         let issues = validator.validate(code);
         assert!(!issues.is_empty(), "Expected issues, got: {:?}", issues);
         assert!(issues[0].suggestion.is_some());
-        assert!(issues[0].suggestion.as_ref().unwrap().contains("Extinguish"));
+        assert!(issues[0]
+            .suggestion
+            .as_ref()
+            .unwrap()
+            .contains("Extinguish"));
     }
 
     #[test]

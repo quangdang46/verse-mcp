@@ -16,16 +16,16 @@ jobs:
         include:
           - os: ubuntu-latest
             target: x86_64-unknown-linux-gnu
-            artifact: verse-mcp-x86_64-linux
+            artifact: vm-x86_64-linux
           - os: windows-latest
             target: x86_64-pc-windows-msvc
-            artifact: verse-mcp-x86_64-windows
+            artifact: vm-x86_64-windows
           - os: macos-latest
             target: aarch64-apple-darwin
-            artifact: verse-mcp-aarch64-macos
+            artifact: vm-aarch64-macos
           - os: macos-13
             target: x86_64-apple-darwin
-            artifact: verse-mcp-x86_64-macos
+            artifact: vm-x86_64-macos
 
     steps:
       - uses: actions/checkout@v4
@@ -60,14 +60,14 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           cd target/${{ matrix.target }}/release
-          tar -czvf ${{ matrix.artifact }}.tar.gz verse-mcp
+          tar -czvf ${{ matrix.artifact }}.tar.gz vm
           shasum -a 256 ${{ matrix.artifact }}.tar.gz > ${{ matrix.artifact }}.tar.gz.sha256
 
       - name: Package (Windows)
         if: runner.os == 'Windows'
         run: |
           cd target/${{ matrix.target }}/release
-          7z a ${{ matrix.artifact }}.zip verse-mcp.exe
+          7z a ${{ matrix.artifact }}.zip vm.exe
           certutil -hashfile ${{ matrix.artifact }}.zip SHA256 > ${{ matrix.artifact }}.zip.sha256
 
       - name: Upload artifact
@@ -93,7 +93,7 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/**/verse-mcp-*
+          files: artifacts/**/vm-*
           generate_release_notes: true
           draft: false
           prerelease: ${{ contains(github.ref, '-alpha') || contains(github.ref, '-beta') || contains(github.ref, '-rc') }}

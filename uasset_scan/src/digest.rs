@@ -435,10 +435,16 @@ impl DigestIndex {
                 let new_device = &other.devices[device_name];
 
                 // Compare events
-                let old_events: std::collections::HashMap<&str, &Event> =
-                    old_device.events.iter().map(|e| (e.name.as_str(), e)).collect();
-                let new_events: std::collections::HashMap<&str, &Event> =
-                    new_device.events.iter().map(|e| (e.name.as_str(), e)).collect();
+                let old_events: std::collections::HashMap<&str, &Event> = old_device
+                    .events
+                    .iter()
+                    .map(|e| (e.name.as_str(), e))
+                    .collect();
+                let new_events: std::collections::HashMap<&str, &Event> = new_device
+                    .events
+                    .iter()
+                    .map(|e| (e.name.as_str(), e))
+                    .collect();
 
                 for (name, event) in &old_events {
                     if !new_events.contains_key(*name) {
@@ -499,10 +505,16 @@ impl DigestIndex {
                 }
 
                 // Compare methods
-                let old_methods: std::collections::HashMap<&str, &Method> =
-                    old_device.methods.iter().map(|m| (m.name.as_str(), m)).collect();
-                let new_methods: std::collections::HashMap<&str, &Method> =
-                    new_device.methods.iter().map(|m| (m.name.as_str(), m)).collect();
+                let old_methods: std::collections::HashMap<&str, &Method> = old_device
+                    .methods
+                    .iter()
+                    .map(|m| (m.name.as_str(), m))
+                    .collect();
+                let new_methods: std::collections::HashMap<&str, &Method> = new_device
+                    .methods
+                    .iter()
+                    .map(|m| (m.name.as_str(), m))
+                    .collect();
 
                 for (name, method) in &old_methods {
                     if !new_methods.contains_key(*name) {
@@ -765,27 +777,33 @@ device_button_device = class():
         let old = DigestIndex::parse(
             "device_campfire_device = class():\n    AddFuel(Amount:int):void\n\ndevice_button_device = class():\n    Press():void\n",
         ).unwrap();
-        let new = DigestIndex::parse(
-            "device_campfire_device = class():\n    AddFuel(Amount:int):void\n",
-        ).unwrap();
+        let new =
+            DigestIndex::parse("device_campfire_device = class():\n    AddFuel(Amount:int):void\n")
+                .unwrap();
 
         let diff = old.diff(&new);
         assert_eq!(diff.stats.devices_removed, 1);
-        assert!(diff.breaking_changes.iter().any(|c| c.name == "device_button_device" && c.kind == ChangeKind::Removed));
+        assert!(diff
+            .breaking_changes
+            .iter()
+            .any(|c| c.name == "device_button_device" && c.kind == ChangeKind::Removed));
     }
 
     #[test]
     fn test_diff_device_added() {
-        let old = DigestIndex::parse(
-            "device_campfire_device = class():\n    AddFuel(Amount:int):void\n",
-        ).unwrap();
+        let old =
+            DigestIndex::parse("device_campfire_device = class():\n    AddFuel(Amount:int):void\n")
+                .unwrap();
         let new = DigestIndex::parse(
             "device_campfire_device = class():\n    AddFuel(Amount:int):void\n\ndevice_button_device = class():\n    Press():void\n",
         ).unwrap();
 
         let diff = old.diff(&new);
         assert_eq!(diff.stats.devices_added, 1);
-        assert!(diff.additions.iter().any(|c| c.name == "device_button_device" && c.kind == ChangeKind::Added));
+        assert!(diff
+            .additions
+            .iter()
+            .any(|c| c.name == "device_button_device" && c.kind == ChangeKind::Added));
     }
 
     #[test]
@@ -795,25 +813,33 @@ device_button_device = class():
         ).unwrap();
         let new = DigestIndex::parse(
             "device_campfire_device = class():\n    TriggerOnEnterRadius():event():void\n",
-        ).unwrap();
+        )
+        .unwrap();
 
         let diff = old.diff(&new);
         assert_eq!(diff.stats.events_removed, 1);
-        assert!(diff.breaking_changes.iter().any(|c| c.name == "OnDisabled" && c.kind == ChangeKind::Removed));
+        assert!(diff
+            .breaking_changes
+            .iter()
+            .any(|c| c.name == "OnDisabled" && c.kind == ChangeKind::Removed));
     }
 
     #[test]
     fn test_diff_event_added() {
         let old = DigestIndex::parse(
             "device_campfire_device = class():\n    TriggerOnEnterRadius():event():void\n",
-        ).unwrap();
+        )
+        .unwrap();
         let new = DigestIndex::parse(
             "device_campfire_device = class():\n    TriggerOnEnterRadius():event():void\n    OnDisabled():event():void\n",
         ).unwrap();
 
         let diff = old.diff(&new);
         assert_eq!(diff.stats.events_added, 1);
-        assert!(diff.additions.iter().any(|c| c.name == "OnDisabled" && c.kind == ChangeKind::Added));
+        assert!(diff
+            .additions
+            .iter()
+            .any(|c| c.name == "OnDisabled" && c.kind == ChangeKind::Added));
     }
 
     #[test]
@@ -821,26 +847,33 @@ device_button_device = class():
         let old = DigestIndex::parse(
             "device_campfire_device = class():\n    AddFuel(Amount:int):void\n    Extinguish():void\n",
         ).unwrap();
-        let new = DigestIndex::parse(
-            "device_campfire_device = class():\n    AddFuel(Amount:int):void\n",
-        ).unwrap();
+        let new =
+            DigestIndex::parse("device_campfire_device = class():\n    AddFuel(Amount:int):void\n")
+                .unwrap();
 
         let diff = old.diff(&new);
         assert_eq!(diff.stats.methods_removed, 1);
-        assert!(diff.breaking_changes.iter().any(|c| c.name == "Extinguish" && c.kind == ChangeKind::Removed));
+        assert!(diff
+            .breaking_changes
+            .iter()
+            .any(|c| c.name == "Extinguish" && c.kind == ChangeKind::Removed));
     }
 
     #[test]
     fn test_diff_method_signature_changed() {
-        let old = DigestIndex::parse(
-            "device_campfire_device = class():\n    AddFuel(Amount:int):void\n",
-        ).unwrap();
+        let old =
+            DigestIndex::parse("device_campfire_device = class():\n    AddFuel(Amount:int):void\n")
+                .unwrap();
         let new = DigestIndex::parse(
             "device_campfire_device = class():\n    AddFuel(Amount:float):void\n",
-        ).unwrap();
+        )
+        .unwrap();
 
         let diff = old.diff(&new);
-        assert!(diff.breaking_changes.iter().any(|c| c.name == "AddFuel" && c.kind == ChangeKind::Modified));
+        assert!(diff
+            .breaking_changes
+            .iter()
+            .any(|c| c.name == "AddFuel" && c.kind == ChangeKind::Modified));
     }
 
     #[test]
@@ -875,10 +908,25 @@ device_button_device = class():
         assert_eq!(diff.stats.events_removed, 1);
         assert_eq!(diff.stats.methods_added, 1);
 
-        assert!(diff.breaking_changes.iter().any(|c| c.name == "device_old_device" && c.kind == ChangeKind::Removed));
-        assert!(diff.breaking_changes.iter().any(|c| c.name == "OnDisabled" && c.kind == ChangeKind::Removed));
-        assert!(diff.breaking_changes.iter().any(|c| c.name == "AddFuel" && c.kind == ChangeKind::Modified));
-        assert!(diff.additions.iter().any(|c| c.name == "device_new_device" && c.kind == ChangeKind::Added));
-        assert!(diff.additions.iter().any(|c| c.name == "Extinguish" && c.kind == ChangeKind::Added));
+        assert!(diff
+            .breaking_changes
+            .iter()
+            .any(|c| c.name == "device_old_device" && c.kind == ChangeKind::Removed));
+        assert!(diff
+            .breaking_changes
+            .iter()
+            .any(|c| c.name == "OnDisabled" && c.kind == ChangeKind::Removed));
+        assert!(diff
+            .breaking_changes
+            .iter()
+            .any(|c| c.name == "AddFuel" && c.kind == ChangeKind::Modified));
+        assert!(diff
+            .additions
+            .iter()
+            .any(|c| c.name == "device_new_device" && c.kind == ChangeKind::Added));
+        assert!(diff
+            .additions
+            .iter()
+            .any(|c| c.name == "Extinguish" && c.kind == ChangeKind::Added));
     }
 }

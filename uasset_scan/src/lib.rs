@@ -19,18 +19,18 @@ pub mod verse_validator;
 mod scanner_tests;
 
 pub use classify::{classify, Classification};
+pub use device_grapher::{DeviceConnection, DeviceGrapher, GraphFormat};
 pub use digest::{
     normalize_device_name, DeviceDef, DigestError, DigestIndex, Event, Method, Param, Property,
     SearchResult, SymbolKind, SymbolLocation,
 };
 pub use fingerprint::Fingerprint;
-pub use types::{DeviceInfo, ScanOutput};
-pub use validator::{IssueKind, WiringIssue, WiringValidator};
-pub use verse_validator::{Severity, ValidationIssue, VerseValidator};
-pub use device_grapher::{DeviceConnection, DeviceGrapher, GraphFormat};
 pub use template_manager::{
     Template, TemplateDevice, TemplateError, TemplateManager, TemplateWire,
 };
+pub use types::{DeviceInfo, ScanOutput};
+pub use validator::{IssueKind, WiringIssue, WiringValidator};
+pub use verse_validator::{Severity, ValidationIssue, VerseValidator};
 
 /// Magic number for UE5 asset files
 pub const UE_MAGIC: u32 = 0x9E2A83C1;
@@ -82,7 +82,11 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
                 .filter(|e| e.path().extension().is_some_and(|ext| ext == "uasset"))
                 .map(|e| e.path().to_path_buf())
                 .collect();
-            tracing::info!("Found {} .uasset files in {}", files.len(), scan_dir.display());
+            tracing::info!(
+                "Found {} .uasset files in {}",
+                files.len(),
+                scan_dir.display()
+            );
             all_files.extend(files);
         } else {
             tracing::debug!("Directory not found: {}", scan_dir.display());
@@ -115,12 +119,12 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
     for result in results {
         match result {
             Ok(Some(device)) => devices.push(device),
-            Ok(None) => skipped += 1,  // Failed to parse (not skipped for lack of data)
-            Err(_) => skipped += 1,    // Parse error
+            Ok(None) => skipped += 1, // Failed to parse (not skipped for lack of data)
+            Err(_) => skipped += 1,   // Parse error
         }
     }
 
-    let total_devices = devices.len();  // Count before moving
+    let total_devices = devices.len(); // Count before moving
 
     // Group by device type
     let mut by_type: IndexMap<String, Vec<DeviceInfo>> = IndexMap::new();
@@ -138,8 +142,8 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
         scanned_at: chrono_lite_now(),
         project_root: project_path.to_string_lossy().to_string(),
         total_files,
-        total_devices,  // All successfully parsed files
-        skipped,  // Only files that failed to parse
+        total_devices, // All successfully parsed files
+        skipped,       // Only files that failed to parse
         device_types: by_type.keys().cloned().collect(),
         by_type,
     })

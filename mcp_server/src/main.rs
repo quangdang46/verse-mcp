@@ -15,14 +15,15 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use std::sync::RwLock;
 use std::time::SystemTime;
-use tracing_subscriber::EnvFilter;
 use tokio_util::sync::CancellationToken;
+use tracing_subscriber::EnvFilter;
 
 mod tools;
 
 /// CLI arguments for the MCP server
 #[derive(Parser, Debug)]
 #[command(name = "vm")]
+#[command(version = env!("CARGO_PKG_VERSION"))]
 #[command(about = "Verse MCP Server for UEFN/Verse development", long_about = None)]
 struct Cli {
     /// Transport type: stdio or http
@@ -129,7 +130,10 @@ async fn main() -> Result<()> {
         .with_writer(std::io::stderr)
         .init();
 
-    tracing::info!("Starting Verse MCP Server with transport: {}", cli.transport);
+    tracing::info!(
+        "Starting Verse MCP Server with transport: {}",
+        cli.transport
+    );
 
     // Use current directory for templates (templates_dir only)
     let project_path = std::env::current_dir().unwrap_or_default();
@@ -155,7 +159,8 @@ async fn main() -> Result<()> {
             tracing::info!("Starting HTTP server on {}", addr);
 
             let bind_addr: std::net::SocketAddr = addr.parse()?;
-            let sse_server: rmcp::transport::SseServer = rmcp::transport::SseServer::serve(bind_addr).await?;
+            let sse_server: rmcp::transport::SseServer =
+                rmcp::transport::SseServer::serve(bind_addr).await?;
             let token: CancellationToken = sse_server.with_service(move || handler.clone());
 
             tracing::info!("HTTP server listening on {}", addr);
@@ -322,7 +327,10 @@ impl ServerHandler for VerseMcpHandler {
                 }
             }),
         );
-        diff_schema.insert("required".to_string(), serde_json::json!(["old_content", "new_content"]));
+        diff_schema.insert(
+            "required".to_string(),
+            serde_json::json!(["old_content", "new_content"]),
+        );
 
         // Build input schema for list_templates (no parameters required)
         let mut list_templates_schema = rmcp::model::JsonObject::new();
@@ -1015,8 +1023,9 @@ impl ServerHandler for VerseMcpHandler {
                 let manager = uasset_scan::TemplateManager::new(self.templates_dir.clone());
                 match manager.load(template_name) {
                     Ok(template) => {
-                        let result_json = serde_json::to_value(&template)
-                            .unwrap_or_else(|_| serde_json::json!({"error": "serialization failed"}));
+                        let result_json = serde_json::to_value(&template).unwrap_or_else(
+                            |_| serde_json::json!({"error": "serialization failed"}),
+                        );
                         Ok(rmcp::model::CallToolResult {
                             content: vec![Annotated::text(
                                 serde_json::to_string_pretty(&result_json).unwrap(),

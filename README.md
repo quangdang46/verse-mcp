@@ -109,14 +109,32 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 ## Installation
 
-### From Release (Recommended)
+### Quick Install (Recommended)
 
-Download the latest release for your platform:
-- Windows: `vm-x86_64-pc-windows-msvc.zip`
-- macOS: `vm-aarch64-apple-darwin.tar.gz`
-- Linux: `vm-x86_64-unknown-linux-gnu.tar.gz`
+```bash
+# Automatically detect your platform and install the latest release
+curl -fsSL https://github.com/user/verse-mcp/releases/latest/download/install.sh | bash
+```
+
+### Manual Download
+
+Download the latest release for your platform from [GitHub Releases](https://github.com/user/verse-mcp/releases):
+
+| Platform | File |
+|---|---|
+| Linux x86_64 | `vm-x86_64-linux.tar.gz` |
+| Windows x86_64 | `vm-x86_64-windows.zip` |
+| macOS ARM64 | `vm-aarch64-macos.tar.gz` |
+| macOS x86_64 | `vm-x86_64-macos.tar.gz` |
 
 Extract and add to PATH.
+
+### Verify Installation
+
+```bash
+vm --version
+# Should output: vm 0.1.0
+```
 
 ### From Source
 

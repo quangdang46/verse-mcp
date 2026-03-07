@@ -74,7 +74,10 @@ impl DeviceGrapher {
                     }
 
                     // Check for "when receiving" on channel
-                    if key_lower.contains("when") && key_lower.contains("receiving") && key_lower.contains("channel") {
+                    if key_lower.contains("when")
+                        && key_lower.contains("receiving")
+                        && key_lower.contains("channel")
+                    {
                         channel_receivers
                             .entry(value.clone())
                             .or_default()
@@ -118,10 +121,7 @@ impl DeviceGrapher {
             }
             seen_nodes.insert(node_id.clone());
 
-            let label = device
-                .label
-                .as_deref()
-                .unwrap_or(&device.device_type);
+            let label = device.label.as_deref().unwrap_or(&device.device_type);
             let safe_label = escape_mermaid_label(label);
             lines.push(format!("  {}[\"{}\"]", node_id, safe_label));
         }
@@ -154,7 +154,10 @@ impl DeviceGrapher {
             if label.is_empty() {
                 lines.push(format!("  {} --> {}", conn.source, conn.target));
             } else {
-                lines.push(format!("  {} -->|\"{}\"| {}", conn.source, label, conn.target));
+                lines.push(format!(
+                    "  {} -->|\"{}\"| {}",
+                    conn.source, label, conn.target
+                ));
             }
         }
 
@@ -186,11 +189,12 @@ impl DeviceGrapher {
             }
             seen_nodes.insert(node_id.clone());
 
-            let label = device
-                .label
-                .as_deref()
-                .unwrap_or(&device.device_type);
-            lines.push(format!("  {} [label=\"{}\"];", node_id, escape_dot_label(label)));
+            let label = device.label.as_deref().unwrap_or(&device.device_type);
+            lines.push(format!(
+                "  {} [label=\"{}\"];",
+                node_id,
+                escape_dot_label(label)
+            ));
         }
 
         lines.push("".to_string());
@@ -214,7 +218,10 @@ impl DeviceGrapher {
             if label.is_empty() {
                 lines.push(format!("  {} -> {};", conn.source, conn.target));
             } else {
-                lines.push(format!("  {} -> {} [label=\"{}\"];", conn.source, conn.target, label));
+                lines.push(format!(
+                    "  {} -> {} [label=\"{}\"];",
+                    conn.source, conn.target, label
+                ));
             }
         }
 
@@ -272,10 +279,16 @@ mod tests {
 
     fn create_test_devices() -> Vec<DeviceInfo> {
         let mut button_settings = IndexMap::new();
-        button_settings.insert("TriggerOnPressedChannel".to_string(), "game_start".to_string());
+        button_settings.insert(
+            "TriggerOnPressedChannel".to_string(),
+            "game_start".to_string(),
+        );
 
         let mut spawner_settings = IndexMap::new();
-        spawner_settings.insert("EnableWhenReceivingOnChannel".to_string(), "game_start".to_string());
+        spawner_settings.insert(
+            "EnableWhenReceivingOnChannel".to_string(),
+            "game_start".to_string(),
+        );
 
         vec![
             DeviceInfo {
@@ -309,7 +322,10 @@ mod tests {
     fn test_sanitize_id() {
         assert_eq!(sanitize_id("path/to/Button1.uasset"), "Button1");
         assert_eq!(sanitize_id("123Device.uasset"), "n_123Device");
-        assert_eq!(sanitize_id("device-with-dashes.uasset"), "device_with_dashes");
+        assert_eq!(
+            sanitize_id("device-with-dashes.uasset"),
+            "device_with_dashes"
+        );
     }
 
     #[test]
@@ -351,7 +367,9 @@ mod tests {
         // Should find connection from Button to Spawner via game_start channel
         assert!(!connections.is_empty());
 
-        let conn = connections.iter().find(|c| c.source == "Button1" && c.target == "Spawner1");
+        let conn = connections
+            .iter()
+            .find(|c| c.source == "Button1" && c.target == "Spawner1");
         assert!(conn.is_some());
         assert_eq!(conn.unwrap().channel, Some("game_start".to_string()));
     }

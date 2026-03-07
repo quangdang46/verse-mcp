@@ -137,11 +137,7 @@ impl TemplateManager {
     }
 
     /// Create a template from current scan output
-    pub fn from_scan_output(
-        name: String,
-        description: String,
-        output: &ScanOutput,
-    ) -> Template {
+    pub fn from_scan_output(name: String, description: String, output: &ScanOutput) -> Template {
         let mut devices = Vec::new();
         let mut wiring = Vec::new();
         let mut settings = IndexMap::new();
