@@ -114,12 +114,12 @@ The `.uasset` parser reads binary files directly — no external tools required.
 #### PowerShell (Recommended)
 
 ```powershell
-Invoke-Expression "& { $(Invoke-RestMethod 'https://github.com/user/verse-mcp/releases/latest/download/install.ps1') }"
+Invoke-Expression "& { $(Invoke-RestMethod 'https://github.com/quangdang46/verse-mcp/releases/latest/download/install.ps1') }"
 ```
 
 #### Manual Download
 
-1. Download `vm-x86_64-windows.zip` from [GitHub Releases](https://github.com/user/verse-mcp/releases)
+1. Download `vm-x86_64-windows.zip` from [GitHub Releases](https://github.com/quangdang46/verse-mcp/releases)
 2. Extract the zip file
 3. Move `vm.exe` to a directory in your PATH (e.g., `C:\Program Files\vm\`)
 4. Add to PATH if needed:
@@ -135,13 +135,13 @@ To add permanently, open **System Properties → Environment Variables** and add
 #### Quick Install
 
 ```bash
-curl -fsSL https://github.com/user/verse-mcp/releases/latest/download/install.sh | bash
+curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
 ```
 
 #### Manual Download
 
 ```bash
-wget https://github.com/user/verse-mcp/releases/latest/download/vm-x86_64-linux.tar.gz
+wget https://github.com/quangdang46/verse-mcp/releases/latest/download/vm-x86_64-linux.tar.gz
 tar -xzf vm-x86_64-linux.tar.gz
 sudo mv vm /usr/local/bin/
 ```
@@ -160,23 +160,23 @@ source ~/.bashrc
 #### Quick Install (ARM64/Apple Silicon)
 
 ```bash
-curl -fsSL https://github.com/user/verse-mcp/releases/latest/download/install.sh | bash
+curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
 ```
 
 #### Quick Install (Intel)
 
 ```bash
-curl -fsSL https://github.com/user/verse-mcp/releases/latest/download/install.sh | bash
+curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
 ```
 
 #### Manual Download
 
 ```bash
 # For ARM64 (Apple Silicon)
-curl -L https://github.com/user/verse-mcp/releases/latest/download/vm-aarch64-macos.tar.gz -o vm.tar.gz
+curl -L https://github.com/quangdang46/verse-mcp/releases/latest/download/vm-aarch64-macos.tar.gz -o vm.tar.gz
 
 # For Intel
-curl -L https://github.com/user/verse-mcp/releases/latest/download/vm-x86_64-macos.tar.gz -o vm.tar.gz
+curl -L https://github.com/quangdang46/verse-mcp/releases/latest/download/vm-x86_64-macos.tar.gz -o vm.tar.gz
 
 tar -xzf vm.tar.gz
 sudo mv vm /usr/local/bin/
