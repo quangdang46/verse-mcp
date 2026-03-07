@@ -72,7 +72,6 @@ jobs:
         if: runner.os != 'Windows'
         run: |
           ls -lah build_out/release || true
-          file build_out/release/* || true
 
       - name: Upload artifacts (Unix)
         if: runner.os != 'Windows'
@@ -80,8 +79,8 @@ jobs:
         with:
           name: verse-mcp-${{ runner.os }}
           path: |
-            build_out/release/uefn_scan_cli
-            build_out/release/mcp_server
+            build_out/release/verse-scan
+            build_out/release/vm
           if-no-files-found: error
           retention-days: 7
 
@@ -91,7 +90,7 @@ jobs:
         with:
           name: verse-mcp-${{ runner.os }}
           path: |
-            build_out/release/uefn_scan_cli.exe
-            build_out/release/mcp_server.exe
+            build_out/release/verse-scan.exe
+            build_out/release/vm.exe
           if-no-files-found: error
           retention-days: 7
