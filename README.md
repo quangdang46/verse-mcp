@@ -203,7 +203,7 @@ vm --transport http --port 8080
 
 ## Configuration
 
-### HTTP Transport (Claude Desktop / Cursor)
+### HTTP Transport (Claude / Cursor / Other CLI)
 
 Add to your MCP client config file:
 
