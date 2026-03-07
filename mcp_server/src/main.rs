@@ -19,6 +19,7 @@ use tokio_util::sync::CancellationToken;
 use tracing_subscriber::EnvFilter;
 
 mod tools;
+mod vm_dir;
 
 /// CLI arguments for the MCP server
 #[derive(Parser, Debug)]
@@ -82,40 +83,27 @@ fn get_max_mtime(project_path: &std::path::Path) -> SystemTime {
 }
 
 /// Load digest index from file
-fn load_digest(project_path: &std::path::Path) -> Option<uasset_scan::DigestIndex> {
-    // Try common locations for Fortnite.digest.verse
-    let digest_paths = vec![
-        project_path.join("Fortnite.digest.verse"),
-        project_path.join("Content").join("Fortnite.digest.verse"),
-        project_path.join("..").join("Fortnite.digest.verse"),
-    ];
-
-    for digest_path in digest_paths {
-        if digest_path.exists() {
-            tracing::info!("Loading digest from: {}", digest_path.display());
-            match std::fs::read_to_string(&digest_path) {
-                Ok(content) => match uasset_scan::DigestIndex::parse(&content) {
-                    Ok(index) => {
-                        tracing::info!(
-                            "Digest loaded: {} devices, {} symbols",
-                            index.devices.len(),
-                            index.symbols.len()
-                        );
-                        return Some(index);
-                    }
-                    Err(e) => {
-                        tracing::warn!("Failed to parse digest: {}", e);
-                    }
-                },
-                Err(e) => {
-                    tracing::warn!("Failed to read digest file: {}", e);
-                }
+fn load_digest() -> Option<uasset_scan::DigestIndex> {
+    match vm_dir::load_digest_content() {
+        Ok(content) => match uasset_scan::DigestIndex::parse(&content) {
+            Ok(index) => {
+                tracing::info!(
+                    "Digest loaded from ~/.vm: {} devices, {} symbols",
+                    index.devices.len(),
+                    index.symbols.len()
+                );
+                Some(index)
             }
+            Err(e) => {
+                tracing::warn!("Failed to parse digest: {}", e);
+                None
+            }
+        },
+        Err(e) => {
+            tracing::warn!("Failed to load digest from ~/.vm: {}", e);
+            None
         }
     }
-
-    tracing::info!("No digest file found, digest tools will return empty results");
-    None
 }
 
 /// MCP server entry point
@@ -130,6 +118,11 @@ async fn main() -> Result<()> {
         .with_writer(std::io::stderr)
         .init();
 
+    // Ensure ~/.vm exists and bundled digest is extracted if missing
+    if let Err(e) = vm_dir::ensure_vm_dir() {
+        tracing::warn!("Could not init .vm dir: {}", e);
+    }
+
     tracing::info!(
         "Starting Verse MCP Server with transport: {}",
         cli.transport
@@ -141,7 +134,7 @@ async fn main() -> Result<()> {
     tracing::info!("Templates directory: {}", project_path.display());
 
     // Load digest index from project path (or None if not found)
-    let digest_index = load_digest(&project_path);
+    let digest_index = load_digest();
 
     // Create server handler (project_path is default for templates only)
     let templates_dir = project_path.join("templates");
