@@ -111,7 +111,21 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 ## Installation
 
-### Quick Install
+### Build from Source (Recommended)
+
+Install [Rust](https://rustup.rs/) first, then:
+
+```bash
+git clone https://github.com/quangdang46/verse-mcp.git
+cd verse-mcp
+cargo build --release
+```
+
+The binary will be at `target/release/vm` (Windows: `target/release/vm.exe`).
+
+### Quick Install (Pre-built binaries)
+
+Download from [GitHub Releases](https://github.com/quangdang46/verse-mcp/releases):
 
 **Windows (PowerShell):**
 ```powershell
@@ -128,9 +142,7 @@ curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/ins
 curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
 ```
 
-### Manual Download
-
-Download the latest release from [GitHub Releases](https://github.com/quangdang46/verse-mcp/releases):
+**Manual Download:**
 
 | Platform | File |
 |---|---|
@@ -163,18 +175,6 @@ vm --version
 ```
 
 Should output: `vm 0.1.0`
-
-### Build from Source
-
-Install [Rust](https://rustup.rs/) first, then:
-
-```bash
-git clone https://github.com/quangdang46/verse-mcp.git
-cd verse-mcp
-cargo build --release
-```
-
-The binary will be at `target/release/vm` (Windows: `target/release/vm.exe`).
 
 ---
 
