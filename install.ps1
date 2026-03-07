@@ -20,6 +20,7 @@ $InstallDir = if ($env:INSTALL_DIR) { $env:INSTALL_DIR } else { "$env:USERPROFIL
 $ErrorColor = "Red"
 $SuccessColor = "Green"
 $WarningColor = "Yellow"
+$InfoColor = "White"
 
 function Write-ColorOutput {
     param([string]$Message, [string]$Color = "White")
@@ -29,6 +30,22 @@ function Write-ColorOutput {
 function Get-ArtifactName {
     $Arch = if ([Environment]::Is64BitOperatingSystem) { "x86_64" } else { "x86" }
     "vm-${Arch}-windows"
+}
+
+function Resolve-Version {
+    if ([string]::IsNullOrWhiteSpace($Version) -or $Version -eq "latest") {
+        try {
+            $headers = @{ "Accept" = "application/vnd.github+json"; "User-Agent" = "verse-mcp-installer" }
+            $latest = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" -Headers $headers
+            $Version = $latest.tag_name
+            if ([string]::IsNullOrWhiteSpace($Version)) { throw "Empty tag_name" }
+        }
+        catch {
+            Write-ColorOutput "Failed to resolve latest release tag via GitHub API." $ErrorColor
+            Write-ColorOutput "You can specify a version explicitly: -Version v0.1.0" $WarningColor
+            exit 1
+        }
+    }
 }
 
 function Download-And-Install {
@@ -44,8 +61,8 @@ function Download-And-Install {
     Push-Location $TmpDir
 
     try {
-        # Download
-        Invoke-RestMethod -Uri $ZipUrl -OutFile "vm.zip"
+        # Download (use Invoke-WebRequest for -OutFile compatibility on Windows PowerShell 5.1)
+        Invoke-WebRequest -Uri $ZipUrl -OutFile "vm.zip" -UseBasicParsing
 
         # Extract
         Expand-Archive -Path "vm.zip" -DestinationPath "." -Force
@@ -65,21 +82,14 @@ function Download-And-Install {
     }
 }
 
-function Test-PathInUserPath {
-    $PathEnv = [Environment]::GetEnvironmentVariable("Path", "User")
-    $PathDirs = $PathEnv -split ';'
-    $InstallDir | ForEach-Object { if ($PathDirs -contains $_) { return $true } }
-    return $false
-}
-
 function Show-PathInstructions {
     $PathEnv = [Environment]::GetEnvironmentVariable("Path", "User")
     if ($PathEnv -notlike "*$InstallDir*") {
         Write-ColorOutput "`n${BinaryName} has been installed to ${InstallDir}" $WarningColor
-        Write-ColorOutput "To add it to your PATH, run:" $WarningColor
-        Write-ColorOutput "`$env:Path += \";${InstallDir}\"" $White
-        Write-ColorOutput "`nOr add it permanently:" $WarningColor
-        Write-ColorOutput "[Environment]::SetEnvironmentVariable(`"Path`", `"$env:Path;${InstallDir}``, `"User`")" $White
+        Write-ColorOutput "To add it to your current session PATH, run:" $InfoColor
+        Write-ColorOutput "$env:Path += \";${InstallDir}\"" $InfoColor
+        Write-ColorOutput "`nOr add it permanently:" $InfoColor
+        Write-ColorOutput "[Environment]::SetEnvironmentVariable(\"Path\", \"$env:Path;${InstallDir}\", \"User\")" $InfoColor
     } else {
         Write-ColorOutput "`n${BinaryName} has been installed to ${InstallDir}" $SuccessColor
         Write-ColorOutput "The directory is already in your PATH" $SuccessColor
@@ -95,12 +105,12 @@ function Show-Help {
     Write-Host "  -Help              Show this help message"
     Write-Host ""
     Write-Host "Examples:"
-    Write-Host "  .\install.ps1              Install latest version"
-    Write-Host "  .\install.ps1 -Version v0.1.0   Install specific version"
-    Write-Host "  .\install.ps1 -Dir C:\Tools  Install to custom directory"
+    Write-Host "  .\install.ps1                    Install latest version"
+    Write-Host "  .\install.ps1 -Version v0.1.0    Install specific version"
+    Write-Host "  .\install.ps1 -Dir C:\Tools      Install to custom directory"
 }
 
-function Install-PowerShellCommunityExtensions {
+function Ensure-ArchiveSupport {
     if (-not (Get-Command Expand-Archive -ErrorAction SilentlyContinue)) {
         Write-ColorOutput "This script requires PowerShell 5.0 or later" $ErrorColor
         Write-ColorOutput "Please update PowerShell or download the binary manually from GitHub Releases" $ErrorColor
@@ -131,10 +141,9 @@ for ($i = 0; $i -lt $args.Count; $i++) {
     }
 }
 
-# Check PowerShell version
-Install-PowerShellCommunityExtensions
-
-# Download and install
+# Main
+Ensure-ArchiveSupport
+Resolve-Version
 Download-And-Install
 Show-PathInstructions
 

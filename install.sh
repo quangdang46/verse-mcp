@@ -13,6 +13,18 @@ BINARY_NAME="vm"
 VERSION="${VERSION:-latest}"
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
 
+# Resolve version (fetch latest tag if needed)
+resolve_version() {
+    if [ -z "$VERSION" ] || [ "$VERSION" = "latest" ]; then
+        # Follow GitHub redirect to get latest tag name
+        VERSION=$(curl -fsSLI -o /dev/null -w '%{url_effective}' "https://github.com/${REPO}/releases/latest" | awk -F/ '{print $NF}')
+        if [ -z "$VERSION" ]; then
+            echo -e "${RED}Failed to resolve latest release tag from GitHub.${NC}"
+            exit 1
+        fi
+    fi
+}
+
 # Detect OS and architecture
 detect_platform() {
     OS="$(uname -s)"
@@ -25,9 +37,9 @@ detect_platform() {
         Darwin*)
             PLATFORM="macos"
             ;;
-       MINGW*|MSYS*|CYGWIN*)
+        MINGW*|MSYS*|CYGWIN*)
             PLATFORM="windows"
-            echo -e "${YELLOW}For Windows, please download the binary manually from GitHub Releases${NC}"
+            echo -e "${YELLOW}For Windows, please use the PowerShell installer from GitHub Releases.${NC}"
             exit 1
             ;;
         *)
@@ -78,9 +90,9 @@ download_and_install() {
 
     # Download
     if command -v curl >/dev/null 2>&1; then
-        curl -fsSL -o "archive.${PLATFORM}" "$archive_url"
+        curl -fsSL -o "archive.pkg" "$archive_url"
     elif command -v wget >/dev/null 2>&1; then
-        wget -q -O "archive.${PLATFORM}" "$archive_url"
+        wget -q -O "archive.pkg" "$archive_url"
     else
         echo -e "${RED}Neither curl nor wget found. Please install one of them.${NC}"
         exit 1
@@ -89,25 +101,46 @@ download_and_install() {
     # Extract
     if [ "$PLATFORM" = "windows" ]; then
         if command -v unzip >/dev/null 2>&1; then
-            unzip -q "archive.${PLATFORM}"
+            unzip -q "archive.pkg"
         else
             echo -e "${RED}unzip not found. Please install it.${NC}"
             exit 1
         fi
     else
-        tar -xzf "archive.${PLATFORM}"
+        tar -xzf "archive.pkg"
     fi
 
-    # Create install directory if it doesn't exist
-    mkdir -p "$INSTALL_DIR"
+    # Ensure install directory exists (use sudo if required)
+    if ! mkdir -p "$INSTALL_DIR" 2>/dev/null; then
+        if command -v sudo >/dev/null 2>&1; then
+            echo -e "${YELLOW}Creating ${INSTALL_DIR} with sudo...${NC}"
+            sudo mkdir -p "$INSTALL_DIR"
+        else
+            echo -e "${RED}Cannot create ${INSTALL_DIR}. Re-run with a writable directory via -d/--dir or set INSTALL_DIR.${NC}"
+            exit 1
+        fi
+    fi
 
-    # Move binary
+    # Move binary (use sudo if directory not writable)
     echo -e "${GREEN}Installing ${BINARY_NAME} to ${INSTALL_DIR}...${NC}"
-    mv "$BINARY_NAME" "${INSTALL_DIR}/${BINARY_NAME}"
-    chmod +x "${INSTALL_DIR}/${BINARY_NAME}"
+    if mv "$BINARY_NAME" "${INSTALL_DIR}/${BINARY_NAME}" 2>/dev/null; then
+        :
+    else
+        if command -v sudo >/dev/null 2>&1; then
+            sudo mv "$BINARY_NAME" "${INSTALL_DIR}/${BINARY_NAME}"
+        else
+            echo -e "${RED}Permission denied writing to ${INSTALL_DIR} and sudo not available.${NC}"
+            exit 1
+        fi
+    fi
+
+    # Make executable (ignore errors on filesystems that don't support it)
+    if chmod +x "${INSTALL_DIR}/${BINARY_NAME}" 2>/dev/null; then :; else
+        if command -v sudo >/dev/null 2>&1; then sudo chmod +x "${INSTALL_DIR}/${BINARY_NAME}"; fi
+    fi
 
     # Cleanup
-    cd -
+    cd - >/dev/null
     rm -rf "$TMPDIR"
 }
 
@@ -118,7 +151,7 @@ check_path() {
         echo -e "${GREEN}The directory is already in your PATH${NC}"
     else
         echo -e "${YELLOW}${BINARY_NAME} has been installed to ${INSTALL_DIR}${NC}"
-        echo -e "${YELLOW}Please add the following to your shell profile:${NC}"
+        echo -e "${YELLOW}Add this to your shell profile to use it globally:${NC}"
         echo -e "${YELLOW}  export PATH=\"${INSTALL_DIR}:\$PATH\"${NC}"
     fi
 }
@@ -130,12 +163,12 @@ print_usage() {
     echo "Options:"
     echo "  -v, --version VERSION    Specific version to install (default: latest)"
     echo "  -d, --dir DIRECTORY      Installation directory (default: ~/.local/bin)"
-    echo "  -h, --help              Show this help message"
+    echo "  -h, --help               Show this help message"
     echo ""
     echo "Examples:"
-    echo "  $0                      # Install latest version"
-    echo "  $0 -v v0.1.0           # Install specific version"
-    echo "  $0 -d /usr/local/bin   # Install to system directory"
+    echo "  $0                        # Install latest version"
+    echo "  $0 -v v0.1.0             # Install specific version"
+    echo "  $0 -d /usr/local/bin     # Install to system directory"
 }
 
 # Parse arguments
@@ -162,6 +195,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 # Main execution
+resolve_version
 detect_platform
 download_and_install
 check_path
