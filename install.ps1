@@ -34,15 +34,33 @@ function Get-ArtifactName {
 
 function Resolve-Version {
     if ([string]::IsNullOrWhiteSpace($Version) -or $Version -eq "latest") {
+        # Try GitHub API first
         try {
             $headers = @{ "Accept" = "application/vnd.github+json"; "User-Agent" = "verse-mcp-installer" }
-            $latest = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" -Headers $headers
+            $latest = Invoke-RestMethod -Uri "https://api.github.com/repos/$Repo/releases/latest" -Headers $headers -ErrorAction Stop
             $Version = $latest.tag_name
-            if ([string]::IsNullOrWhiteSpace($Version)) { throw "Empty tag_name" }
+        } catch {
+            $Version = $null
         }
-        catch {
-            Write-ColorOutput "Failed to resolve latest release tag via GitHub API." $ErrorColor
-            Write-ColorOutput "You can specify a version explicitly: -Version v0.1.0" $WarningColor
+        # Fallback: follow GitHub redirect from /releases/latest to /tag/vX.Y.Z
+        if ([string]::IsNullOrWhiteSpace($Version)) {
+            try {
+                $resp = Invoke-WebRequest -Uri ("https://github.com/" + $Repo + "/releases/latest") -MaximumRedirection 0 -Method Head -UseBasicParsing -ErrorAction Stop
+            } catch {
+                $resp = $_.Exception.Response
+            }
+            $loc = $null
+            if ($resp -and $resp.Headers) {
+                if ($resp.Headers["Location"]) { $loc = $resp.Headers["Location"] }
+                elseif ($resp.Headers.Location) { $loc = $resp.Headers.Location }
+            }
+            if ($loc) {
+                $m = [regex]::Match($loc, "/tag/(?<tag>.+)$")
+                if ($m.Success) { $Version = $m.Groups["tag"].Value }
+            }
+        }
+        if ([string]::IsNullOrWhiteSpace($Version) -or $Version -eq "latest") {
+            Write-ColorOutput "Could not resolve latest release tag automatically. Re-run with: -Version v0.1.0 or set $env:VERSION" $ErrorColor
             exit 1
         }
     }

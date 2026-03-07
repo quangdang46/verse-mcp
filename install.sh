@@ -11,6 +11,7 @@ NC='\033[0m' # No Color
 REPO="quangdang46/verse-mcp"
 BINARY_NAME="vm"
 VERSION="${VERSION:-latest}"
+# Allow VERSION=latest but resolve to a real tag before download
 INSTALL_DIR="${INSTALL_DIR:-$HOME/.local/bin}"
 
 # Resolve version (fetch latest tag if needed)
