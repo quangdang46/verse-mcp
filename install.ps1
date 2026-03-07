@@ -68,8 +68,13 @@ function Resolve-Version {
 
 function Download-And-Install {
     $Artifact = Get-ArtifactName
-    $BaseUrl = "https://github.com/${Repo}/releases/download/${Version}"
-    $ZipUrl = "${BaseUrl}/${Artifact}.zip"
+    # Build download URL: use releases/latest/download when Version is 'latest' or unresolved
+    if ([string]::IsNullOrWhiteSpace($Version) -or $Version -eq "latest") {
+        $ZipUrl = "https://github.com/$Repo/releases/latest/download/$Artifact.zip"
+    } else {
+        if ($Version -notmatch '^v') { $Version = 'v' + $Version }
+        $ZipUrl = "https://github.com/$Repo/releases/download/$Version/$Artifact.zip"
+    }
 
     Write-ColorOutput "Downloading ${Artifact} from ${ZipUrl}..." $SuccessColor
 
