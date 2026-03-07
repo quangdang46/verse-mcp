@@ -281,6 +281,7 @@ fn levenshtein(a: &str, b: &str) -> usize {
         row[0] = i;
     }
 
+    #[allow(clippy::needless_range_loop)]
     for j in 0..=b_len {
         matrix[0][j] = j;
     }

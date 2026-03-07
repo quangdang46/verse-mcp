@@ -216,7 +216,6 @@ impl ServerHandler for VerseMcpHandler {
             server_info: rmcp::model::Implementation {
                 name: "verse-mcp".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_string(),
-                ..Default::default()
             },
             instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for devices, query_digest to search the Verse API, and get_device_props to get device properties.".to_string()),
         }
