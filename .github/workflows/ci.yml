@@ -64,14 +64,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Build binaries
-        run: |
-          set -e
-          cargo build --release -p uefn_scan_cli -p mcp_server
-
-      - name: List outputs (Unix)
-        if: runner.os != 'Windows'
-        run: |
-          ls -lah build_out/release || true
+        run: cargo build --release -p uefn_scan_cli -p mcp_server
 
       - name: Upload artifacts (Unix)
         if: runner.os != 'Windows'
