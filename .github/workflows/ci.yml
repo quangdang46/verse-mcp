@@ -66,12 +66,35 @@ jobs:
       - name: Build
         run: cargo build --release --workspace
 
-      - name: Upload build artifacts
+      - name: Prepare dist (Unix)
+        if: runner.os != 'Windows'
+        run: |
+          set -e
+          mkdir -p dist
+          # copy binaries if present
+          [ -f build_out/release/uefn_scan_cli ] && cp build_out/release/uefn_scan_cli dist/uefn_scan_cli-${{ matrix.os }} || true
+          [ -f build_out/release/mcp_server ] && cp build_out/release/mcp_server dist/mcp_server-${{ matrix.os }} || true
+          # create checksums
+          if [ "$(ls -A dist 2>/dev/null)" ]; then sha256sum dist/* > dist/SHA256SUMS; fi
+
+      - name: Prepare dist (Windows)
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist | Out-Null
+          if (Test-Path build_out/release/uefn_scan_cli.exe) { Copy-Item build_out/release/uefn_scan_cli.exe dist/uefn_scan_cli-windows.exe }
+          if (Test-Path build_out/release/mcp_server.exe) { Copy-Item build_out/release/mcp_server.exe dist/mcp_server-windows.exe }
+          if (Get-ChildItem dist | Measure-Object | Select-Object -ExpandProperty Count) {
+            Get-ChildItem dist | Where-Object { -not $_.PSIsContainer } | ForEach-Object {
+              $h = (Get-FileHash $_.FullName -Algorithm SHA256).Hash
+              "$h  $($_.Name)" | Out-File -FilePath dist/SHA256SUMS -Append -Encoding ascii
+            }
+          }
+
+      - name: Upload dist artifacts
         uses: actions/upload-artifact@v4
         with:
           name: build-${{ runner.os }}
-          path: |
-            build_out/release/uefn_scan_cli*
-            build_out/release/mcp_server*
-          if-no-files-found: error
+          path: dist/*
+          if-no-files-found: warn
           retention-days: 7
