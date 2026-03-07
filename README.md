@@ -111,53 +111,48 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 ## Installation
 
-**Pre-built releases are not yet available.** Build from source using Rust.
+### Quick Install
 
-### Prerequisites
-
-Install [Rust](https://rustup.rs/) (v1.70 or later):
-
-**Windows:**
+**Windows (PowerShell):**
 ```powershell
-winget install Rustlang.Rustup
+Invoke-Expression "& { $(Invoke-RestMethod 'https://github.com/quangdang46/verse-mcp/releases/latest/download/install.ps1') }"
 ```
 
 **Linux / Ubuntu:**
 ```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source $HOME/.cargo/env
+curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
 ```
 
 **macOS:**
 ```bash
-curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-source $HOME/.cargo/env
+curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
 ```
 
-### Build from Source
+### Manual Download
 
-Clone and build:
+Download the latest release from [GitHub Releases](https://github.com/quangdang46/verse-mcp/releases):
 
-```bash
-git clone https://github.com/quangdang46/verse-mcp.git
-cd verse-mcp
-cargo build --release
-```
+| Platform | File |
+|---|---|
+| Linux x86_64 | `vm-x86_64-linux.tar.gz` |
+| Windows x86_64 | `vm-x86_64-windows.zip` |
+| macOS ARM64 | `vm-aarch64-macos.tar.gz` |
+| macOS x86_64 | `vm-x86_64-macos.tar.gz` |
 
-The binary will be at `target/release/vm` (Windows: `target/release/vm.exe`).
+Extract and add to PATH.
 
 ### Add to PATH
 
 **Windows (PowerShell):**
 ```powershell
-$env:Path += ";C:\path\to\verse-mcp\target\release"
+$env:Path += ";C:\path\to\vm"
 ```
 
 To add permanently, open **System Properties → Environment Variables** and add the directory to PATH.
 
 **Linux / macOS:**
 ```bash
-echo 'export PATH="$HOME/projects/verse-mcp/target/release:$PATH"' >> ~/.bashrc
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
@@ -168,6 +163,18 @@ vm --version
 ```
 
 Should output: `vm 0.1.0`
+
+### Build from Source
+
+Install [Rust](https://rustup.rs/) first, then:
+
+```bash
+git clone https://github.com/quangdang46/verse-mcp.git
+cd verse-mcp
+cargo build --release
+```
+
+The binary will be at `target/release/vm` (Windows: `target/release/vm.exe`).
 
 ---
 
@@ -248,10 +255,10 @@ Add to your MCP client config file:
 - [ ] `list_editables` tool (planned)
 - [ ] `scaffold_ui` tool (planned)
 
-### Phase 4 — In Progress
+### Phase 4 — Complete ✅
 - [x] Installation scripts (install.sh, install.ps1)
 - [x] Release workflow with multi-platform builds
-- [ ] Pre-built binary releases on GitHub
+- [x] Pre-built binary releases on GitHub
 - [ ] Integration tests with real UEFN projects
 - [ ] Documentation website
 
