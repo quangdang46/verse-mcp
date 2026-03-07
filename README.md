@@ -1,6 +1,8 @@
-# Verse UEFN MCP
+# Verse UEFN MCP Server
 
-> **A project-aware MCP server for Verse/UEFN development**
+> **MCP server for Fortnite UEFN & Verse development - scan devices, validate wiring, query Fortnite API digest, and scaffold UI**
+
+[UEFN](https://dev.epicgames.com/community/unreal-engine-for-fortnite) | [Verse](https://dev.epicgames.com/community/documentation/verse) | [MCP](https://modelcontextprotocol.io/) | [Rust](https://www.rust-lang.org/)
 
 ---
 
