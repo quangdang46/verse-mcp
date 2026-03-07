@@ -207,26 +207,13 @@ vm --transport http --port 8080
 
 Add to your MCP client config file:
 
-**Claude Desktop** (`~/Library/Application Support/Claude/claude_desktop_config.json`):
+**Cursor IDE , Claude Code** (`mcp.json`):
 
 ```json
 {
   "mcpServers": {
     "verse-mcp": {
-      "type": "http",
-      "url": "http://localhost:2003"
-    }
-  }
-}
-```
-
-**Cursor IDE** (`~/.cursor/mcp.json`):
-
-```json
-{
-  "mcpServers": {
-    "verse-mcp": {
-      "command": "/path/to/vm"
+      "command": "vm"
     }
   }
 }
