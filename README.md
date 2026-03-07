@@ -2,7 +2,7 @@
 
 > **MCP server for Fortnite UEFN & Verse development - scan devices, validate wiring, query Fortnite API digest, and scaffold UI**
 
-[UEFN](https://dev.epicgames.com/community/unreal-engine-for-fortnite) | [Verse](https://dev.epicgames.com/community/documentation/verse) | [MCP](https://modelcontextprotocol.io/) | [Rust](https://www.rust-lang.org/)
+[UEFN](https://dev.epicgames.com/community/fortnite/getting-started) | [Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-quick-reference) | [MCP](https://modelcontextprotocol.io/) | [Rust](https://www.rust-lang.org/)
 
 ---
 
