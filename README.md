@@ -146,6 +146,38 @@ vm --version
 
 Should output: `vm 0.1.0`
 
+### Prebuilt binaries
+
+Windows (PowerShell):
+
+```powershell
+irm "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.ps1" | iex
+# Specific version
+$env:VERSION = "v0.1.0"; irm "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.ps1" | iex
+```
+
+- Default install dir: `%USERPROFILE%\.local\bin`
+- Add to PATH for current session:
+
+```powershell
+$env:Path += ";$env:USERPROFILE\.local\bin"
+```
+
+macOS / Linux:
+
+```bash
+curl -fsSL "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.sh" | bash
+# Specific version and custom dir
+INSTALL_DIR=/usr/local/bin VERSION=v0.1.0 curl -fsSL "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.sh" | bash
+```
+
+- Default install dir: `$HOME/.local/bin` (no sudo required)
+- If not on PATH, add to your shell profile:
+
+```bash
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
+```
+
 ---
 
 ## Usage
