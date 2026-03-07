@@ -109,77 +109,54 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 ## Installation
 
-### Windows
+**Pre-built releases are not yet available.** Build from source using Rust.
 
-#### PowerShell (Recommended)
+### Prerequisites
 
+Install [Rust](https://rustup.rs/) (v1.70 or later):
+
+**Windows:**
 ```powershell
-Invoke-Expression "& { $(Invoke-RestMethod 'https://github.com/quangdang46/verse-mcp/releases/latest/download/install.ps1') }"
+winget install Rustlang.Rustup
 ```
 
-#### Manual Download
+**Linux / Ubuntu:**
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env
+```
 
-1. Download `vm-x86_64-windows.zip` from [GitHub Releases](https://github.com/quangdang46/verse-mcp/releases)
-2. Extract the zip file
-3. Move `vm.exe` to a directory in your PATH (e.g., `C:\Program Files\vm\`)
-4. Add to PATH if needed:
+**macOS:**
+```bash
+curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
+source $HOME/.cargo/env
+```
 
+### Build from Source
+
+Clone and build:
+
+```bash
+git clone https://github.com/quangdang46/verse-mcp.git
+cd verse-mcp
+cargo build --release
+```
+
+The binary will be at `target/release/vm` (Windows: `target/release/vm.exe`).
+
+### Add to PATH
+
+**Windows (PowerShell):**
 ```powershell
-$env:Path += ";C:\Program Files\vm"
+$env:Path += ";C:\path\to\verse-mcp\target\release"
 ```
 
 To add permanently, open **System Properties → Environment Variables** and add the directory to PATH.
 
-### Linux / Ubuntu
-
-#### Quick Install
-
+**Linux / macOS:**
 ```bash
-curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
-```
-
-#### Manual Download
-
-```bash
-wget https://github.com/quangdang46/verse-mcp/releases/latest/download/vm-x86_64-linux.tar.gz
-tar -xzf vm-x86_64-linux.tar.gz
-sudo mv vm /usr/local/bin/
-```
-
-Or add to `~/.local/bin`:
-
-```bash
-mkdir -p ~/.local/bin
-mv vm ~/.local/bin/
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+echo 'export PATH="$HOME/projects/verse-mcp/target/release:$PATH"' >> ~/.bashrc
 source ~/.bashrc
-```
-
-### macOS
-
-#### Quick Install (ARM64/Apple Silicon)
-
-```bash
-curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
-```
-
-#### Quick Install (Intel)
-
-```bash
-curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
-```
-
-#### Manual Download
-
-```bash
-# For ARM64 (Apple Silicon)
-curl -L https://github.com/quangdang46/verse-mcp/releases/latest/download/vm-aarch64-macos.tar.gz -o vm.tar.gz
-
-# For Intel
-curl -L https://github.com/quangdang46/verse-mcp/releases/latest/download/vm-x86_64-macos.tar.gz -o vm.tar.gz
-
-tar -xzf vm.tar.gz
-sudo mv vm /usr/local/bin/
 ```
 
 ### Verify Installation
@@ -189,14 +166,6 @@ vm --version
 ```
 
 Should output: `vm 0.1.0`
-
-### From Source
-
-```bash
-cargo install --path .
-```
-
-The binary will be at `target/release/vm`.
 
 ---
 
@@ -277,8 +246,10 @@ Add to your MCP client config file:
 - [ ] `list_editables` tool (planned)
 - [ ] `scaffold_ui` tool (planned)
 
-### Phase 4 — Planned
-- [ ] Pre-built binary releases
+### Phase 4 — In Progress
+- [x] Installation scripts (install.sh, install.ps1)
+- [x] Release workflow with multi-platform builds
+- [ ] Pre-built binary releases on GitHub
 - [ ] Integration tests with real UEFN projects
 - [ ] Documentation website
 
