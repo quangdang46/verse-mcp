@@ -111,60 +111,30 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 ## Installation
 
-### Build from Source (Recommended)
-
-Install [Rust](https://rustup.rs/) first, then:
+### Cargo Install (Recommended)
 
 ```bash
-git clone https://github.com/quangdang46/verse-mcp.git
-cd verse-mcp
-cargo build --release
+cargo install --git https://github.com/quangdang46/verse-mcp.git
 ```
 
-The binary will be at `target/release/vm` (Windows: `target/release/vm.exe`).
+This will:
+- Automatically download and compile the project
+- Install the `vm` binary to `~/.cargo/bin` (Linux/macOS) or `%USERPROFILE%\.cargo\bin` (Windows)
 
-### Quick Install (Pre-built binaries)
+**Note:** First-time install requires [Rust](https://rustup.rs/).
 
-Download from [GitHub Releases](https://github.com/quangdang46/verse-mcp/releases):
+### Add Cargo bin to PATH
+
+If `vm` command is not found, add Cargo bin to PATH:
 
 **Windows (PowerShell):**
 ```powershell
-Invoke-Expression "& { $(Invoke-RestMethod 'https://github.com/quangdang46/verse-mcp/releases/latest/download/install.ps1') }"
+$env:Path += ";$env:USERPROFILE\.cargo\bin"
 ```
-
-**Linux / Ubuntu:**
-```bash
-curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
-```
-
-**macOS:**
-```bash
-curl -fsSL https://github.com/quangdang46/verse-mcp/releases/latest/download/install.sh | bash
-```
-
-**Manual Download:**
-
-| Platform | File |
-|---|---|
-| Linux x86_64 | `vm-x86_64-linux.tar.gz` |
-| Windows x86_64 | `vm-x86_64-windows.zip` |
-| macOS ARM64 | `vm-aarch64-macos.tar.gz` |
-| macOS x86_64 | `vm-x86_64-macos.tar.gz` |
-
-Extract and add to PATH.
-
-### Add to PATH
-
-**Windows (PowerShell):**
-```powershell
-$env:Path += ";C:\path\to\vm"
-```
-
-To add permanently, open **System Properties → Environment Variables** and add the directory to PATH.
 
 **Linux / macOS:**
 ```bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
 source ~/.bashrc
 ```
 
