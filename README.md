@@ -151,9 +151,10 @@ Should output: `vm 0.1.0`
 Windows (PowerShell):
 
 ```powershell
-irm "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.ps1" | iex
+# Cache-busted to avoid stale script in some environments
+irm "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.ps1?ts=$(Get-Random)" | iex
 # Specific version
-$env:VERSION = "v0.1.0"; irm "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.ps1" | iex
+$env:VERSION = "v0.1.0"; irm "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.ps1?ts=$(Get-Random)" | iex
 ```
 
 - Default install dir: `%USERPROFILE%\.local\bin`
