@@ -95,9 +95,22 @@ function Download-And-Install {
             New-Item -ItemType Directory -Path $InstallDir -Force | Out-Null
         }
 
-        # Move binary
+        # Move binary (force upgrade-safe)
         Write-ColorOutput "Installing ${BinaryName} to ${InstallDir}..." $SuccessColor
-        Move-Item "${BinaryName}.exe" "${InstallDir}\${BinaryName}.exe" -Force
+        $dest = Join-Path $InstallDir "${BinaryName}.exe"
+        # Stop running process if exists
+        try {
+            $proc = Get-Process -Name $BinaryName -ErrorAction SilentlyContinue
+            if ($proc) { $proc | Stop-Process -Force }
+        } catch { }
+        # Remove or backup existing binary to avoid Move-Item collision on Windows PowerShell 5.1
+        if (Test-Path $dest) {
+            try {
+                Rename-Item -Path $dest -NewName "${BinaryName}.exe.bak" -Force -ErrorAction SilentlyContinue | Out-Null
+            } catch { }
+            Remove-Item -Path $dest -Force -ErrorAction SilentlyContinue
+        }
+        Move-Item -Path "${BinaryName}.exe" -Destination $dest -Force
 
     } finally {
         Pop-Location
