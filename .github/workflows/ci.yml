@@ -22,19 +22,19 @@ jobs:
           components: rustfmt, clippy
 
       - name: Cache cargo registry
-        uses: actions/cache@V4
+        uses: actions/cache@v4
         with:
           path: ~/.cargo/registry
           key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Cache cargo index
-        uses: actions/cache@V4
+        uses: actions/cache@v4
         with:
           path: ~/.cargo/git
           key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
 
       - name: Cache build dir
-        uses: actions/cache@V4
+        uses: actions/cache@v4
         with:
           path: build_out
           key: ${{ runner.os }}-build-out-${{ hashFiles('**/Cargo.lock') }}
@@ -63,48 +63,35 @@ jobs:
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
 
-      - name: Build
-        run: cargo build --release --workspace
-
-      - name: Package archive (Unix)
-        if: runner.os != 'Windows'
+      - name: Build binaries
         run: |
           set -e
-          mkdir -p dist
-          # pick known crates if present; fallback to all executables
-          FILES=""
-          for f in build_out/release/uefn_scan_cli build_out/release/mcp_server; do
-            [ -f "$f" ] && FILES="$FILES $f"
-          done
-          if [ -z "$FILES" ]; then
-            FILES=$(find build_out/release -maxdepth 1 -type f -perm -111 -print | tr '\n' ' ')
-          fi
-          [ -n "$FILES" ] || { echo "No executables found under build_out/release" >&2; exit 1; }
-          TAR=dist/verse-mcp-${{ runner.os }}.tar.gz
-          tar -czf "$TAR" $FILES
-          sha256sum "$TAR" > "$TAR.sha256"
+          cargo build --release -p uefn_scan_cli -p mcp_server
 
-      - name: Package archive (Windows)
-        if: runner.os == 'Windows'
-        shell: pwsh
+      - name: List outputs (Unix)
+        if: runner.os != 'Windows'
         run: |
-          New-Item -ItemType Directory -Force dist | Out-Null
-          $files = @()
-          if (Test-Path build_out/release/uefn_scan_cli.exe) { $files += 'build_out/release/uefn_scan_cli.exe' }
-          if (Test-Path build_out/release/mcp_server.exe) { $files += 'build_out/release/mcp_server.exe' }
-          if ($files.Count -eq 0) {
-            $files = Get-ChildItem -Path build_out/release -Filter *.exe -File | ForEach-Object { $_.FullName }
-          }
-          if ($files.Count -eq 0) { Write-Error 'No executables found under build_out/release'; exit 1 }
-          $zip = "dist/verse-mcp-${{ runner.os }}.zip"
-          7z a $zip $files | Out-Null
-          (Get-FileHash $zip -Algorithm SHA256).Hash + '  ' + (Split-Path $zip -Leaf) | Out-File "$zip.sha256" -Encoding ascii
+          ls -lah build_out/release || true
+          file build_out/release/* || true
 
-      - name: Upload archive artifact
+      - name: Upload artifacts (Unix)
+        if: runner.os != 'Windows'
         uses: actions/upload-artifact@v4
         with:
           name: verse-mcp-${{ runner.os }}
           path: |
-            dist/verse-mcp-${{ runner.os }}.*
+            build_out/release/uefn_scan_cli
+            build_out/release/mcp_server
+          if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload artifacts (Windows)
+        if: runner.os == 'Windows'
+        uses: actions/upload-artifact@v4
+        with:
+          name: verse-mcp-${{ runner.os }}
+          path: |
+            build_out/release/uefn_scan_cli.exe
+            build_out/release/mcp_server.exe
           if-no-files-found: error
           retention-days: 7
