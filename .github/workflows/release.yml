@@ -70,11 +70,28 @@ jobs:
           7z a ${{ matrix.artifact }}.zip vm.exe
           certutil -hashfile ${{ matrix.artifact }}.zip SHA256 > ${{ matrix.artifact }}.zip.sha256
 
+      - name: Upload install scripts
+        if: matrix.os == 'ubuntu-latest'
+        run: |
+          shasum -a 256 install.sh > install.sh.sha256
+          shasum -a 256 install.ps1 > install.ps1.sha256
+
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.artifact }}
           path: target/${{ matrix.target }}/release/${{ matrix.artifact }}.*
+
+      - name: Upload install scripts
+        if: matrix.os == 'ubuntu-latest'
+        uses: actions/upload-artifact@v4
+        with:
+          name: install-scripts
+          path: |
+            install.sh
+            install.sh.sha256
+            install.ps1
+            install.ps1.sha256
 
   release:
     needs: build
@@ -93,7 +110,12 @@ jobs:
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
-          files: artifacts/**/vm-*
+          files: |
+            artifacts/**/vm-*
+            artifacts/install-scripts/install.sh
+            artifacts/install-scripts/install.sh.sha256
+            artifacts/install-scripts/install.ps1
+            artifacts/install-scripts/install.ps1.sha256
           generate_release_notes: true
           draft: false
           prerelease: ${{ contains(github.ref, '-alpha') || contains(github.ref, '-beta') || contains(github.ref, '-rc') }}

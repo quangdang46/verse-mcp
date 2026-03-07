@@ -109,38 +109,91 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 ## Installation
 
-### Quick Install (Recommended)
+### Windows
+
+#### PowerShell (Recommended)
+
+```powershell
+Invoke-Expression "& { $(Invoke-RestMethod 'https://github.com/user/verse-mcp/releases/latest/download/install.ps1') }"
+```
+
+#### Manual Download
+
+1. Download `vm-x86_64-windows.zip` from [GitHub Releases](https://github.com/user/verse-mcp/releases)
+2. Extract the zip file
+3. Move `vm.exe` to a directory in your PATH (e.g., `C:\Program Files\vm\`)
+4. Add to PATH if needed:
+
+```powershell
+$env:Path += ";C:\Program Files\vm"
+```
+
+To add permanently, open **System Properties → Environment Variables** and add the directory to PATH.
+
+### Linux / Ubuntu
+
+#### Quick Install
 
 ```bash
-# Automatically detect your platform and install the latest release
 curl -fsSL https://github.com/user/verse-mcp/releases/latest/download/install.sh | bash
 ```
 
-### Manual Download
+#### Manual Download
 
-Download the latest release for your platform from [GitHub Releases](https://github.com/user/verse-mcp/releases):
+```bash
+wget https://github.com/user/verse-mcp/releases/latest/download/vm-x86_64-linux.tar.gz
+tar -xzf vm-x86_64-linux.tar.gz
+sudo mv vm /usr/local/bin/
+```
 
-| Platform | File |
-|---|---|
-| Linux x86_64 | `vm-x86_64-linux.tar.gz` |
-| Windows x86_64 | `vm-x86_64-windows.zip` |
-| macOS ARM64 | `vm-aarch64-macos.tar.gz` |
-| macOS x86_64 | `vm-x86_64-macos.tar.gz` |
+Or add to `~/.local/bin`:
 
-Extract and add to PATH.
+```bash
+mkdir -p ~/.local/bin
+mv vm ~/.local/bin/
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc
+source ~/.bashrc
+```
+
+### macOS
+
+#### Quick Install (ARM64/Apple Silicon)
+
+```bash
+curl -fsSL https://github.com/user/verse-mcp/releases/latest/download/install.sh | bash
+```
+
+#### Quick Install (Intel)
+
+```bash
+curl -fsSL https://github.com/user/verse-mcp/releases/latest/download/install.sh | bash
+```
+
+#### Manual Download
+
+```bash
+# For ARM64 (Apple Silicon)
+curl -L https://github.com/user/verse-mcp/releases/latest/download/vm-aarch64-macos.tar.gz -o vm.tar.gz
+
+# For Intel
+curl -L https://github.com/user/verse-mcp/releases/latest/download/vm-x86_64-macos.tar.gz -o vm.tar.gz
+
+tar -xzf vm.tar.gz
+sudo mv vm /usr/local/bin/
+```
 
 ### Verify Installation
 
 ```bash
 vm --version
-# Should output: vm 0.1.0
 ```
+
+Should output: `vm 0.1.0`
 
 ### From Source
 
 ```bash
 cargo install --path .
-cargo build --release
 ```
 
 The binary will be at `target/release/vm`.
