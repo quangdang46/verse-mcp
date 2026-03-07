@@ -87,9 +87,9 @@ function Show-PathInstructions {
     if ($PathEnv -notlike "*$InstallDir*") {
         Write-ColorOutput "`n${BinaryName} has been installed to ${InstallDir}" $WarningColor
         Write-ColorOutput "To add it to your current session PATH, run:" $InfoColor
-        Write-ColorOutput "$env:Path += \";${InstallDir}\"" $InfoColor
+        Write-ColorOutput ('$env:Path += ";' + $InstallDir + '"') $InfoColor
         Write-ColorOutput "`nOr add it permanently:" $InfoColor
-        Write-ColorOutput "[Environment]::SetEnvironmentVariable(\"Path\", \"$env:Path;${InstallDir}\", \"User\")" $InfoColor
+        Write-ColorOutput ('[Environment]::SetEnvironmentVariable("Path", "' + $env:Path + ';' + $InstallDir + '", "User")') $InfoColor
     } else {
         Write-ColorOutput "`n${BinaryName} has been installed to ${InstallDir}" $SuccessColor
         Write-ColorOutput "The directory is already in your PATH" $SuccessColor
