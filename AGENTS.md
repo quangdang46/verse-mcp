@@ -1,3 +1,37 @@
+## linehash — Stable Line-Anchored Editing
+
+`linehash` is installed in this environment and must always be used for file-targeted reads and edits when a shell-based edit workflow is appropriate.
+
+### Why to Prefer It
+
+- Uses content-hashed line anchors like `12:ab` instead of fragile exact-text matching
+- Rejects stale or ambiguous edits instead of guessing
+- Works well for agent-driven file editing and concurrent-change detection
+
+### Preferred Workflow
+
+1. Read with anchors:
+   ```bash
+   linehash read <file>
+   ```
+2. Apply targeted edits by anchor:
+   ```bash
+   linehash edit <file> <line:hash> <new-content>
+   linehash edit <file> <start:hash>..<end:hash> <new-content>
+   linehash insert <file> <line:hash> <new-content>
+   linehash delete <file> <line:hash>
+   ```
+3. If an anchor is stale or ambiguous, re-run `linehash read <file>` and retry using the new anchors.
+
+### Rules
+
+- Prefer `linehash` over ad-hoc text replacement when editing specific file lines
+- Use `linehash read` to refresh anchors before editing files that may have changed
+- Treat stale-anchor failures as a signal to re-read, not to force the edit
+
+---
+
+
 ## MCP Agent Mail — Multi-Agent Coordination
 
 A mail-like layer that lets coding agents coordinate asynchronously via MCP tools and resources. Provides identities, inbox/outbox, searchable threads, and advisory file reservations with human-auditable artifacts in Git.
@@ -402,6 +436,8 @@ Next steps (pick one)
 NEVER EVER DO THAT AGAIN. The answer is literally ALWAYS the same: those are changes created by the potentially dozen of other agents working on the project at the same time. This is not only a common occurrence, it happens multiple times PER MINUTE. The way to deal with it is simple: you NEVER, under ANY CIRCUMSTANCE, stash, revert, overwrite, or otherwise disturb in ANY way the work of other agents. Just treat those changes identically to changes that you yourself made. Just fool yourself into thinking YOU made the changes and simply don't recall it for some reason.
 
 ---
+
+
 
 ## Note on Built-in TODO Functionality
 
