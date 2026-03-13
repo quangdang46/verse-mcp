@@ -10,6 +10,7 @@ pub mod device_grapher;
 pub mod digest;
 pub mod fingerprint;
 pub mod parser;
+pub mod similarity;
 pub mod template_manager;
 pub mod types;
 pub mod validator;
@@ -25,6 +26,7 @@ pub use digest::{
     SearchResult, SymbolKind, SymbolLocation,
 };
 pub use fingerprint::Fingerprint;
+pub use similarity::{find_closest_match, levenshtein};
 pub use template_manager::{
     Template, TemplateDevice, TemplateError, TemplateManager, TemplateWire,
 };

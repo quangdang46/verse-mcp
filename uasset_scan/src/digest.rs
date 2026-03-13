@@ -6,7 +6,11 @@
 use indexmap::IndexMap;
 use regex::Regex;
 use serde::{Deserialize, Serialize};
+use std::cmp::Reverse;
+use std::collections::HashSet;
 use std::sync::LazyLock;
+
+use crate::similarity::levenshtein;
 
 /// Parsed digest index containing all device definitions
 #[derive(Debug, Clone, Default, Serialize, Deserialize)]
@@ -91,7 +95,7 @@ pub enum SymbolKind {
 }
 
 /// Search result from digest query
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct SearchResult {
     /// Kind of match
     pub kind: String,
@@ -101,6 +105,18 @@ pub struct SearchResult {
     pub device: Option<String>,
     /// Formatted signature
     pub signature: String,
+}
+
+#[derive(Debug, Clone)]
+struct RankedSearchResult {
+    result: SearchResult,
+    score: u32,
+}
+
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+pub struct RankedDeviceCandidate {
+    pub name: String,
+    pub score: u32,
 }
 
 /// Kind of change in a diff
@@ -161,7 +177,7 @@ pub struct DiffStats {
 
 // Regex patterns for parsing (compiled once)
 static DEVICE_DECL_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"^([a-z][a-z0-9_]*_device)\s*=\s*class\s*\(\s*\)\s*:")
+    Regex::new(r"^([a-z][a-z0-9_]*)\s*=\s*class\s*\(\s*\)\s*:")
         .expect("Invalid device decl regex")
 });
 
@@ -332,76 +348,152 @@ impl DigestIndex {
 
     /// Search for devices matching query
     pub fn search_devices(&self, query: &str) -> Vec<SearchResult> {
-        let query_lower = query.to_lowercase();
-        self.devices
+        let mut results: Vec<_> = self
+            .devices
             .values()
-            .filter(|d| d.name.to_lowercase().contains(&query_lower))
-            .map(|d| SearchResult {
-                kind: "device".to_string(),
-                name: d.name.clone(),
-                device: None,
-                signature: format_device(d),
+            .filter_map(|device| {
+                ranked_result(
+                    query,
+                    "device",
+                    &device.name,
+                    None,
+                    format_device(device),
+                    std::iter::empty(),
+                )
             })
-            .collect()
+            .collect();
+
+        sort_ranked_results(&mut results);
+        dedupe_ranked_results(results)
     }
 
     /// Search for events matching query
     pub fn search_events(&self, query: &str) -> Vec<SearchResult> {
-        let query_lower = query.to_lowercase();
-        self.devices
+        let mut results: Vec<_> = self
+            .devices
             .values()
-            .flat_map(|d| {
-                d.events.iter().filter_map(|e| {
-                    if e.name.to_lowercase().contains(&query_lower) {
-                        Some(SearchResult {
-                            kind: if e.is_receiver { "receiver" } else { "trigger" }.to_string(),
-                            name: e.name.clone(),
-                            device: Some(d.name.clone()),
-                            signature: format_event(e),
-                        })
-                    } else {
-                        None
-                    }
+            .flat_map(|device| {
+                device.events.iter().filter_map(|event| {
+                    ranked_result(
+                        query,
+                        if event.is_receiver { "receiver" } else { "trigger" },
+                        &event.name,
+                        Some(device.name.as_str()),
+                        format_event(event),
+                        [device.name.as_str()],
+                    )
                 })
             })
-            .collect()
+            .collect();
+
+        sort_ranked_results(&mut results);
+        dedupe_ranked_results(results)
     }
 
     /// Search for methods matching query
     pub fn search_methods(&self, query: &str) -> Vec<SearchResult> {
-        let query_lower = query.to_lowercase();
-        self.devices
+        let mut results: Vec<_> = self
+            .devices
             .values()
-            .flat_map(|d| {
-                d.methods.iter().filter_map(|m| {
-                    if m.name.to_lowercase().contains(&query_lower) {
-                        Some(SearchResult {
-                            kind: "method".to_string(),
-                            name: m.name.clone(),
-                            device: Some(d.name.clone()),
-                            signature: format_method(m),
-                        })
-                    } else {
-                        None
-                    }
+            .flat_map(|device| {
+                device.methods.iter().filter_map(|method| {
+                    ranked_result(
+                        query,
+                        "method",
+                        &method.name,
+                        Some(device.name.as_str()),
+                        format_method(method),
+                        [device.name.as_str()],
+                    )
                 })
             })
-            .collect()
+            .collect();
+
+        sort_ranked_results(&mut results);
+        dedupe_ranked_results(results)
     }
 
     /// Search all symbols
     pub fn search_all(&self, query: &str) -> Vec<SearchResult> {
         let mut results = Vec::new();
-        results.extend(self.search_devices(query));
-        results.extend(self.search_events(query));
-        results.extend(self.search_methods(query));
-        results
+
+        results.extend(self.devices.values().filter_map(|device| {
+            ranked_result(
+                query,
+                "device",
+                &device.name,
+                None,
+                format_device(device),
+                std::iter::empty(),
+            )
+        }));
+
+        results.extend(self.devices.values().flat_map(|device| {
+            device.events.iter().filter_map(|event| {
+                ranked_result(
+                    query,
+                    if event.is_receiver { "receiver" } else { "trigger" },
+                    &event.name,
+                    Some(device.name.as_str()),
+                    format_event(event),
+                    [device.name.as_str()],
+                )
+            })
+        }));
+
+        results.extend(self.devices.values().flat_map(|device| {
+            device.methods.iter().filter_map(|method| {
+                ranked_result(
+                    query,
+                    "method",
+                    &method.name,
+                    Some(device.name.as_str()),
+                    format_method(method),
+                    [device.name.as_str()],
+                )
+            })
+        }));
+
+        results.sort_by_key(|ranked| {
+            (
+                Reverse(ranked.score),
+                ranked.result.kind.clone(),
+                ranked.result.device.clone(),
+                ranked.result.name.clone(),
+            )
+        });
+
+        dedupe_ranked_results(results)
     }
 
     /// Get device by name (handles normalization)
     pub fn get_device(&self, name: &str) -> Option<&DeviceDef> {
         let normalized = normalize_device_name(name);
         self.devices.get(&normalized)
+    }
+
+    /// Return ranked approximate device candidates for a query.
+    pub fn search_device_candidates(&self, query: &str) -> Vec<RankedDeviceCandidate> {
+        let mut results: Vec<_> = self
+            .devices
+            .values()
+            .filter_map(|device| {
+                score_candidate(query, &device.name, std::iter::empty()).map(|score| RankedDeviceCandidate {
+                    name: device.name.clone(),
+                    score,
+                })
+            })
+            .collect();
+
+        results.sort_by_key(|candidate| (Reverse(candidate.score), candidate.name.clone()));
+        results
+    }
+
+    /// Resolve the best approximate device candidate, if any.
+    pub fn resolve_device_candidates(&self, query: &str, limit: usize) -> Vec<RankedDeviceCandidate> {
+        let mut candidates = self.search_device_candidates(query);
+        candidates.truncate(limit);
+        candidates
     }
 
     /// Validate if a symbol exists in the digest
@@ -647,6 +739,159 @@ fn parse_params(params_str: &str) -> Vec<Param> {
         .collect()
 }
 
+fn dedupe_ranked_results(results: Vec<RankedSearchResult>) -> Vec<SearchResult> {
+    let mut deduped = IndexMap::new();
+
+    for ranked in results {
+        let key = (
+            ranked.result.kind.clone(),
+            ranked.result.name.clone(),
+            ranked.result.device.clone(),
+        );
+        deduped.entry(key).or_insert(ranked.result);
+    }
+
+    deduped.into_values().collect()
+}
+
+fn ranked_result<'a>(
+    query: &str,
+    kind: &str,
+    name: &str,
+    device: Option<&'a str>,
+    signature: String,
+    context_terms: impl IntoIterator<Item = &'a str>,
+) -> Option<RankedSearchResult> {
+    let score = score_candidate(query, name, context_terms)?;
+
+    Some(RankedSearchResult {
+        result: SearchResult {
+            kind: kind.to_string(),
+            name: name.to_string(),
+            device: device.map(str::to_string),
+            signature,
+        },
+        score,
+    })
+}
+
+fn score_candidate<'a>(
+    query: &str,
+    candidate: &str,
+    context_terms: impl IntoIterator<Item = &'a str>,
+) -> Option<u32> {
+    let normalized_query = normalize_search_text(query);
+    let normalized_candidate = normalize_search_text(candidate);
+
+    if normalized_query.is_empty() || normalized_candidate.is_empty() {
+        return None;
+    }
+
+    let query_tokens = tokenize_search_text(query);
+    let candidate_tokens = tokenize_search_text(candidate);
+    let context_tokens = context_terms
+        .into_iter()
+        .flat_map(tokenize_search_text)
+        .collect::<HashSet<_>>();
+
+    let mut score = 0;
+
+    if normalized_candidate == normalized_query {
+        score += 10_000;
+    }
+
+    if !query_tokens.is_empty() {
+        if query_tokens.contains(&normalized_candidate) {
+            score += 4_000;
+        }
+
+        let exact_token_matches = query_tokens
+            .iter()
+            .filter(|token| candidate_tokens.contains(*token))
+            .count() as u32;
+        score += exact_token_matches * 1_500;
+
+        let context_token_matches = query_tokens
+            .iter()
+            .filter(|token| context_tokens.contains(*token))
+            .count() as u32;
+        score += context_token_matches * 350;
+
+        let substring_matches = query_tokens
+            .iter()
+            .filter(|token| normalized_candidate.contains(token.as_str()))
+            .count() as u32;
+        score += substring_matches * 800;
+
+        let fuzzy_matches = query_tokens
+            .iter()
+            .filter(|token| {
+                !candidate_tokens.is_empty()
+                    && candidate_tokens
+                        .iter()
+                        .any(|candidate_token| levenshtein(token, candidate_token) <= 2)
+            })
+            .count() as u32;
+        score += fuzzy_matches * 250;
+    }
+
+    if normalized_candidate.contains(&normalized_query) {
+        score += 2_500;
+    }
+
+    if query_tokens.len() > 1 {
+        let overlap = query_tokens
+            .iter()
+            .filter(|token| {
+                candidate_tokens.contains(*token) || context_tokens.contains(*token)
+            })
+            .count() as u32;
+        score += overlap * overlap * 175;
+    }
+
+    if score == 0 {
+        None
+    } else {
+        Some(score)
+    }
+}
+
+fn tokenize_search_text(text: &str) -> HashSet<String> {
+    normalize_search_text(text)
+        .split_whitespace()
+        .filter(|token| !token.is_empty())
+        .map(str::to_string)
+        .collect()
+}
+
+fn sort_ranked_results(results: &mut [RankedSearchResult]) {
+    results.sort_by_key(|ranked| {
+        (
+            Reverse(ranked.score),
+            ranked.result.kind.clone(),
+            ranked.result.device.clone(),
+            ranked.result.name.clone(),
+        )
+    });
+}
+
+fn normalize_search_text(text: &str) -> String {
+    let mut normalized = String::with_capacity(text.len());
+    let mut previous_was_space = true;
+
+    for ch in text.chars() {
+        if ch.is_ascii_alphanumeric() {
+            normalized.push(ch.to_ascii_lowercase());
+            previous_was_space = false;
+        } else if !previous_was_space {
+            normalized.push(' ');
+            previous_was_space = true;
+        }
+    }
+
+    normalized.trim().to_string()
+}
+
 /// Normalize device name to canonical form
 pub fn normalize_device_name(name: &str) -> String {
     let name = name.trim();
@@ -770,6 +1015,150 @@ device_button_device = class():
 
         let results = index.search_methods("add");
         assert_eq!(results.len(), 1);
+    }
+
+    #[test]
+    fn test_normalize_search_text() {
+        assert_eq!(normalize_search_text("AddWidget player_ui_slot"), "addwidget player ui slot");
+        assert_eq!(normalize_search_text("  Device-Campfire_C  "), "device campfire c");
+    }
+
+    #[test]
+    fn test_tokenize_search_text() {
+        let tokens = tokenize_search_text("AddWidget player_ui_slot");
+        assert!(tokens.contains("addwidget"));
+        assert!(tokens.contains("player"));
+        assert!(tokens.contains("ui"));
+        assert!(tokens.contains("slot"));
+    }
+
+    #[test]
+    fn test_score_candidate_prefers_exact_normalized_match() {
+        let exact = score_candidate("device campfire device", "device_campfire_device", std::iter::empty())
+            .unwrap();
+        let fuzzy = score_candidate("device campfire device", "device_button_device", std::iter::empty())
+            .unwrap();
+        assert!(exact > fuzzy);
+    }
+
+    #[test]
+    fn test_score_candidate_uses_context_terms() {
+        let score = score_candidate(
+            "AddWidget player_ui_slot",
+            "AddWidget",
+            ["player_ui"],
+        )
+        .unwrap();
+        assert!(score > 0);
+    }
+
+    #[test]
+    fn test_score_candidate_typo_tolerance_does_not_beat_exact_match() {
+        let exact = score_candidate("Extinguish", "Extinguish", std::iter::empty()).unwrap();
+        let typo = score_candidate("Extenguish", "Extinguish", std::iter::empty()).unwrap();
+        assert!(exact > typo);
+    }
+
+    #[test]
+    fn test_search_methods_supports_typo_queries() {
+        let digest = r#"
+device_campfire_device = class():
+    Extinguish():void
+    Light():void
+"#;
+        let index = DigestIndex::parse(digest).unwrap();
+
+        let results = index.search_methods("Extenguish");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].name, "Extinguish");
+        assert_eq!(results[0].device.as_deref(), Some("device_campfire_device"));
+    }
+
+    #[test]
+    fn test_search_methods_supports_multi_token_queries() {
+        let digest = r#"
+device_player_ui_device = class():
+    AddWidget(Widget:widget):void
+    RemoveWidget(Widget:widget):void
+
+device_ui_slot_device = class():
+    ConfigureSlot():void
+"#;
+        let index = DigestIndex::parse(digest).unwrap();
+
+        let results = index.search_methods("AddWidget player ui slot");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].name, "AddWidget");
+        assert_eq!(results[0].device.as_deref(), Some("device_player_ui_device"));
+    }
+
+    #[test]
+    fn test_search_all_ranks_exact_before_related_matches() {
+        let digest = r#"
+device_player_ui_device = class():
+    AddWidget(Widget:widget):void
+    RemoveWidget(Widget:widget):void
+
+device_canvas_slot_device = class():
+    AddWidget(Slot:canvas_slot):void
+"#;
+        let index = DigestIndex::parse(digest).unwrap();
+
+        let results = index.search_all("AddWidget player ui slot");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].name, "AddWidget");
+        assert_eq!(results[0].device.as_deref(), Some("device_player_ui_device"));
+    }
+
+    #[test]
+    fn test_search_device_candidates_prefers_exact_device_name() {
+        let digest = r#"
+device_campfire_device = class():
+    Light():void
+
+device_button_device = class():
+    Enable():void
+"#;
+        let index = DigestIndex::parse(digest).unwrap();
+
+        let candidates = index.search_device_candidates("campfire device");
+        assert!(!candidates.is_empty());
+        assert_eq!(candidates[0].name, "device_campfire_device");
+        assert!(candidates[0].score > candidates[1].score);
+    }
+
+    #[test]
+    fn test_resolve_device_candidates_limits_results() {
+        let digest = r#"
+device_campfire_device = class():
+    Light():void
+
+device_button_device = class():
+    Enable():void
+
+device_tracker_device = class():
+    Reset():void
+"#;
+        let index = DigestIndex::parse(digest).unwrap();
+
+        let candidates = index.resolve_device_candidates("device", 2);
+        assert_eq!(candidates.len(), 2);
+    }
+
+    #[test]
+    fn test_search_device_candidates_supports_ue_style_name() {
+        let digest = r#"
+device_campfire_device = class():
+    Light():void
+
+device_button_device = class():
+    Enable():void
+"#;
+        let index = DigestIndex::parse(digest).unwrap();
+
+        let candidates = index.search_device_candidates("Device_Campfire_C");
+        assert!(!candidates.is_empty());
+        assert_eq!(candidates[0].name, "device_campfire_device");
     }
 
     #[test]

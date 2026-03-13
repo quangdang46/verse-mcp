@@ -83,24 +83,25 @@ fn get_max_mtime(project_path: &std::path::Path) -> SystemTime {
 }
 
 /// Load digest index from file
-fn load_digest() -> Option<uasset_scan::DigestIndex> {
-    match vm_dir::load_digest_content() {
+fn load_digest(digest: &vm_dir::ManagedDigest) -> Option<uasset_scan::DigestIndex> {
+    match vm_dir::load_digest_content(digest) {
         Ok(content) => match uasset_scan::DigestIndex::parse(&content) {
             Ok(index) => {
                 tracing::info!(
-                    "Digest loaded from ~/.vm: {} devices, {} symbols",
+                    "Digest loaded from ~/.vm/{}: {} devices, {} symbols",
+                    digest.name,
                     index.devices.len(),
                     index.symbols.len()
                 );
                 Some(index)
             }
             Err(e) => {
-                tracing::warn!("Failed to parse digest: {}", e);
+                tracing::warn!("Failed to parse {}: {}", digest.name, e);
                 None
             }
         },
         Err(e) => {
-            tracing::warn!("Failed to load digest from ~/.vm: {}", e);
+            tracing::warn!("Failed to load {} from ~/.vm: {}", digest.name, e);
             None
         }
     }
@@ -118,7 +119,7 @@ async fn main() -> Result<()> {
         .with_writer(std::io::stderr)
         .init();
 
-    // Ensure ~/.vm exists and bundled digest is extracted if missing
+    // Ensure ~/.vm exists and bundled digests are extracted if missing
     if let Err(e) = vm_dir::ensure_vm_dir() {
         tracing::warn!("Could not init .vm dir: {}", e);
     }
@@ -133,8 +134,8 @@ async fn main() -> Result<()> {
 
     tracing::info!("Templates directory: {}", project_path.display());
 
-    // Load digest index from project path (or None if not found)
-    let digest_index = load_digest();
+    // Load primary digest index from managed digest set
+    let digest_index = load_digest(vm_dir::primary_digest());
 
     // Create server handler (project_path is default for templates only)
     let templates_dir = project_path.join("templates");
@@ -671,12 +672,7 @@ impl ServerHandler for VerseMcpHandler {
                 let digest_guard = self.digest.read().unwrap();
                 match &*digest_guard {
                     Some(index) => {
-                        let results = match search_type {
-                            "device" => index.search_devices(query),
-                            "event" => index.search_events(query),
-                            "method" => index.search_methods(query),
-                            _ => index.search_all(query),
-                        };
+                        let results = tools::query_digest(index, query, search_type);
 
                         let result = serde_json::json!({
                             "query": query,

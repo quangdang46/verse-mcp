@@ -42,6 +42,50 @@ pub fn query_digest(
     }
 }
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn create_test_digest() -> uasset_scan::DigestIndex {
+        let digest = r#"
+device_player_ui_device = class():
+    AddWidget(Widget:widget):void
+    RemoveWidget(Widget:widget):void
+
+device_canvas_slot_device = class():
+    AddWidget(Slot:canvas_slot):void
+    RemoveWidget(Widget:widget):void
+
+device_button_device = class():
+    OnPressed():event():void
+"#;
+        uasset_scan::DigestIndex::parse(digest).unwrap()
+    }
+
+    #[test]
+    fn test_query_digest_defaults_to_global_ranked_search() {
+        let index = create_test_digest();
+
+        let results = query_digest(&index, "AddWidget player ui slot", "all");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].name, "AddWidget");
+        assert_eq!(results[0].device.as_deref(), Some("device_player_ui_device"));
+    }
+
+    #[test]
+    fn test_query_digest_respects_search_type() {
+        let index = create_test_digest();
+
+        let method_results = query_digest(&index, "AddWidget player ui slot", "method");
+        assert!(!method_results.is_empty());
+        assert_eq!(method_results[0].name, "AddWidget");
+
+        let event_results = query_digest(&index, "pressed", "event");
+        assert_eq!(event_results.len(), 1);
+        assert_eq!(event_results[0].name, "OnPressed");
+    }
+}
+
 /// Tool: List all @editable fields in a project
 #[allow(dead_code)]
 pub fn list_editables(_project_path: &Path) -> anyhow::Result<Vec<EditableField>> {

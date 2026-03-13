@@ -211,91 +211,32 @@ impl VerseValidator {
         var_types
     }
 
-    /// Find similar device names using Levenshtein distance
+    /// Find similar device names using digest-ranked candidates
     fn find_similar_device(&self, name: &str) -> Option<String> {
-        let name_lower = name.to_lowercase();
         self.digest
-            .devices
-            .values()
-            .map(|d| {
-                let dist = levenshtein(&d.name.to_lowercase(), &name_lower);
-                (d.name.clone(), dist)
-            })
-            .filter(|(_, dist)| *dist <= 3)
-            .min_by_key(|(_, dist)| *dist)
-            .map(|(name, _)| name)
+            .resolve_device_candidates(name, 1)
+            .into_iter()
+            .next()
+            .map(|candidate| candidate.name)
     }
 
     /// Find similar method names for a device
     fn find_similar_method(&self, device: &str, method: &str) -> Option<String> {
-        let device_def = self.digest.get_device(device)?;
-        let method_lower = method.to_lowercase();
-
-        device_def
-            .methods
-            .iter()
-            .map(|m| {
-                let dist = levenshtein(&m.name.to_lowercase(), &method_lower);
-                (m.name.clone(), dist)
-            })
-            .filter(|(_, dist)| *dist <= 3)
-            .min_by_key(|(_, dist)| *dist)
-            .map(|(name, _)| format!("{}.{}(...)", device, name))
+        self.digest
+            .search_methods(method)
+            .into_iter()
+            .find(|result| result.device.as_deref() == Some(device))
+            .map(|result| format!("{}.{}(...)", device, result.name))
     }
 
     /// Find similar event names for a device
     fn find_similar_event(&self, device: &str, event: &str) -> Option<String> {
-        let device_def = self.digest.get_device(device)?;
-        let event_lower = event.to_lowercase();
-
-        device_def
-            .events
-            .iter()
-            .map(|e| {
-                let dist = levenshtein(&e.name.to_lowercase(), &event_lower);
-                (e.name.clone(), dist)
-            })
-            .filter(|(_, dist)| *dist <= 3)
-            .min_by_key(|(_, dist)| *dist)
-            .map(|(name, _)| format!("{}.{}.Subscribe(...)", device, name))
+        self.digest
+            .search_events(event)
+            .into_iter()
+            .find(|result| result.device.as_deref() == Some(device))
+            .map(|result| format!("{}.{}.Subscribe(...)", device, result.name))
     }
-}
-
-/// Calculate Levenshtein distance between two strings
-fn levenshtein(a: &str, b: &str) -> usize {
-    let a_chars: Vec<char> = a.chars().collect();
-    let b_chars: Vec<char> = b.chars().collect();
-    let a_len = a_chars.len();
-    let b_len = b_chars.len();
-
-    if a_len == 0 {
-        return b_len;
-    }
-    if b_len == 0 {
-        return a_len;
-    }
-
-    let mut matrix = vec![vec![0; b_len + 1]; a_len + 1];
-
-    for (i, row) in matrix.iter_mut().enumerate() {
-        row[0] = i;
-    }
-
-    #[allow(clippy::needless_range_loop)]
-    for j in 0..=b_len {
-        matrix[0][j] = j;
-    }
-
-    for (i, a_char) in a_chars.iter().enumerate() {
-        for (j, b_char) in b_chars.iter().enumerate() {
-            let cost = if a_char == b_char { 0 } else { 1 };
-            matrix[i + 1][j + 1] = (matrix[i][j + 1] + 1)
-                .min(matrix[i + 1][j] + 1)
-                .min(matrix[i][j] + cost);
-        }
-    }
-
-    matrix[a_len][b_len]
 }
 
 #[cfg(test)]
@@ -427,11 +368,4 @@ MyCampfire.TriggerOnEnterRadius()
         assert!(issues[0].message.contains("is an event, not a method"));
     }
 
-    #[test]
-    fn test_levenshtein_distance() {
-        assert_eq!(levenshtein("kitten", "sitting"), 3);
-        assert_eq!(levenshtein("", "test"), 4);
-        assert_eq!(levenshtein("test", ""), 4);
-        assert_eq!(levenshtein("same", "same"), 0);
-    }
 }
