@@ -3,9 +3,7 @@ name: Release
 on:
   push:
     tags:
-      - 'uefn_scan_cli-v*'
-      - 'mcp_server-v*'
-      - 'release-all-v*'
+      - 'v*'
 
 env:
   CARGO_TERM_COLOR: always
@@ -155,3 +153,4 @@ jobs:
         with:
           files: dist/*
           generate_release_notes: true
+
