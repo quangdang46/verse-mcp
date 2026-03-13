@@ -38,12 +38,21 @@ pub fn levenshtein(a: &str, b: &str) -> usize {
 }
 
 /// Return the closest candidate within the given maximum edit distance.
-pub fn find_closest_match<'a>(query: &str, candidates: impl IntoIterator<Item = &'a str>, max_distance: usize) -> Option<&'a str> {
+pub fn find_closest_match<'a>(
+    query: &str,
+    candidates: impl IntoIterator<Item = &'a str>,
+    max_distance: usize,
+) -> Option<&'a str> {
     let query_lower = query.to_lowercase();
 
     candidates
         .into_iter()
-        .map(|candidate| (candidate, levenshtein(&candidate.to_lowercase(), &query_lower)))
+        .map(|candidate| {
+            (
+                candidate,
+                levenshtein(&candidate.to_lowercase(), &query_lower),
+            )
+        })
         .filter(|(_, distance)| *distance <= max_distance)
         .min_by_key(|(_, distance)| *distance)
         .map(|(candidate, _)| candidate)
@@ -64,7 +73,13 @@ mod tests {
     #[test]
     fn test_find_closest_match() {
         let candidates = ["Extinguish", "Light", "AddFuel"];
-        assert_eq!(find_closest_match("Extenguish", candidates.iter().copied(), 3), Some("Extinguish"));
-        assert_eq!(find_closest_match("Unknown", candidates.iter().copied(), 3), None);
+        assert_eq!(
+            find_closest_match("Extenguish", candidates.iter().copied(), 3),
+            Some("Extinguish")
+        );
+        assert_eq!(
+            find_closest_match("Unknown", candidates.iter().copied(), 3),
+            None
+        );
     }
 }

@@ -259,6 +259,13 @@ device_button_device = class():
     OnPressed():event():void
     Disable():void
     Enable():void
+
+device_player_ui_device = class():
+    AddWidget(Widget:widget):void
+    RemoveWidget(Widget:widget):void
+
+device_canvas_slot_device = class():
+    AddWidget(Slot:canvas_slot):void
 "#;
         DigestIndex::parse(digest).unwrap()
     }
@@ -334,6 +341,24 @@ MyCampfire.NonExistentEvent.Subscribe(HandleEvent)
     }
 
     #[test]
+    fn test_suggest_similar_device_type() {
+        let digest = create_test_digest();
+        let validator = VerseValidator::new(digest);
+
+        let code = r#"
+@editable var MyCampfire:device_campfier_device = device_campfier_device{}
+"#;
+
+        let issues = validator.validate(code);
+        assert!(!issues.is_empty(), "Expected issues, got: {:?}", issues);
+        assert!(issues[0].message.contains("Unknown device type"));
+        assert_eq!(
+            issues[0].suggestion.as_deref(),
+            Some("device_campfire_device")
+        );
+    }
+
+    #[test]
     fn test_suggest_similar_method() {
         let digest = create_test_digest();
         let validator = VerseValidator::new(digest);
@@ -354,6 +379,58 @@ MyCampfire.Extenguish()
     }
 
     #[test]
+    fn test_suggest_similar_event_for_same_device() {
+        let digest = create_test_digest();
+        let validator = VerseValidator::new(digest);
+
+        let code = r#"
+@editable var MyCampfire:device_campfire_device = device_campfire_device{}
+MyCampfire.TriggerOnEnterRaduis.Subscribe(HandleEvent)
+"#;
+
+        let issues = validator.validate(code);
+        assert!(!issues.is_empty(), "Expected issues, got: {:?}", issues);
+        assert!(issues[0].message.contains("Unknown event"));
+        assert_eq!(
+            issues[0].suggestion.as_deref(),
+            Some("device_campfire_device.TriggerOnEnterRadius.Subscribe(...)")
+        );
+    }
+
+    #[test]
+    fn test_suggest_similar_method_prefers_current_device() {
+        let digest = create_test_digest();
+        let validator = VerseValidator::new(digest);
+
+        let code = r#"
+@editable var MyPlayerUi:device_player_ui_device = device_player_ui_device{}
+MyPlayerUi.AddWdget()
+"#;
+
+        let issues = validator.validate(code);
+        assert_eq!(issues.len(), 1, "Expected one issue, got: {:?}", issues);
+        assert!(issues[0].message.contains("Unknown method"));
+        assert_eq!(
+            issues[0].suggestion.as_deref(),
+            Some("device_player_ui_device.AddWidget(...)")
+        );
+    }
+
+    #[test]
+    fn test_exact_event_subscription_produces_no_issue() {
+        let digest = create_test_digest();
+        let validator = VerseValidator::new(digest);
+
+        let code = r#"
+@editable var MyButton:device_button_device = device_button_device{}
+MyButton.OnPressed.Subscribe(HandlePressed)
+"#;
+
+        let issues = validator.validate(code);
+        assert!(issues.is_empty(), "Expected no issues, got: {:?}", issues);
+    }
+
+    #[test]
     fn test_event_called_as_method() {
         let digest = create_test_digest();
         let validator = VerseValidator::new(digest);
@@ -367,5 +444,4 @@ MyCampfire.TriggerOnEnterRadius()
         assert!(!issues.is_empty(), "Expected issues, got: {:?}", issues);
         assert!(issues[0].message.contains("is an event, not a method"));
     }
-
 }
