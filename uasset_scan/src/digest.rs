@@ -1304,14 +1304,10 @@ device_button_device = class():
 
     #[test]
     fn test_extend_from_preserves_devices_from_both_indices() {
-        let mut first = DigestIndex::parse(
-            "device_campfire_device = class():\n    Light():void\n",
-        )
-        .unwrap();
-        let second = DigestIndex::parse(
-            "device_button_device = class():\n    Enable():void\n",
-        )
-        .unwrap();
+        let mut first =
+            DigestIndex::parse("device_campfire_device = class():\n    Light():void\n").unwrap();
+        let second =
+            DigestIndex::parse("device_button_device = class():\n    Enable():void\n").unwrap();
 
         first.extend_from(second);
 
@@ -1321,33 +1317,29 @@ device_button_device = class():
 
     #[test]
     fn test_extend_from_combines_symbol_locations() {
-        let mut first = DigestIndex::parse(
-            "device_campfire_device = class():\n    Light():void\n",
-        )
-        .unwrap();
-        let second = DigestIndex::parse(
-            "device_button_device = class():\n    Light():void\n",
-        )
-        .unwrap();
+        let mut first =
+            DigestIndex::parse("device_campfire_device = class():\n    Light():void\n").unwrap();
+        let second =
+            DigestIndex::parse("device_button_device = class():\n    Light():void\n").unwrap();
 
         first.extend_from(second);
 
         let locations = first.symbols.get("Light").unwrap();
         assert_eq!(locations.len(), 2);
-        assert!(locations.iter().any(|location| location.device == "device_campfire_device"));
-        assert!(locations.iter().any(|location| location.device == "device_button_device"));
+        assert!(locations
+            .iter()
+            .any(|location| location.device == "device_campfire_device"));
+        assert!(locations
+            .iter()
+            .any(|location| location.device == "device_button_device"));
     }
 
     #[test]
     fn test_extend_from_deduplicates_symbol_locations() {
-        let mut first = DigestIndex::parse(
-            "device_campfire_device = class():\n    Light():void\n",
-        )
-        .unwrap();
-        let second = DigestIndex::parse(
-            "device_campfire_device = class():\n    Light():void\n",
-        )
-        .unwrap();
+        let mut first =
+            DigestIndex::parse("device_campfire_device = class():\n    Light():void\n").unwrap();
+        let second =
+            DigestIndex::parse("device_campfire_device = class():\n    Light():void\n").unwrap();
 
         first.extend_from(second);
 
@@ -1357,14 +1349,11 @@ device_button_device = class():
 
     #[test]
     fn test_extend_from_keeps_first_device_definition_on_collision() {
-        let mut first = DigestIndex::parse(
-            "device_campfire_device = class():\n    Light():void\n",
-        )
-        .unwrap();
-        let second = DigestIndex::parse(
-            "device_campfire_device = class():\n    Extinguish():void\n",
-        )
-        .unwrap();
+        let mut first =
+            DigestIndex::parse("device_campfire_device = class():\n    Light():void\n").unwrap();
+        let second =
+            DigestIndex::parse("device_campfire_device = class():\n    Extinguish():void\n")
+                .unwrap();
 
         first.extend_from(second);
 

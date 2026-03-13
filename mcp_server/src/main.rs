@@ -239,7 +239,11 @@ impl Clone for VerseMcpHandler {
 fn resolve_device_for_props<'a>(
     index: &'a uasset_scan::DigestIndex,
     device_type: &str,
-) -> (Option<&'a uasset_scan::DeviceDef>, &'static str, Vec<uasset_scan::digest::RankedDeviceCandidate>) {
+) -> (
+    Option<&'a uasset_scan::DeviceDef>,
+    &'static str,
+    Vec<uasset_scan::digest::RankedDeviceCandidate>,
+) {
     let exact_device = index.get_device(device_type);
     let fallback_candidates = if exact_device.is_none() {
         index.resolve_device_candidates(device_type, 3)
@@ -1416,10 +1420,9 @@ device_tracker_device = class():
             "device_campfire_device = class():\n    Light():void\n",
         )
         .unwrap();
-        let second = uasset_scan::DigestIndex::parse(
-            "device_button_device = class():\n    Enable():void\n",
-        )
-        .unwrap();
+        let second =
+            uasset_scan::DigestIndex::parse("device_button_device = class():\n    Enable():void\n")
+                .unwrap();
 
         let aggregate = merge_loaded_digests(vec![first, second]).unwrap();
 
