@@ -77,7 +77,7 @@ pub struct Param {
 }
 
 /// Location where a symbol is defined
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
 pub struct SymbolLocation {
     /// Device containing this symbol
     pub device: String,
@@ -343,6 +343,22 @@ impl DigestIndex {
         }
 
         Ok(index)
+    }
+
+    /// Extend this index with another parsed digest index.
+    pub fn extend_from(&mut self, other: DigestIndex) {
+        for (device_name, device) in other.devices {
+            self.devices.entry(device_name).or_insert(device);
+        }
+
+        for (symbol_name, locations) in other.symbols {
+            let existing_locations = self.symbols.entry(symbol_name).or_default();
+            for location in locations {
+                if !existing_locations.contains(&location) {
+                    existing_locations.push(location);
+                }
+            }
+        }
     }
 
     /// Search for devices matching query
@@ -1284,6 +1300,77 @@ device_button_device = class():
         let candidates = index.search_device_candidates("Device_Campfire_C");
         assert!(!candidates.is_empty());
         assert_eq!(candidates[0].name, "device_campfire_device");
+    }
+
+    #[test]
+    fn test_extend_from_preserves_devices_from_both_indices() {
+        let mut first = DigestIndex::parse(
+            "device_campfire_device = class():\n    Light():void\n",
+        )
+        .unwrap();
+        let second = DigestIndex::parse(
+            "device_button_device = class():\n    Enable():void\n",
+        )
+        .unwrap();
+
+        first.extend_from(second);
+
+        assert!(first.get_device("device_campfire_device").is_some());
+        assert!(first.get_device("device_button_device").is_some());
+    }
+
+    #[test]
+    fn test_extend_from_combines_symbol_locations() {
+        let mut first = DigestIndex::parse(
+            "device_campfire_device = class():\n    Light():void\n",
+        )
+        .unwrap();
+        let second = DigestIndex::parse(
+            "device_button_device = class():\n    Light():void\n",
+        )
+        .unwrap();
+
+        first.extend_from(second);
+
+        let locations = first.symbols.get("Light").unwrap();
+        assert_eq!(locations.len(), 2);
+        assert!(locations.iter().any(|location| location.device == "device_campfire_device"));
+        assert!(locations.iter().any(|location| location.device == "device_button_device"));
+    }
+
+    #[test]
+    fn test_extend_from_deduplicates_symbol_locations() {
+        let mut first = DigestIndex::parse(
+            "device_campfire_device = class():\n    Light():void\n",
+        )
+        .unwrap();
+        let second = DigestIndex::parse(
+            "device_campfire_device = class():\n    Light():void\n",
+        )
+        .unwrap();
+
+        first.extend_from(second);
+
+        let locations = first.symbols.get("Light").unwrap();
+        assert_eq!(locations.len(), 1);
+    }
+
+    #[test]
+    fn test_extend_from_keeps_first_device_definition_on_collision() {
+        let mut first = DigestIndex::parse(
+            "device_campfire_device = class():\n    Light():void\n",
+        )
+        .unwrap();
+        let second = DigestIndex::parse(
+            "device_campfire_device = class():\n    Extinguish():void\n",
+        )
+        .unwrap();
+
+        first.extend_from(second);
+
+        let device = first.get_device("device_campfire_device").unwrap();
+        assert_eq!(device.methods.len(), 1);
+        assert_eq!(device.methods[0].name, "Light");
     }
 
     #[test]

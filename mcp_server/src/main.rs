@@ -107,6 +107,43 @@ fn load_digest(digest: &vm_dir::ManagedDigest) -> Option<uasset_scan::DigestInde
     }
 }
 
+fn merge_loaded_digests(
+    loaded_digests: impl IntoIterator<Item = uasset_scan::DigestIndex>,
+) -> Option<uasset_scan::DigestIndex> {
+    let mut loaded_digests = loaded_digests.into_iter();
+    let mut aggregate = loaded_digests.next()?;
+
+    for digest in loaded_digests {
+        aggregate.extend_from(digest);
+    }
+
+    Some(aggregate)
+}
+
+fn load_aggregate_digest() -> Option<uasset_scan::DigestIndex> {
+    let mut loaded_count = 0usize;
+    let aggregate = merge_loaded_digests(vm_dir::supported_digests().iter().filter_map(|digest| {
+        let parsed = load_digest(digest);
+        if parsed.is_some() {
+            loaded_count += 1;
+        }
+        parsed
+    }));
+
+    if let Some(index) = &aggregate {
+        tracing::info!(
+            "Loaded {} managed digest(s) into aggregate index: {} devices, {} symbols",
+            loaded_count,
+            index.devices.len(),
+            index.symbols.len()
+        );
+    } else {
+        tracing::warn!("Failed to load any managed digests from ~/.vm");
+    }
+
+    aggregate
+}
+
 /// MCP server entry point
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -134,8 +171,8 @@ async fn main() -> Result<()> {
 
     tracing::info!("Templates directory: {}", project_path.display());
 
-    // Load primary digest index from managed digest set
-    let digest_index = load_digest(vm_dir::primary_digest());
+    // Load aggregate digest index from the managed digest set
+    let digest_index = load_aggregate_digest();
 
     // Create server handler (project_path is default for templates only)
     let templates_dir = project_path.join("templates");
@@ -199,6 +236,110 @@ impl Clone for VerseMcpHandler {
     }
 }
 
+fn resolve_device_for_props<'a>(
+    index: &'a uasset_scan::DigestIndex,
+    device_type: &str,
+) -> (Option<&'a uasset_scan::DeviceDef>, &'static str, Vec<uasset_scan::digest::RankedDeviceCandidate>) {
+    let exact_device = index.get_device(device_type);
+    let fallback_candidates = if exact_device.is_none() {
+        index.resolve_device_candidates(device_type, 3)
+    } else {
+        Vec::new()
+    };
+
+    let resolved_device = exact_device.or_else(|| {
+        let top = fallback_candidates.first()?;
+        let second_score = fallback_candidates.get(1).map(|candidate| candidate.score);
+        let clearly_best = second_score
+            .map(|score| top.score >= score + 1_500)
+            .unwrap_or(true);
+
+        if top.score >= 4_000 && clearly_best {
+            index.get_device(&top.name)
+        } else {
+            None
+        }
+    });
+
+    let resolved_via = if exact_device.is_some() {
+        "exact"
+    } else if resolved_device.is_some() {
+        "approximate"
+    } else {
+        "unresolved"
+    };
+
+    (resolved_device, resolved_via, fallback_candidates)
+}
+
+fn build_device_props_result(
+    requested_device_type: &str,
+    resolved_via: &str,
+    device: &uasset_scan::DeviceDef,
+) -> serde_json::Value {
+    let triggers: Vec<_> = device
+        .events
+        .iter()
+        .filter(|e| !e.is_receiver)
+        .map(|e| e.name.clone())
+        .collect();
+    let receivers: Vec<_> = device
+        .events
+        .iter()
+        .filter(|e| e.is_receiver)
+        .map(|e| e.name.clone())
+        .collect();
+    let methods: Vec<_> = device.methods.iter().map(|m| m.name.clone()).collect();
+
+    serde_json::json!({
+        "name": device.name,
+        "requested_device_type": requested_device_type,
+        "resolved_via": resolved_via,
+        "triggers": triggers,
+        "receivers": receivers,
+        "methods": methods,
+        "events": device.events.iter().map(|e| serde_json::json!({
+            "name": e.name,
+            "params": e.params.iter().map(|p| format!("{}:{}", p.name, p.type_name)).collect::<Vec<_>>(),
+            "return_type": e.return_type,
+            "is_receiver": e.is_receiver
+        })).collect::<Vec<_>>(),
+        "method_signatures": device.methods.iter().map(|m| serde_json::json!({
+            "name": m.name,
+            "params": m.params.iter().map(|p| format!("{}:{}", p.name, p.type_name)).collect::<Vec<_>>(),
+            "return_type": m.return_type
+        })).collect::<Vec<_>>()
+    })
+}
+
+fn build_device_lookup_error(
+    device_type: &str,
+    fallback_candidates: &[uasset_scan::digest::RankedDeviceCandidate],
+) -> serde_json::Value {
+    let candidates: Vec<_> = fallback_candidates
+        .iter()
+        .map(|candidate| {
+            serde_json::json!({
+                "name": candidate.name,
+                "score": candidate.score
+            })
+        })
+        .collect();
+
+    if candidates.is_empty() {
+        serde_json::json!({
+            "error": format!("Device not found: {}", device_type),
+            "suggestion": "Try using query_digest to search for available devices"
+        })
+    } else {
+        serde_json::json!({
+            "error": format!("Device lookup was ambiguous or low-confidence for: {}", device_type),
+            "suggestion": "Try one of the suggested device names or use query_digest for broader search",
+            "candidates": candidates
+        })
+    }
+}
+
 impl ServerHandler for VerseMcpHandler {
     fn get_info(&self) -> rmcp::model::ServerInfo {
         rmcp::model::ServerInfo {
@@ -211,7 +352,7 @@ impl ServerHandler for VerseMcpHandler {
                 name: "verse-mcp".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_string(),
             },
-            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for devices, query_digest to search the Verse API, and get_device_props to get device properties.".to_string()),
+            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for devices, query_digest for ranked digest-backed API search, and get_device_props for exact or approximate device lookup.".to_string()),
         }
     }
 
@@ -260,7 +401,7 @@ impl ServerHandler for VerseMcpHandler {
             serde_json::json!({
                 "query": {
                     "type": "string",
-                    "description": "Search term (device name, event, method, etc.)"
+                    "description": "Search term or natural-language query (device name, event, method, partial name, etc.)"
                 },
                 "search_type": {
                     "type": "string",
@@ -312,11 +453,11 @@ impl ServerHandler for VerseMcpHandler {
             serde_json::json!({
                 "old_content": {
                     "type": "string",
-                    "description": "Content of the old Fortnite.digest.verse file"
+                    "description": "Content of the old digest file to compare"
                 },
                 "new_content": {
                     "type": "string",
-                    "description": "Content of the new Fortnite.digest.verse file"
+                    "description": "Content of the new digest file to compare"
                 }
             }),
         );
@@ -392,12 +533,12 @@ impl ServerHandler for VerseMcpHandler {
                 },
                 rmcp::model::Tool {
                     name: "get_device_props".into(),
-                    description: "Get all events, methods, and properties for a device type from Fortnite.digest.verse. Handles both Verse naming (device_campfire_device) and UE naming (Device_Campfire_C).".into(),
+                    description: "Get all events, methods, and properties for a device type from the loaded digest index. Supports Verse names, UE-style names, and approximate device lookup.".into(),
                     input_schema: Arc::new(device_props_schema),
                 },
                 rmcp::model::Tool {
                     name: "query_digest".into(),
-                    description: "Search Fortnite.digest.verse for device types, events, methods, or symbols. Returns matching entries with formatted signatures.".into(),
+                    description: "Search the loaded digest index for device types, events, methods, or symbols. Supports partial and natural-language queries and returns ranked matches with formatted signatures.".into(),
                     input_schema: Arc::new(query_digest_schema),
                 },
                 rmcp::model::Tool {
@@ -421,7 +562,7 @@ impl ServerHandler for VerseMcpHandler {
                 },
                 rmcp::model::Tool {
                     name: "validate_verse".into(),
-                    description: "Validate Verse code against Fortnite.digest.verse to detect hallucinated API names (unknown methods, events, or device types). Returns issues with suggestions.".into(),
+                    description: "Validate Verse code against the loaded digest index to detect hallucinated API names (unknown methods, events, or device types). Returns issues with suggestions.".into(),
                     input_schema: Arc::new(validate_verse_schema),
                 },
                 rmcp::model::Tool {
@@ -431,7 +572,7 @@ impl ServerHandler for VerseMcpHandler {
                 },
                 rmcp::model::Tool {
                     name: "diff_digests".into(),
-                    description: "Compare two Fortnite.digest.verse versions to detect breaking changes and additions. Useful for tracking API changes across Fortnite updates.".into(),
+                    description: "Compare two digest versions to detect breaking changes and additions. Useful for tracking API changes across Fortnite updates.".into(),
                     input_schema: Arc::new(diff_schema),
                 },
                 rmcp::model::Tool {
@@ -581,50 +722,29 @@ impl ServerHandler for VerseMcpHandler {
                 let digest_guard = self.digest.read().unwrap();
                 match &*digest_guard {
                     Some(index) => {
-                        match index.get_device(device_type) {
-                            Some(device) => {
-                                // Separate triggers and receivers
-                                let triggers: Vec<_> = device.events.iter()
-                                    .filter(|e| !e.is_receiver)
-                                    .map(|e| e.name.clone())
-                                    .collect();
-                                let receivers: Vec<_> = device.events.iter()
-                                    .filter(|e| e.is_receiver)
-                                    .map(|e| e.name.clone())
-                                    .collect();
-                                let methods: Vec<_> = device.methods.iter()
-                                    .map(|m| m.name.clone())
-                                    .collect();
+                        let (resolved_device, resolved_via, fallback_candidates) =
+                            resolve_device_for_props(index, device_type);
 
-                                let result = serde_json::json!({
-                                    "name": device.name,
-                                    "triggers": triggers,
-                                    "receivers": receivers,
-                                    "methods": methods,
-                                    "events": device.events.iter().map(|e| serde_json::json!({
-                                        "name": e.name,
-                                        "params": e.params.iter().map(|p| format!("{}:{}", p.name, p.type_name)).collect::<Vec<_>>(),
-                                        "return_type": e.return_type,
-                                        "is_receiver": e.is_receiver
-                                    })).collect::<Vec<_>>(),
-                                    "method_signatures": device.methods.iter().map(|m| serde_json::json!({
-                                        "name": m.name,
-                                        "params": m.params.iter().map(|p| format!("{}:{}", p.name, p.type_name)).collect::<Vec<_>>(),
-                                        "return_type": m.return_type
-                                    })).collect::<Vec<_>>()
-                                });
+                        match resolved_device {
+                            Some(device) => {
+                                let result =
+                                    build_device_props_result(device_type, resolved_via, device);
 
                                 Ok(rmcp::model::CallToolResult {
-                                    content: vec![Annotated::text(serde_json::to_string_pretty(&result).unwrap())],
+                                    content: vec![Annotated::text(
+                                        serde_json::to_string_pretty(&result).unwrap(),
+                                    )],
                                     is_error: Some(false),
                                 })
                             }
                             None => {
+                                let error =
+                                    build_device_lookup_error(device_type, &fallback_candidates);
+
                                 Ok(rmcp::model::CallToolResult {
-                                    content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
-                                        "error": format!("Device not found: {}", device_type),
-                                        "suggestion": "Try using query_digest to search for available devices"
-                                    })).unwrap())],
+                                    content: vec![Annotated::text(
+                                        serde_json::to_string_pretty(&error).unwrap(),
+                                    )],
                                     is_error: Some(true),
                                 })
                             }
@@ -633,7 +753,7 @@ impl ServerHandler for VerseMcpHandler {
                     None => {
                         Ok(rmcp::model::CallToolResult {
                             content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
-                                "error": "Digest not loaded. Ensure Fortnite.digest.verse is in the project directory."
+                                "error": "Digest not loaded. Ensure the managed digest files are available under ~/.vm and startup completed successfully."
                             })).unwrap())],
                             is_error: Some(true),
                         })
@@ -689,7 +809,7 @@ impl ServerHandler for VerseMcpHandler {
                     None => {
                         Ok(rmcp::model::CallToolResult {
                             content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
-                                "error": "Digest not loaded. Ensure Fortnite.digest.verse is in the project directory."
+                                "error": "Digest not loaded. Ensure the managed digest files are available under ~/.vm and startup completed successfully."
                             })).unwrap())],
                             is_error: Some(true),
                         })
@@ -797,7 +917,7 @@ impl ServerHandler for VerseMcpHandler {
                     None => {
                         Ok(rmcp::model::CallToolResult {
                             content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
-                                "error": "Digest not loaded. Ensure Fortnite.digest.verse is in the project directory."
+                                "error": "Digest not loaded. Ensure the managed digest files are available under ~/.vm and startup completed successfully."
                             })).unwrap())],
                             is_error: Some(true),
                         })
@@ -1200,5 +1320,129 @@ impl ServerHandler for VerseMcpHandler {
             }
             _ => Err(rmcp::Error::method_not_found::<CallToolRequestMethod>()),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn create_test_digest() -> uasset_scan::DigestIndex {
+        let digest = r#"
+device_campfire_device = class():
+    TriggerOnEnterRadius():event():void
+    ReceiverAddFuel(Amount:int):void
+    AddFuel(Amount:int):void
+    Extinguish():void
+    Light():void
+
+device_button_device = class():
+    OnPressed():event():void
+    Enable():void
+
+device_tracker_device = class():
+    Reset():void
+"#;
+        uasset_scan::DigestIndex::parse(digest).unwrap()
+    }
+
+    #[test]
+    fn resolve_device_for_props_prefers_exact_match() {
+        let index = create_test_digest();
+
+        let (device, resolved_via, candidates) =
+            resolve_device_for_props(&index, "device_campfire_device");
+
+        assert_eq!(resolved_via, "exact");
+        assert!(candidates.is_empty());
+        assert_eq!(device.unwrap().name, "device_campfire_device");
+    }
+
+    #[test]
+    fn resolve_device_for_props_uses_clear_approximate_match() {
+        let index = create_test_digest();
+
+        let (device, resolved_via, candidates) = resolve_device_for_props(&index, "campfire");
+
+        assert_eq!(resolved_via, "approximate");
+        assert!(!candidates.is_empty());
+        assert_eq!(device.unwrap().name, "device_campfire_device");
+    }
+
+    #[test]
+    fn resolve_device_for_props_supports_normalized_ue_style_lookup() {
+        let index = create_test_digest();
+
+        let (device, resolved_via, candidates) =
+            resolve_device_for_props(&index, "Device_Campfire_C");
+
+        assert_eq!(resolved_via, "exact");
+        assert!(candidates.is_empty());
+        assert_eq!(device.unwrap().name, "device_campfire_device");
+    }
+
+    #[test]
+    fn build_device_lookup_error_includes_candidates_for_ambiguous_queries() {
+        let index = create_test_digest();
+        let (device, resolved_via, candidates) = resolve_device_for_props(&index, "device");
+
+        assert!(device.is_none());
+        assert_eq!(resolved_via, "unresolved");
+        assert!(!candidates.is_empty());
+
+        let error = build_device_lookup_error("device", &candidates);
+        assert!(error["error"]
+            .as_str()
+            .unwrap()
+            .contains("ambiguous or low-confidence"));
+        assert!(error["candidates"].as_array().unwrap().len() >= 2);
+    }
+
+    #[test]
+    fn build_device_props_result_marks_approximate_resolution() {
+        let index = create_test_digest();
+        let device = index.get_device("device_campfire_device").unwrap();
+
+        let result = build_device_props_result("campfire", "approximate", device);
+        assert_eq!(result["name"], "device_campfire_device");
+        assert_eq!(result["requested_device_type"], "campfire");
+        assert_eq!(result["resolved_via"], "approximate");
+        assert!(result["methods"].as_array().unwrap().len() >= 2);
+    }
+
+    #[test]
+    fn merge_loaded_digests_combines_multiple_indices() {
+        let first = uasset_scan::DigestIndex::parse(
+            "device_campfire_device = class():\n    Light():void\n",
+        )
+        .unwrap();
+        let second = uasset_scan::DigestIndex::parse(
+            "device_button_device = class():\n    Enable():void\n",
+        )
+        .unwrap();
+
+        let aggregate = merge_loaded_digests(vec![first, second]).unwrap();
+
+        assert!(aggregate.get_device("device_campfire_device").is_some());
+        assert!(aggregate.get_device("device_button_device").is_some());
+    }
+
+    #[test]
+    fn merge_loaded_digests_returns_some_when_at_least_one_digest_loaded() {
+        let only = uasset_scan::DigestIndex::parse(
+            "device_campfire_device = class():\n    Light():void\n",
+        )
+        .unwrap();
+
+        let aggregate = merge_loaded_digests(vec![only]);
+
+        assert!(aggregate.is_some());
+    }
+
+    #[test]
+    fn merge_loaded_digests_returns_none_when_no_digests_loaded() {
+        let aggregate = merge_loaded_digests(Vec::<uasset_scan::DigestIndex>::new());
+
+        assert!(aggregate.is_none());
     }
 }

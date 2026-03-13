@@ -67,22 +67,24 @@ pub fn load_digest_content(digest: &ManagedDigest) -> anyhow::Result<String> {
     Ok(fs::read_to_string(digest_path(digest))?)
 }
 
-pub fn primary_digest() -> &'static ManagedDigest {
-    &FORTNITE_DIGEST
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
 
     #[test]
     fn test_supported_digests_include_expected_files() {
-        let digest_names: Vec<_> = supported_digests().iter().map(|digest| digest.name).collect();
-        assert_eq!(digest_names, vec!["Fortnite.digest.verse", "UnrealEngine.digest.verse", "Verse.digest.verse"]);
+        let digest_names: Vec<_> = supported_digests()
+            .iter()
+            .map(|digest| digest.name)
+            .collect();
+        assert_eq!(
+            digest_names,
+            vec![
+                "Fortnite.digest.verse",
+                "UnrealEngine.digest.verse",
+                "Verse.digest.verse"
+            ]
+        );
     }
 
-    #[test]
-    fn test_primary_digest_is_fortnite() {
-        assert_eq!(primary_digest().name, "Fortnite.digest.verse");
-    }
 }
