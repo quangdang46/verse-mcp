@@ -3,101 +3,143 @@ name: Release
 on:
   push:
     tags:
-      - 'v*'
-  workflow_dispatch:
-    inputs:
-      tag:
-        description: 'Tag to build/publish (e.g., v0.1.0)'
-        required: true
-        default: 'v0.1.0'
+      - 'uefn_scan_cli-v*'
+      - 'mcp_server-v*'
+      - 'release-all-v*'
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
+  prepare:
+    name: Select crates
+    runs-on: ubuntu-latest
+    outputs:
+      crates: ${{ steps.select.outputs.crates }}
+    steps:
+      - id: select
+        shell: bash
+        run: |
+          case "${GITHUB_REF_NAME}" in
+            uefn_scan_cli-v*) echo 'crates=["uefn_scan_cli"]' >> "$GITHUB_OUTPUT" ;;
+            mcp_server-v*) echo 'crates=["mcp_server"]' >> "$GITHUB_OUTPUT" ;;
+            release-all-v*) echo 'crates=["uefn_scan_cli","mcp_server"]' >> "$GITHUB_OUTPUT" ;;
+            *)
+              echo "Unsupported tag: ${GITHUB_REF_NAME}" >&2
+              exit 1
+              ;;
+          esac
+
   build:
-    runs-on: ${{ matrix.os }}
+    name: Build ${{ matrix.suffix }}
+    needs: prepare
+    runs-on: ${{ matrix.runner }}
     strategy:
+      fail-fast: false
       matrix:
         include:
-          - os: ubuntu-latest
-            target: x86_64-unknown-linux-gnu
-            artifact: vm-x86_64-linux
-          - os: windows-latest
-            target: x86_64-pc-windows-msvc
-            artifact: vm-x86_64-windows
-          - os: macos-latest
-            target: aarch64-apple-darwin
-            artifact: vm-aarch64-macos
-
+          - target: x86_64-unknown-linux-musl
+            runner: ubuntu-latest
+            suffix: linux-x86_64
+            archive_ext: tar.gz
+            use_cross: true
+          - target: aarch64-unknown-linux-musl
+            runner: ubuntu-latest
+            suffix: linux-aarch64
+            archive_ext: tar.gz
+            use_cross: true
+          - target: x86_64-apple-darwin
+            runner: macos-latest
+            suffix: macos-x86_64
+            archive_ext: tar.gz
+            use_cross: false
+          - target: aarch64-apple-darwin
+            runner: macos-latest
+            suffix: macos-aarch64
+            archive_ext: tar.gz
+            use_cross: false
+          - target: x86_64-pc-windows-msvc
+            runner: windows-latest
+            suffix: windows-x86_64
+            archive_ext: zip
+            use_cross: false
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ inputs.tag != '' && inputs.tag || github.ref_name }}
-
-      - name: Install Rust
-        uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@stable
         with:
           targets: ${{ matrix.target }}
-
-      - name: Cache cargo registry
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/registry
-          key: ${{ runner.os }}-cargo-registry-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Cache cargo index
-        uses: actions/cache@v4
-        with:
-          path: ~/.cargo/git
-          key: ${{ runner.os }}-cargo-git-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Cache target
-        uses: actions/cache@v4
-        with:
-          path: target
-          key: ${{ runner.os }}-${{ matrix.target }}-target-${{ hashFiles('**/Cargo.lock') }}
-
-      - name: Build
-        run: cargo build --release --target ${{ matrix.target }}
-
-      - name: Package (Unix)
+      - uses: Swatinem/rust-cache@v2
+      - name: Install cross
+        if: matrix.use_cross
+        shell: bash
+        run: cargo install cross --git https://github.com/cross-rs/cross
+      - name: Build selected crates on Unix
         if: runner.os != 'Windows'
+        shell: bash
+        env:
+          CRATES_JSON: ${{ needs.prepare.outputs.crates }}
         run: |
-          tar -C target/${{ matrix.target }}/release -czvf target/${{ matrix.target }}/release/${{ matrix.artifact }}.tar.gz vm
-          shasum -a 256 target/${{ matrix.target }}/release/${{ matrix.artifact }}.tar.gz > target/${{ matrix.target }}/release/${{ matrix.artifact }}.tar.gz.sha256
+          mkdir -p dist
+          for crate in $(echo "$CRATES_JSON" | jq -r '.[]'); do
+            case "$crate" in
+              uefn_scan_cli)
+                bin="verse-scan"
+                ;;
+              mcp_server)
+                bin="vm"
+                ;;
+              *)
+                echo "Unsupported crate: $crate" >&2
+                exit 1
+                ;;
+            esac
 
-      - name: Package (Windows)
+            if [ "${{ matrix.use_cross }}" = 'true' ]; then
+              cross build --release -p "$crate" --target "${{ matrix.target }}"
+            else
+              cargo build --release -p "$crate" --target "${{ matrix.target }}"
+            fi
+
+            archive="${bin}-${{ matrix.suffix }}.${{ matrix.archive_ext }}"
+            tar -C "target/${{ matrix.target }}/release" -czf "dist/${archive}" "$bin"
+            shasum -a 256 "dist/${archive}" > "dist/${archive}.sha256"
+          done
+      - name: Build selected crates on Windows
         if: runner.os == 'Windows'
+        shell: pwsh
+        env:
+          CRATES_JSON: ${{ needs.prepare.outputs.crates }}
         run: |
-          cd target/${{ matrix.target }}/release
-          7z a ${{ matrix.artifact }}.zip vm.exe
-          certutil -hashfile ${{ matrix.artifact }}.zip SHA256 > ${{ matrix.artifact }}.zip.sha256
+          New-Item -ItemType Directory -Force -Path dist | Out-Null
+          $crates = $env:CRATES_JSON | ConvertFrom-Json
+          foreach ($crate in $crates) {
+            switch ($crate) {
+              'uefn_scan_cli' { $bin = 'verse-scan' }
+              'mcp_server' { $bin = 'vm' }
+              default {
+                Write-Error "Unsupported crate: $crate"
+                exit 1
+              }
+            }
 
-      - name: Upload install scripts
-        if: matrix.os == 'ubuntu-latest'
-        run: |
-          shasum -a 256 install.sh > install.sh.sha256
-          shasum -a 256 install.ps1 > install.ps1.sha256
+            cargo build --release -p $crate --target "${{ matrix.target }}"
 
-      - name: Upload artifact
+            $archive = "$bin-${{ matrix.suffix }}.${{ matrix.archive_ext }}"
+            Compress-Archive -Path "target/${{ matrix.target }}/release/$bin.exe" -DestinationPath "dist/$archive" -Force
+            $hash = (Get-FileHash "dist/$archive" -Algorithm SHA256).Hash.ToLower()
+            Set-Content -Path "dist/$archive.sha256" -Value "$hash  $archive"
+          }
+      - name: Upload artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.artifact }}
-          path: target/${{ matrix.target }}/release/${{ matrix.artifact }}.*
-
-      - name: Upload install scripts
-        if: matrix.os == 'ubuntu-latest'
-        uses: actions/upload-artifact@v4
-        with:
-          name: install-scripts
-          path: |
-            install.sh
-            install.sh.sha256
-            install.ps1
-            install.ps1.sha256
+          name: ${{ matrix.suffix }}
+          path: dist/*
+          if-no-files-found: error
 
   release:
+    name: Publish release
     needs: build
     runs-on: ubuntu-latest
     permissions:
@@ -106,21 +148,10 @@ jobs:
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          path: artifacts
-
-      - name: List artifacts
-        run: find artifacts -type f
-
-      - name: Create/update release
+          path: dist
+          merge-multiple: true
+      - name: Publish GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ inputs.tag != '' && inputs.tag || github.ref_name }}
-          files: |
-            artifacts/**/vm-*
-            artifacts/install-scripts/install.sh
-            artifacts/install-scripts/install.sh.sha256
-            artifacts/install-scripts/install.ps1
-            artifacts/install-scripts/install.ps1.sha256
+          files: dist/*
           generate_release_notes: true
-          draft: false
-          prerelease: ${{ contains(inputs.tag != '' && inputs.tag || github.ref_name, '-alpha') || contains(inputs.tag != '' && inputs.tag || github.ref_name, '-beta') || contains(inputs.tag != '' && inputs.tag || github.ref_name, '-rc') }}

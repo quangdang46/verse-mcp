@@ -111,31 +111,15 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 ## Installation
 
-### Cargo Install (Recommended)
-
 ```bash
-cargo install --git https://github.com/quangdang46/verse-mcp.git
+curl -fsSL "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.sh?$(date +%s)" | bash
 ```
 
-This will:
-- Automatically download and compile the project
-- Install the `vm` binary to `~/.cargo/bin` (Linux/macOS) or `%USERPROFILE%\.cargo\bin` (Windows)
+- Default install dir: `$HOME/.local/bin`
+- If `vm` is not on PATH:
 
-**Note:** First-time install requires [Rust](https://rustup.rs/).
-
-### Add Cargo bin to PATH
-
-If `vm` command is not found, add Cargo bin to PATH:
-
-**Windows (PowerShell):**
-```powershell
-$env:Path += ";$env:USERPROFILE\.cargo\bin"
-```
-
-**Linux / macOS:**
 ```bash
-echo 'export PATH="$HOME/.cargo/bin:$PATH"' >> ~/.bashrc
-source ~/.bashrc
+echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
 ```
 
 ### Verify Installation
@@ -145,39 +129,6 @@ vm --version
 ```
 
 Should output: `vm 0.1.0`
-
-### Prebuilt binaries
-
-Windows (PowerShell):
-
-```powershell
-# Cache-busted to avoid stale script in some environments
-irm "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.ps1?ts=$(Get-Random)" | iex
-# Specific version
-$env:VERSION = "v0.1.0"; irm "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.ps1?ts=$(Get-Random)" | iex
-```
-
-- Default install dir: `%USERPROFILE%\.local\bin`
-- Add to PATH for current session:
-
-```powershell
-$env:Path += ";$env:USERPROFILE\.local\bin"
-```
-
-macOS / Linux:
-
-```bash
-curl -fsSL "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.sh" | bash
-# Specific version and custom dir
-INSTALL_DIR=/usr/local/bin VERSION=v0.1.0 curl -fsSL "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install.sh" | bash
-```
-
-- Default install dir: `$HOME/.local/bin` (no sudo required)
-- If not on PATH, add to your shell profile:
-
-```bash
-echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
-```
 
 ---
 
