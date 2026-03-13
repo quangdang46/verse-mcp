@@ -1,6 +1,6 @@
 # Verse UEFN MCP Server
 
-> **MCP server for Fortnite UEFN & Verse development - scan devices, validate wiring, query Fortnite API digest, and scaffold UI**
+> **MCP server for Fortnite UEFN & Verse development - scan devices, validate wiring, query the managed Verse digest set, and scaffold UI**
 
 [UEFN](https://dev.epicgames.com/community/fortnite/getting-started) | [Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-quick-reference) | [MCP](https://modelcontextprotocol.io/) | [Rust](https://www.rust-lang.org/)
 
@@ -20,7 +20,7 @@ The specific friction points:
 I looked for existing solutions — something like a "Verse MCP for UEFN" — and found nothing that was:
 
 - **Project-aware** (able to read your actual code and digest files)
-- **Digest-grounded** (using `Fortnite.digest.verse` as a source of truth)
+- **Digest-grounded** (using the managed Verse digest set as a source of truth)
 - **Focused on the hard parts**: UI wiring, `@editable` properties, multiplayer patterns
 
 So I built this.
@@ -31,10 +31,11 @@ So I built this.
 
 ### 1. "Does this API actually exist?"
 
-Instead of letting the AI guess, the MCP reads your **digest files** and:
+The MCP lets the AI or user guess naturally, then grounds that guess against your **managed digest files** and:
 
 - Confirms whether a symbol is real
 - Returns its actual signature
+- Suggests likely matches for partial, approximate, or natural-language queries
 - Prevents hallucinated method names before they reach your code
 
 ### 2. "What `@editable` fields do I have, and where do I set them in UEFN?"
@@ -62,11 +63,11 @@ So, how can I find the name that's used for this device in Verse?
 
 ## How It Works
 
-The MCP server indexes two sources of truth from your local machine:
+The MCP server indexes sources of truth from your local machine:
 
 | Source | What it provides |
 |---|---|
-| `Fortnite.digest.verse` | All device types, method signatures, event names |
+| Managed digest set: `Fortnite.digest.verse`, `UnrealEngine.digest.verse`, `Verse.digest.verse` | Device types, method signatures, event names, and broader Verse / engine API surface |
 | `__ExternalActors__/**/*.uasset` | Every placed device in your map with real property values |
 | `__ExternalObjects__/**/*.uasset` | Every placed device in your map with real property values |
 | `*.verse` in your project | Your own `@editable` fields, modules, and code context |
@@ -85,10 +86,10 @@ The `.uasset` parser reads binary files directly — no external tools required.
 | Tool | Input | Output |
 |---|---|---|
 | `scan_map_devices` | project_path, force_refresh (optional) | All placed devices with triggers, receivers, settings |
-| `get_device_props` | Device type name | Full property and event list from digest |
-| `query_digest` | Symbol name or keyword | Matching entries from digest with signatures |
+| `get_device_props` | Device type name | Full property and event list from the managed digest index, with exact, normalized, and approximate lookup support |
+| `query_digest` | Symbol name, keyword, or natural-language query | Ranked matches from the managed digest index with signatures |
 | `validate_wiring` | project_path | Wiring issues (orphaned channels, conflicts) |
-| `validate_verse` | Verse source code | Validation issues and hallucinated APIs |
+| `validate_verse` | Verse source code | Validation issues and hallucinated APIs using the loaded digest index |
 | `generate_device_graph` | project_path, format (optional) | Device connection graph (Mermaid/DOT) |
 | `diff_digests` | Old/new digest content | API changes between digest versions |
 | `list_templates` | - | Saved composition templates |
@@ -105,7 +106,7 @@ The `.uasset` parser reads binary files directly — no external tools required.
 - **rayon** — parallel scanning
 - **axum** — HTTP server for SSE transport
 - **tokio-util** — Async runtime utilities
-- **Fortnite.digest.verse** — source of truth for all device/API definitions
+- **Managed digest set** (`Fortnite.digest.verse`, `UnrealEngine.digest.verse`, `Verse.digest.verse`) — source of truth for device and API definitions
 
 ---
 
@@ -190,9 +191,9 @@ Add to your MCP client config file:
 - [x] Claude Desktop and Cursor config examples
 
 ### Phase 3 — Complete ✅
-- [x] Digest parser for Fortnite.digest.verse
-- [x] `get_device_props` tool (digest lookup)
-- [x] `query_digest` tool (symbol search)
+- [x] Digest parser for the managed digest set (`Fortnite.digest.verse`, `UnrealEngine.digest.verse`, `Verse.digest.verse`)
+- [x] `get_device_props` tool (exact, normalized, and approximate digest lookup)
+- [x] `query_digest` tool (ranked symbol search)
 - [ ] `list_editables` tool (planned)
 - [ ] `scaffold_ui` tool (planned)
 
@@ -247,21 +248,23 @@ I found 2 wiring issues:
 
 ```
 User: What events does the campfire device have?
-AI: [Uses get_device_props tool]
+AI: [Uses get_device_props tool with query="campfire"]
 The device_campfire_device has:
 - Triggers: TriggerOnEnterRadius, OnDisabled, OnEnabled
 - Receivers: ReceiverAddFuel, EnableWhenReceiving
 - Methods: AddFuel, Extinguish, Light
+- Resolved via: approximate lookup
 ```
 
 ### Searching the Digest
 
 ```
 User: How do I use the score manager?
-AI: [Uses query_digest tool with query="score"]
-Found device_score_manager_device with:
-- ScoreChanged event
-- AddScore, GetScore, ResetScore methods
+AI: [Uses query_digest tool with query="add widget to player ui slot"]
+Found ranked digest matches including:
+- AddWidget on device_player_ui_device
+- AddWidget on device_canvas_slot_device
+- Related widget and slot symbols from the managed digest set
 ```
 
 ### Debugging Multiplayer UI
@@ -290,9 +293,9 @@ Try using `canvas.SetMyWidget[player] = value` pattern instead.
 - [x] Claude Desktop / Cursor config examples
 
 **Phase 3 — Digest Integration** ✅ COMPLETE
-- [x] Digest parser for Fortnite.digest.verse
-- [x] `get_device_props` tool
-- [x] `query_digest` tool
+- [x] Digest parser for the managed digest set
+- [x] `get_device_props` tool with exact, normalized, and approximate lookup
+- [x] `query_digest` tool with ranked natural-language search
 - [ ] `list_editables` tool
 - [ ] `scaffold_ui` tool
 
