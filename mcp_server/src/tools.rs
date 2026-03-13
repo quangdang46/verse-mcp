@@ -18,7 +18,7 @@ pub fn scan_map_devices(project_path: &Path) -> anyhow::Result<uasset_scan::Scan
     uasset_scan::scan_project(project_path).map_err(Into::into)
 }
 
-/// Tool: Get device properties from Fortnite.digest.verse
+/// Tool: Get device properties from the managed digest set
 #[allow(dead_code)]
 pub fn get_device_props<'a>(
     index: &'a uasset_scan::DigestIndex,
@@ -27,7 +27,7 @@ pub fn get_device_props<'a>(
     index.get_device(device_type)
 }
 
-/// Tool: Query Fortnite.digest.verse for symbols
+/// Tool: Query the managed digest set for symbols
 #[allow(dead_code)]
 pub fn query_digest(
     index: &uasset_scan::DigestIndex,

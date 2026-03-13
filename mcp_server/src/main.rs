@@ -2,7 +2,7 @@
 //!
 //! Provides tools for:
 //! - Scanning UEFN projects for devices
-//! - Querying Fortnite.digest.verse
+//! - Querying the managed Verse digest set (Fortnite, UnrealEngine, Verse)
 //! - Listing @editable fields
 //! - UI scaffolding
 
@@ -753,7 +753,7 @@ impl ServerHandler for VerseMcpHandler {
                     None => {
                         Ok(rmcp::model::CallToolResult {
                             content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
-                                "error": "Digest not loaded. Ensure the managed digest files are available under ~/.vm and startup completed successfully."
+                                "error": "Digest index not loaded. Ensure at least one managed digest file is available under ~/.vm (Fortnite.digest.verse, UnrealEngine.digest.verse, or Verse.digest.verse) and that startup completed successfully."
                             })).unwrap())],
                             is_error: Some(true),
                         })
@@ -809,7 +809,7 @@ impl ServerHandler for VerseMcpHandler {
                     None => {
                         Ok(rmcp::model::CallToolResult {
                             content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
-                                "error": "Digest not loaded. Ensure the managed digest files are available under ~/.vm and startup completed successfully."
+                                "error": "Digest index not loaded. Ensure at least one managed digest file is available under ~/.vm (Fortnite.digest.verse, UnrealEngine.digest.verse, or Verse.digest.verse) and that startup completed successfully."
                             })).unwrap())],
                             is_error: Some(true),
                         })
@@ -917,7 +917,7 @@ impl ServerHandler for VerseMcpHandler {
                     None => {
                         Ok(rmcp::model::CallToolResult {
                             content: vec![Annotated::text(serde_json::to_string_pretty(&serde_json::json!({
-                                "error": "Digest not loaded. Ensure the managed digest files are available under ~/.vm and startup completed successfully."
+                                "error": "Digest index not loaded. Ensure at least one managed digest file is available under ~/.vm (Fortnite.digest.verse, UnrealEngine.digest.verse, or Verse.digest.verse) and that startup completed successfully."
                             })).unwrap())],
                             is_error: Some(true),
                         })
