@@ -69,7 +69,23 @@ device_button_device = class():
         let results = query_digest(&index, "AddWidget player ui slot", "all");
         assert!(!results.is_empty());
         assert_eq!(results[0].name, "AddWidget");
-        assert_eq!(results[0].device.as_deref(), Some("device_player_ui_device"));
+        assert_eq!(
+            results[0].device.as_deref(),
+            Some("device_player_ui_device")
+        );
+    }
+
+    #[test]
+    fn test_query_digest_supports_natural_language_query_fillers() {
+        let index = create_test_digest();
+
+        let results = query_digest(&index, "add widget to player ui slot", "all");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].name, "AddWidget");
+        assert_eq!(
+            results[0].device.as_deref(),
+            Some("device_player_ui_device")
+        );
     }
 
     #[test]

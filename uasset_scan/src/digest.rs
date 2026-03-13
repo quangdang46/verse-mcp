@@ -177,8 +177,7 @@ pub struct DiffStats {
 
 // Regex patterns for parsing (compiled once)
 static DEVICE_DECL_RE: LazyLock<Regex> = LazyLock::new(|| {
-    Regex::new(r"^([a-z][a-z0-9_]*)\s*=\s*class\s*\(\s*\)\s*:")
-        .expect("Invalid device decl regex")
+    Regex::new(r"^([a-z][a-z0-9_]*)\s*=\s*class\s*\(\s*\)\s*:").expect("Invalid device decl regex")
 });
 
 static EVENT_RE: LazyLock<Regex> = LazyLock::new(|| {
@@ -376,7 +375,11 @@ impl DigestIndex {
                 device.events.iter().filter_map(|event| {
                     ranked_result(
                         query,
-                        if event.is_receiver { "receiver" } else { "trigger" },
+                        if event.is_receiver {
+                            "receiver"
+                        } else {
+                            "trigger"
+                        },
                         &event.name,
                         Some(device.name.as_str()),
                         format_event(event),
@@ -432,7 +435,11 @@ impl DigestIndex {
             device.events.iter().filter_map(|event| {
                 ranked_result(
                     query,
-                    if event.is_receiver { "receiver" } else { "trigger" },
+                    if event.is_receiver {
+                        "receiver"
+                    } else {
+                        "trigger"
+                    },
                     &event.name,
                     Some(device.name.as_str()),
                     format_event(event),
@@ -478,9 +485,11 @@ impl DigestIndex {
             .devices
             .values()
             .filter_map(|device| {
-                score_candidate(query, &device.name, std::iter::empty()).map(|score| RankedDeviceCandidate {
-                    name: device.name.clone(),
-                    score,
+                score_candidate(query, &device.name, std::iter::empty()).map(|score| {
+                    RankedDeviceCandidate {
+                        name: device.name.clone(),
+                        score,
+                    }
                 })
             })
             .collect();
@@ -490,7 +499,11 @@ impl DigestIndex {
     }
 
     /// Resolve the best approximate device candidate, if any.
-    pub fn resolve_device_candidates(&self, query: &str, limit: usize) -> Vec<RankedDeviceCandidate> {
+    pub fn resolve_device_candidates(
+        &self,
+        query: &str,
+        limit: usize,
+    ) -> Vec<RankedDeviceCandidate> {
         let mut candidates = self.search_device_candidates(query);
         candidates.truncate(limit);
         candidates
@@ -842,9 +855,7 @@ fn score_candidate<'a>(
     if query_tokens.len() > 1 {
         let overlap = query_tokens
             .iter()
-            .filter(|token| {
-                candidate_tokens.contains(*token) || context_tokens.contains(*token)
-            })
+            .filter(|token| candidate_tokens.contains(*token) || context_tokens.contains(*token))
             .count() as u32;
         score += overlap * overlap * 175;
     }
@@ -857,11 +868,69 @@ fn score_candidate<'a>(
 }
 
 fn tokenize_search_text(text: &str) -> HashSet<String> {
-    normalize_search_text(text)
-        .split_whitespace()
+    let mut tokens = HashSet::new();
+
+    for raw_token in text
+        .split(|ch: char| !ch.is_ascii_alphanumeric())
         .filter(|token| !token.is_empty())
-        .map(str::to_string)
-        .collect()
+    {
+        let normalized = normalize_search_text(raw_token);
+        if !normalized.is_empty() {
+            tokens.insert(normalized);
+        }
+
+        for subtoken in split_compound_token(raw_token) {
+            let normalized_subtoken = normalize_search_text(subtoken);
+            if !normalized_subtoken.is_empty() {
+                tokens.insert(normalized_subtoken);
+            }
+        }
+    }
+
+    tokens
+}
+
+fn split_compound_token(token: &str) -> Vec<&str> {
+    let mut parts = Vec::new();
+    let mut start = None;
+    let mut prev_is_lower_or_digit = false;
+
+    for (idx, ch) in token.char_indices() {
+        let is_upper = ch.is_ascii_uppercase();
+        let is_alnum = ch.is_ascii_alphanumeric();
+
+        if !is_alnum {
+            if let Some(start_idx) = start.take() {
+                if start_idx < idx {
+                    parts.push(&token[start_idx..idx]);
+                }
+            }
+            prev_is_lower_or_digit = false;
+            continue;
+        }
+
+        if start.is_none() {
+            start = Some(idx);
+            prev_is_lower_or_digit = ch.is_ascii_lowercase() || ch.is_ascii_digit();
+            continue;
+        }
+
+        if is_upper && prev_is_lower_or_digit {
+            if let Some(start_idx) = start.replace(idx) {
+                parts.push(&token[start_idx..idx]);
+            }
+        }
+
+        prev_is_lower_or_digit = ch.is_ascii_lowercase() || ch.is_ascii_digit();
+    }
+
+    if let Some(start_idx) = start {
+        if start_idx < token.len() {
+            parts.push(&token[start_idx..]);
+        }
+    }
+
+    parts
 }
 
 fn sort_ranked_results(results: &mut [RankedSearchResult]) {
@@ -1019,14 +1088,22 @@ device_button_device = class():
 
     #[test]
     fn test_normalize_search_text() {
-        assert_eq!(normalize_search_text("AddWidget player_ui_slot"), "addwidget player ui slot");
-        assert_eq!(normalize_search_text("  Device-Campfire_C  "), "device campfire c");
+        assert_eq!(
+            normalize_search_text("AddWidget player_ui_slot"),
+            "addwidget player ui slot"
+        );
+        assert_eq!(
+            normalize_search_text("  Device-Campfire_C  "),
+            "device campfire c"
+        );
     }
 
     #[test]
     fn test_tokenize_search_text() {
         let tokens = tokenize_search_text("AddWidget player_ui_slot");
         assert!(tokens.contains("addwidget"));
+        assert!(tokens.contains("add"));
+        assert!(tokens.contains("widget"));
         assert!(tokens.contains("player"));
         assert!(tokens.contains("ui"));
         assert!(tokens.contains("slot"));
@@ -1034,21 +1111,25 @@ device_button_device = class():
 
     #[test]
     fn test_score_candidate_prefers_exact_normalized_match() {
-        let exact = score_candidate("device campfire device", "device_campfire_device", std::iter::empty())
-            .unwrap();
-        let fuzzy = score_candidate("device campfire device", "device_button_device", std::iter::empty())
-            .unwrap();
+        let exact = score_candidate(
+            "device campfire device",
+            "device_campfire_device",
+            std::iter::empty(),
+        )
+        .unwrap();
+        let fuzzy = score_candidate(
+            "device campfire device",
+            "device_button_device",
+            std::iter::empty(),
+        )
+        .unwrap();
         assert!(exact > fuzzy);
     }
 
     #[test]
     fn test_score_candidate_uses_context_terms() {
-        let score = score_candidate(
-            "AddWidget player_ui_slot",
-            "AddWidget",
-            ["player_ui"],
-        )
-        .unwrap();
+        let score =
+            score_candidate("AddWidget player_ui_slot", "AddWidget", ["player_ui"]).unwrap();
         assert!(score > 0);
     }
 
@@ -1089,7 +1170,10 @@ device_ui_slot_device = class():
         let results = index.search_methods("AddWidget player ui slot");
         assert!(!results.is_empty());
         assert_eq!(results[0].name, "AddWidget");
-        assert_eq!(results[0].device.as_deref(), Some("device_player_ui_device"));
+        assert_eq!(
+            results[0].device.as_deref(),
+            Some("device_player_ui_device")
+        );
     }
 
     #[test]
@@ -1107,7 +1191,48 @@ device_canvas_slot_device = class():
         let results = index.search_all("AddWidget player ui slot");
         assert!(!results.is_empty());
         assert_eq!(results[0].name, "AddWidget");
-        assert_eq!(results[0].device.as_deref(), Some("device_player_ui_device"));
+        assert_eq!(
+            results[0].device.as_deref(),
+            Some("device_player_ui_device")
+        );
+    }
+
+    #[test]
+    fn test_search_all_supports_natural_language_query_fillers() {
+        let digest = r#"
+device_player_ui_device = class():
+    AddWidget(Widget:widget):void
+    RemoveWidget(Widget:widget):void
+
+device_canvas_slot_device = class():
+    AddWidget(Slot:canvas_slot):void
+"#;
+        let index = DigestIndex::parse(digest).unwrap();
+
+        let results = index.search_all("add widget to player ui slot");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].name, "AddWidget");
+        assert_eq!(
+            results[0].device.as_deref(),
+            Some("device_player_ui_device")
+        );
+    }
+
+    #[test]
+    fn test_search_all_keeps_exact_match_ahead_of_contextual_matches() {
+        let digest = r#"
+device_player_ui_device = class():
+    AddWidget(Widget:widget):void
+    RemoveWidget(Widget:widget):void
+
+device_canvas_slot_device = class():
+    RemoveWidget(Widget:widget):void
+"#;
+        let index = DigestIndex::parse(digest).unwrap();
+
+        let results = index.search_all("RemoveWidget");
+        assert!(!results.is_empty());
+        assert_eq!(results[0].name, "RemoveWidget");
     }
 
     #[test]
