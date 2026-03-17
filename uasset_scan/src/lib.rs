@@ -7,32 +7,17 @@ use indexmap::IndexMap;
 
 pub mod classify;
 pub mod device_grapher;
-pub mod digest;
 pub mod fingerprint;
 pub mod parser;
-pub mod similarity;
-pub mod template_manager;
 pub mod types;
-pub mod validator;
-pub mod verse_validator;
 
 #[cfg(test)]
 mod scanner_tests;
 
 pub use classify::{classify, Classification};
 pub use device_grapher::{DeviceConnection, DeviceGrapher, GraphFormat};
-pub use digest::{
-    normalize_device_name, DeviceDef, DigestError, DigestIndex, Event, Method, Param, Property,
-    SearchResult, SymbolKind, SymbolLocation,
-};
 pub use fingerprint::Fingerprint;
-pub use similarity::{find_closest_match, levenshtein};
-pub use template_manager::{
-    Template, TemplateDevice, TemplateError, TemplateManager, TemplateWire,
-};
 pub use types::{DeviceInfo, ScanOutput};
-pub use validator::{IssueKind, WiringIssue, WiringValidator};
-pub use verse_validator::{Severity, ValidationIssue, VerseValidator};
 
 /// Magic number for UE5 asset files
 pub const UE_MAGIC: u32 = 0x9E2A83C1;
@@ -67,7 +52,6 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
 
     let content_root = project_path.join("Content");
 
-    // Scan both __ExternalActors__ and __ExternalObjects__
     let scan_dirs = vec![
         content_root.join("__ExternalActors__"),
         content_root.join("__ExternalObjects__"),
@@ -108,27 +92,24 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
     let total_files = all_files.len();
     tracing::info!("Total .uasset files to scan: {}", total_files);
 
-    // Parse in parallel using rayon
     let results: Vec<_> = all_files
         .into_par_iter()
         .map(|path| parse_file(&path, &content_root))
         .collect();
 
-    // Include all parsed files (no skipping)
     let mut devices = Vec::new();
     let mut skipped = 0;
 
     for result in results {
         match result {
             Ok(Some(device)) => devices.push(device),
-            Ok(None) => skipped += 1, // Failed to parse (not skipped for lack of data)
-            Err(_) => skipped += 1,   // Parse error
+            Ok(None) => skipped += 1,
+            Err(_) => skipped += 1,
         }
     }
 
-    let total_devices = devices.len(); // Count before moving
+    let total_devices = devices.len();
 
-    // Group by device type
     let mut by_type: IndexMap<String, Vec<DeviceInfo>> = IndexMap::new();
     for device in devices {
         by_type
@@ -137,15 +118,14 @@ pub fn scan_project(project_path: &std::path::Path) -> Result<ScanOutput> {
             .push(device);
     }
 
-    // Sort keys for consistent output
     by_type.sort_keys();
 
     Ok(ScanOutput {
         scanned_at: chrono_lite_now(),
         project_root: project_path.to_string_lossy().to_string(),
         total_files,
-        total_devices, // All successfully parsed files
-        skipped,       // Only files that failed to parse
+        total_devices,
+        skipped,
         device_types: by_type.keys().cloned().collect(),
         by_type,
     })
@@ -160,7 +140,6 @@ fn parse_file(path: &std::path::Path, base_path: &std::path::Path) -> Result<Opt
     let mut buf = Vec::new();
     file.read_to_end(&mut buf)?;
 
-    // Get relative path from Content/ directory (includes __ExternalActors__ or __ExternalObjects__)
     let relative_path = path
         .strip_prefix(base_path)
         .unwrap_or(path)
@@ -177,17 +156,6 @@ fn chrono_lite_now() -> String {
         .duration_since(UNIX_EPOCH)
         .unwrap_or_default();
     let secs = duration.as_secs();
-    // Format as ISO 8601-like string
-    let days = secs / 86400;
-    let years = 1970 + days / 365;
-    let remaining_days = days % 365;
-    let months = remaining_days / 30 + 1;
-    let day = remaining_days % 30 + 1;
-    let hours = (secs % 86400) / 3600;
-    let minutes = (secs % 3600) / 60;
-    let seconds = secs % 60;
-    format!(
-        "{:04}-{:02}-{:02}T{:02}:{:02}:{:02}Z",
-        years, months, day, hours, minutes, seconds
-    )
+
+    format!("{}", secs)
 }

@@ -1,83 +1,27 @@
 # Verse UEFN MCP Server
 
-> **MCP server for Fortnite UEFN & Verse development - scan devices, validate wiring, query the managed Verse digest set, and scaffold UI**
+> MCP server for Fortnite UEFN that scans placed devices from `.uasset` files and generates connection graphs.
 
 [UEFN](https://dev.epicgames.com/community/fortnite/getting-started) | [Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-quick-reference) | [MCP](https://modelcontextprotocol.io/) | [Rust](https://www.rust-lang.org/)
 
 ---
 
-## Why This Exists
+## What it does
 
-I'm transitioning from **web developer → game developer** and hit the same wall most Verse beginners hit: the syntax is fine, but integrating Verse with UEFN is where things get painful.
+This project reads UEFN map assets directly from:
 
-The specific friction points:
+- `Content/__ExternalActors__/**/*.uasset`
+- `Content/__ExternalObjects__/**/*.uasset`
 
-- **Properties and settings** live in the UEFN Details panel — not in code, not in docs
-- **Device options** aren't always controllable from Verse, and it's not obvious which ones are
-- **Game UI** — configuring it, wiring it to players, updating it correctly in multiplayer — is easy to get wrong in subtle ways
-- **AI assistants hallucinate** Verse API names constantly, because training data for Verse is sparse
+It extracts placed-device information such as:
 
-I looked for existing solutions — something like a "Verse MCP for UEFN" — and found nothing that was:
+- device type
+- label
+- triggers
+- receivers
+- configured settings
 
-- **Project-aware** (able to read your actual code and digest files)
-- **Digest-grounded** (using the managed Verse digest set as a source of truth)
-- **Focused on the hard parts**: UI wiring, `@editable` properties, multiplayer patterns
-
-So I built this.
-
----
-
-## What It Solves
-
-### 1. "Does this API actually exist?"
-
-The MCP lets the AI or user guess naturally, then grounds that guess against your **managed digest files** and:
-
-- Confirms whether a symbol is real
-- Returns its actual signature
-- Suggests likely matches for partial, approximate, or natural-language queries
-- Prevents hallucinated method names before they reach your code
-
-### 2. "What `@editable` fields do I have, and where do I set them in UEFN?"
-
-The MCP parses your `.verse` source files and:
-
-- Lists all `@editable` fields in your project
-- Generates a wiring checklist (Details panel → reference/value assignment)
-- Flags common mistakes: unused editables, unchecked optionals, missing null guards
-
-### 3. "How do I write UI correctly — especially for multiplayer?"
-
-The MCP provides UI scaffolding based on proven Verse patterns:
-
-- Canvas and widget boilerplate (pure Verse UI, no UMG)
-- Per-player widget storage patterns (prevents UI overlap and state bleed between players)
-- Clean update/remove templates with correct lifecycle handling
-
-### 4. "What is this device called in Verse?"
-
-If I want to use the TRACK DUMMY device, I need to know its device name in Verse, but in Verse, the device name isn't the same as "TRACK DUMMY."
-So, how can I find the name that's used for this device in Verse?
-
----
-
-## How It Works
-
-The MCP server indexes sources of truth from your local machine:
-
-| Source | What it provides |
-|---|---|
-| Managed digest set: `Fortnite.digest.verse`, `UnrealEngine.digest.verse`, `Verse.digest.verse` | Device types, method signatures, event names, and broader Verse / engine API surface |
-| `__ExternalActors__/**/*.uasset` | Every placed device in your map with real property values |
-| `__ExternalObjects__/**/*.uasset` | Every placed device in your map with real property values |
-| `*.verse` in your project | Your own `@editable` fields, modules, and code context |
-
-The `.uasset` parser reads binary files directly — no external tools required. It extracts:
-
-- Device type (e.g. `Device_Campfire_C`)
-- Triggers (e.g. `TriggerOnEnterRadius`, `OnDisabled`)
-- Receivers (e.g. `ReceiverAddFuel`, `DisableWhenReceiving`)
-- Configured settings with real values (e.g. `HealthPerPulse: 2.0`, `StartLit: False`)
+It also turns scanned output into a Mermaid or DOT connection graph.
 
 ---
 
@@ -85,28 +29,18 @@ The `.uasset` parser reads binary files directly — no external tools required.
 
 | Tool | Input | Output |
 |---|---|---|
-| `scan_map_devices` | project_path, force_refresh (optional) | All placed devices with triggers, receivers, settings |
-| `get_device_props` | Device type name | Full property and event list from the managed digest index, with exact, normalized, and approximate lookup support |
-| `query_digest` | Symbol name, keyword, or natural-language query | Ranked matches from the managed digest index with signatures |
-| `validate_wiring` | project_path | Wiring issues (orphaned channels, conflicts) |
-| `validate_verse` | Verse source code | Validation issues and hallucinated APIs using the loaded digest index |
-| `generate_device_graph` | project_path, format (optional) | Device connection graph (Mermaid/DOT) |
-| `diff_digests` | Old/new digest content | API changes between digest versions |
-| `list_templates` | - | Saved composition templates |
-| `load_template` | Template name | Load a template by name |
-| `save_template` | Template JSON/from scan | Save a composition template |
-| `delete_template` | Template name | Delete a template |
+| `scan_map_devices` | `project_path`, `force_refresh` (optional) | Full placed-device scan output grouped by type |
+| `generate_device_graph` | `project_path`, `format` (optional) | Mermaid or DOT device connection graph |
 
 ---
 
 ## Tech Stack
 
-- **Rust** — MCP server + `.uasset` binary parser (fast, single binary)
+- **Rust** — MCP server + `.uasset` binary parser
 - **rmcp** — MCP protocol implementation with stdio and HTTP (SSE) transport
 - **rayon** — parallel scanning
-- **axum** — HTTP server for SSE transport
-- **tokio-util** — Async runtime utilities
-- **Managed digest set** (`Fortnite.digest.verse`, `UnrealEngine.digest.verse`, `Verse.digest.verse`) — source of truth for device and API definitions
+- **tokio / tokio-util** — async runtime and cancellation handling
+- **unreal_asset** — UE asset parsing support
 
 ---
 
@@ -123,19 +57,17 @@ curl -fsSL "https://raw.githubusercontent.com/quangdang46/verse-mcp/main/install
 echo 'export PATH="$HOME/.local/bin:$PATH"' >> ~/.bashrc && source ~/.bashrc
 ```
 
-### Verify Installation
+### Verify installation
 
 ```bash
 vm --version
 ```
 
-Should output: `vm 0.1.0`
-
 ---
 
 ## Usage
 
-### CLI Options
+### CLI options
 
 ```bash
 # Show help
@@ -151,15 +83,7 @@ vm --transport http --host 127.0.0.1 --port 2003
 vm --transport http --port 8080
 ```
 
----
-
-## Configuration
-
-### HTTP Transport (Claude / Cursor / Other CLI)
-
-Add to your MCP client config file:
-
-**Cursor IDE , Claude Code** (`mcp.json`):
+### MCP config
 
 ```json
 {
@@ -171,141 +95,53 @@ Add to your MCP client config file:
 }
 ```
 
-
 ---
 
-## Project Status
+## AI usage examples
 
-### Phase 1 — Complete ✅
-- [x] `.uasset` binary parser with full property extraction
-- [x] Device classification and fingerprinting system
-- [x] Parallel scanning with rayon
-- [x] Tested against real UEFN project files
-- [x] Wiring validator for connection analysis
-- [x] Scans both `__ExternalActors__` and `__ExternalObjects__` directories
-
-### Phase 2 — Complete ✅
-- [x] MCP server with stdio and HTTP (SSE) transport
-- [x] `scan_map_devices` tool with mtime-based caching
-- [x] `validate_wiring` tool for connection validation
-- [x] Claude Desktop and Cursor config examples
-
-### Phase 3 — Complete ✅
-- [x] Digest parser for the managed digest set (`Fortnite.digest.verse`, `UnrealEngine.digest.verse`, `Verse.digest.verse`)
-- [x] `get_device_props` tool (exact, normalized, and approximate digest lookup)
-- [x] `query_digest` tool (ranked symbol search)
-- [ ] `list_editables` tool (planned)
-- [ ] `scaffold_ui` tool (planned)
-
-### Phase 4 — Complete ✅
-- [x] Installation scripts (install.sh, install.ps1)
-- [x] Release workflow with multi-platform builds
-- [x] Pre-built binary releases on GitHub
-- [ ] Integration tests with real UEFN projects
-- [ ] Documentation website
-
----
-
-## Background: The `.uasset` Discovery
-
-One of the key findings during research: UEFN stores placed device state in `Content/__ExternalActors__/**/*.uasset` and `Content/__ExternalObjects__/**/*.uasset` — binary files, one per placed actor. These files contain the **actual runtime configuration** of every device in your map, including all receiver/trigger channel assignments and editable property values.
-
-This is more useful than the digest alone, because:
-
-- The digest has type signatures — the `.uasset` files have **real values**
-- The digest is static — the `.uasset` files **update every time you edit in UEFN**
-- The digest has no placement context — the `.uasset` files know exactly **what's in your map**
-
-The parser reads the UE5 asset binary format directly: verifies the magic header (`0x9E2A83C1`), locates the Name Map, reads all string entries, and classifies them by pattern into triggers, receivers, and settings — then extracts key/value pairs from the `PropertyOverrideData` block using a fixed 25-byte metadata stride.
-
----
-
-## AI Usage Examples
-
-### Finding Device Types
+### Scan a map
 
 ```
 User: What devices are in my map?
-AI: [Uses scan_map_devices tool]
-I found 47 devices in your map across 15 types:
-- Button_device: 5
-- player_spawner_device: 3
-- campfire_device: 2
-- ...
+AI: [Uses scan_map_devices]
+I found 47 devices across 15 types.
 ```
 
-### Validating Wiring
+### Render the connection graph
 
 ```
-User: Are all my buttons connected properly?
-AI: [Uses validate_wiring tool]
-I found 2 wiring issues:
-1. Button1 has OnTriggered but no channel configured
-2. Channel "game_start" has 3 senders (potential conflict)
-```
-
-### Querying Device Properties
-
-```
-User: What events does the campfire device have?
-AI: [Uses get_device_props tool with query="campfire"]
-The device_campfire_device has:
-- Triggers: TriggerOnEnterRadius, OnDisabled, OnEnabled
-- Receivers: ReceiverAddFuel, EnableWhenReceiving
-- Methods: AddFuel, Extinguish, Light
-- Resolved via: approximate lookup
-```
-
-### Searching the Digest
-
-```
-User: How do I use the score manager?
-AI: [Uses query_digest tool with query="add widget to player ui slot"]
-Found ranked digest matches including:
-- AddWidget on device_player_ui_device
-- AddWidget on device_canvas_slot_device
-- Related widget and slot symbols from the managed digest set
-```
-
-### Debugging Multiplayer UI
-
-```
-User: My timer display isn't syncing between players
-AI: Let me check your canvas setup... [Uses scan_map_devices]
-The issue is your timer canvas uses a single shared widget instead of per-player storage.
-Try using `canvas.SetMyWidget[player] = value` pattern instead.
+User: Show me the device graph.
+AI: [Uses generate_device_graph]
+I generated a Mermaid graph for the scanned devices.
 ```
 
 ---
 
-## Roadmap
+## Project status
 
-**Phase 1 — Core** ✅ COMPLETE
-- [x] `.uasset` binary parser with full property extraction
-- [x] Device classification and fingerprinting
-- [x] Parallel scanning with rayon
-- [x] Scans both `__ExternalActors__` and `__ExternalObjects__` directories
-
-**Phase 2 — MCP Server** ✅ COMPLETE
+### Current shipped features
+- [x] `.uasset` parser for placed devices
+- [x] scans both `__ExternalActors__` and `__ExternalObjects__`
+- [x] parallel scanning with rayon
 - [x] MCP server with stdio and HTTP (SSE) transport
-- [x] `scan_map_devices` tool with caching
-- [x] `validate_wiring` tool
-- [x] Claude Desktop / Cursor config examples
+- [x] `scan_map_devices` with cache invalidation
+- [x] `generate_device_graph` with Mermaid and DOT output
 
-**Phase 3 — Digest Integration** ✅ COMPLETE
-- [x] Digest parser for the managed digest set
-- [x] `get_device_props` tool with exact, normalized, and approximate lookup
-- [x] `query_digest` tool with ranked natural-language search
-- [ ] `list_editables` tool
-- [ ] `scaffold_ui` tool
+### Current focus
+- improve scan summaries for large maps
+- improve semantic retrieval on top of scanned assets and documentation
+- add higher-level map analysis without bringing back exact-match digest tooling
 
-**Phase 4 — Polish**
-- [ ] Pre-built binary releases
-- [ ] Integration tests with real UEFN projects
-- [ ] Documentation website
+---
+
+## Background: the `.uasset` discovery
+
+UEFN stores placed actor state in binary `.uasset` files under `Content/__ExternalActors__` and `Content/__ExternalObjects__`. Those files contain the actual map configuration, which makes them more useful than static API docs for map-aware tooling.
+
+The parser reads the UE5 asset binary format directly, extracts names and property data, and classifies them into device types, triggers, receivers, and settings.
 
 ---
 
 ## Contributing
 
-This is early-stage. If you're also building in UEFN and hitting the same friction, issues and PRs are welcome.
+If you're building UEFN tooling and want to improve scan quality, graphing, or map-aware analysis, issues and PRs are welcome.
