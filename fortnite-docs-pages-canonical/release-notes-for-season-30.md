@@ -1,0 +1,115 @@
+## https://dev.epicgames.com/documentation/en-us/fortnite/release-notes-for-season-30
+
+  * [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation)
+    * [What's New in Unreal Editor for Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/whats-new-in-unreal-editor-for-fortnite)
+      * [39.50 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/39-50-fortnite-ecosystem-updates-and-release-notes)
+      * [39.40 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/39-40-fortnite-ecosystem-updates-and-release-notes)
+      * [39.30 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/39-30-fortnite-ecosystem-updates-and-release-notes)
+      * [39.20 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/39-20-fortnite-ecosystem-updates-and-release-notes)
+      * [39.10 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/39-10-fortnite-ecosystem-updates-and-release-notes)
+      * [39.00 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/39-00-fortnite-ecosystem-updates-and-release-notes)
+      * [38.10 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/38-10-fortnite-ecosystem-updates-and-release-notes)
+      * [38.00 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/38-00-fortnite-ecosystem-updates-and-release-notes)
+      * [37.50 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/37-50-fortnite-ecosystem-updates-and-release-notes)
+      * [37.40 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/37-40-fortnite-ecosystem-updates-and-release-notes)
+      * [37.30 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/37-30-fortnite-ecosystem-updates-and-release-notes)
+      * [37.20 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/37-20-fortnite-ecosystem-updates-and-release-notes)
+      * [37.10 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/37-10-fortnite-ecosystem-updates-and-release-notes)
+      * [37.00 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/37-00-fortnite-ecosystem-updates-and-release-notes)
+      * [Release Notes for Season 36](https://dev.epicgames.com/documentation/en-us/fortnite/release-notes-for-season-36)
+      * [Release Notes for Seasons 34–35](https://dev.epicgames.com/documentation/en-us/fortnite/release-notes-for-seasons-34-35)
+      * [Release Notes for Seasons 32–33](https://dev.epicgames.com/documentation/en-us/fortnite/release-notes-for-seasons-32-33)
+      * [Release Notes for Season 31](https://dev.epicgames.com/documentation/en-us/fortnite/release-notes-for-season-31)
+      * Release Notes for Season 30
+        * [30.40 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/30-40-fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite)
+        * [30.30 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/30-30-fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite)
+        * [30.20 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite)
+        * [30.10 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/30-10-fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite)
+        * [30.00 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/documentation/en-us/fortnite/30-00-fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite)
+      * [Release Notes for Seasons 25–29](https://dev.epicgames.com/documentation/en-us/fortnite/seasons-26-29-release-notes)
+    * [Discover the Resources Waiting for You as a Fortnite Developer!](https://dev.epicgames.com/documentation/en-us/fortnite/discover-the-resources-waiting-for-you-as-a-fortnite-creator)
+    * [Get Started Creating in Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/get-started-creating-in-fortnite)
+    * [Island Settings](https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-uefn-and-fortnite-creative)
+    * [Editor User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/getting-to-know-the-user-interface-in-unreal-editor-for-fortnite)
+    * [Creative User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/creative-user-interface-for-fortnite-creative)
+    * [Import Content and Islands](https://dev.epicgames.com/documentation/en-us/fortnite/import-content-and-islands-in-unreal-editor-for-fortnite)
+    * [Building Basics](https://dev.epicgames.com/documentation/en-us/fortnite/building-basics-in-fortnite-creative)
+    * [Editor Best Practices](https://dev.epicgames.com/documentation/en-us/fortnite/editor-best-practices-in-unreal-editor-for-fortnite)
+    * [Programming with Verse](https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite)
+    * [Mobile Development](https://dev.epicgames.com/documentation/en-us/fortnite/mobile-development-in-fortnite)
+    * [UEFN Starter Templates](https://dev.epicgames.com/documentation/en-us/fortnite/unreal-editor-for-fortnite-starter-templates)
+    * [Game Collections](https://dev.epicgames.com/documentation/en-us/fortnite/game-collections-in-fortnite)
+    * [Template Islands](https://dev.epicgames.com/documentation/en-us/fortnite/template-islands-in-fortnite-creative)
+    * [Build a Game](https://dev.epicgames.com/documentation/en-us/fortnite/build-a-game-in-unreal-editor-for-fortnite)
+    * [Learn Game Mechanics](https://dev.epicgames.com/documentation/en-us/fortnite/learn-game-mechanics-in-unreal-editor-for-fortnite)
+    * [Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/device-design-examples-in-fortnite-creative)
+    * [Scene Graph](https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite)
+    * [AI and NPCs](https://dev.epicgames.com/documentation/en-us/fortnite/ai-and-npcs-in-unreal-editor-for-fortnite)
+    * [Animation and Cinematics](https://dev.epicgames.com/documentation/en-us/fortnite/animation-and-cinematics-in-unreal-editor-for-fortnite)
+    * [Using Devices](https://dev.epicgames.com/documentation/en-us/fortnite/using-devices-in-fortnite)
+    * [Using Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-items-in-fortnite-creative)
+    * [Fortnite Weapons Primer](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-weapons-primer)
+    * [In-Game User Interfaces](https://dev.epicgames.com/documentation/en-us/fortnite/ingame-user-interfaces-in-unreal-editor-for-fortnite)
+    * [Physics](https://dev.epicgames.com/documentation/en-us/fortnite/physics)
+    * [Environments and Landscapes](https://dev.epicgames.com/documentation/en-us/fortnite/environments-and-landscapes-in-unreal-editor-for-fortnite)
+    * [Memory and Optimization](https://dev.epicgames.com/documentation/en-us/fortnite/memory-and-optimization-in-unreal-editor-for-fortnite)
+    * [Realistic Assets, Characters, and Environments](https://dev.epicgames.com/documentation/en-us/fortnite/realistic-assets-characters-and-environments-in-unreal-editor-for-fortnite)
+    * [Using Prefabs and Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative)
+    * [Audio](https://dev.epicgames.com/documentation/en-us/fortnite/audio-in-unreal-editor-for-fortnite)
+    * [Composing with Fortnite Patchwork](https://dev.epicgames.com/documentation/en-us/fortnite/composing-with-patchwork-in-fortnite-creative)
+    * [Lighting](https://dev.epicgames.com/documentation/en-us/fortnite/lighting-in-unreal-editor-for-fortnite)
+    * [Materials](https://dev.epicgames.com/documentation/en-us/fortnite/materials-in-unreal-editor-for-fortnite)
+    * [Modeling](https://dev.epicgames.com/documentation/en-us/fortnite/modeling-in-unreal-editor-for-fortnite)
+    * [Intro to Post-Processing](https://dev.epicgames.com/documentation/en-us/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite)
+    * [Visual Effects](https://dev.epicgames.com/documentation/en-us/fortnite/visual-effects-in-unreal-editor-for-fortnite)
+    * [In-Island Transactions](https://dev.epicgames.com/documentation/en-us/fortnite/in-island-transactions-in-fortnite)
+    * [Campaigns](https://dev.epicgames.com/documentation/en-us/fortnite/campaigns-in-fortnite)
+    * [Using Creator Portal](https://dev.epicgames.com/documentation/en-us/fortnite/using-creator-portal-in-fortnite-creative)
+    * [Collaborate and Publish](https://dev.epicgames.com/documentation/en-us/fortnite/collaborate-and-publish-in-unreal-editor-for-fortnite)
+    * [Island Moderation and Guidelines](https://dev.epicgames.com/documentation/en-us/fortnite/island-moderation-and-guidelines-in-fortnite-creative)
+    * [Promoting Your Fortnite Island](https://dev.epicgames.com/documentation/en-us/fortnite/promoting-your-fortnite-creative-island)
+    * [Community Building](https://dev.epicgames.com/documentation/en-us/fortnite/community-building-in-fortnite)
+    * [Education](https://dev.epicgames.com/documentation/en-us/fortnite/education-in-fortnite-creative)
+    * [Verse Language Reference: Book of Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-book-of-verse-reference)
+    * [Video Tutorials](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-video-tutorials)
+    * [Fortnite Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-glossary)
+    * [Verse Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary)
+    * [Verse API Reference](https://dev.epicgames.com/documentation/en-us/fortnite/verse-api)
+
+
+Table of Contents
+  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
+  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
+  3. Fortnite
+     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
+     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
+     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
+     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
+     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
+     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
+     * [](https://dev.epicgames.com/documentation/en-us/fab)
+  4. [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation "Fortnite Documentation")
+  5. [What's New in Unreal Editor for Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/whats-new-in-unreal-editor-for-fortnite "What's New in Unreal Editor for Fortnite")
+  6. Release Notes for Season 30
+
+
+# Release Notes for Season 30
+Find out what was new in the Fortnite Ecosystem from May 24 to August 15, 2024! 
+  
+
+Review updates and release notes for Season 30.
+  * [![30.40 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/community/api/documentation/image/4573ce1d-dc75-4bc3-bc0c-ba3a5f81556a?resizing_type=fit&width=640&height=640) 30.40 Fortnite Ecosystem Updates and Release Notes 30.40 Fortnite Ecosystem Updates and Release Notes in Creative, Unreal Editor for Fortnite, and Verse ](https://dev.epicgames.com/documentation/en-us/fortnite/30-40-fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite)
+  * [![30.30 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/community/api/documentation/image/2b1f2668-1997-415d-a63f-e44d2d5138cb?resizing_type=fit&width=640&height=640) 30.30 Fortnite Ecosystem Updates and Release Notes 30.30 Fortnite Ecosystem Updates and Release Notes in Creative, Unreal Editor for Fortnite, and Verse ](https://dev.epicgames.com/documentation/en-us/fortnite/30-30-fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite)
+  * [![30.20 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/community/api/documentation/image/78733438-2611-433e-b506-d89e04aff27c?resizing_type=fit&width=640&height=640) 30.20 Fortnite Ecosystem Updates and Release Notes 30.20 Fortnite Ecosystem Updates and Release Notes in Creative, Unreal Editor for Fortnite, and Verse ](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite)
+  * [![30.10 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/community/api/documentation/image/0cd82789-7e68-412d-b665-0896db763852?resizing_type=fit&width=640&height=640) 30.10 Fortnite Ecosystem Updates and Release Notes 30.10 Fortnite Ecosystem Updates and Release Notes in Creative, Unreal Editor for Fortnite, and Verse ](https://dev.epicgames.com/documentation/en-us/fortnite/30-10-fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite)
+  * [![30.00 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/community/api/documentation/image/d910a2f0-8b66-4838-ae2d-5da701761997?resizing_type=fit&width=640&height=640) 30.00 Fortnite Ecosystem Updates and Release Notes 30.00 Fortnite Ecosystem Updates and Release Notes in Creative, Unreal Editor for Fortnite, and Verse! ](https://dev.epicgames.com/documentation/en-us/fortnite/30-00-fortnite-ecosystem-updates-and-release-notes-in-creative-and-unreal-editor-for-fortnite)
+
+
+* * *
+[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
+[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
+
+
+
+
+---

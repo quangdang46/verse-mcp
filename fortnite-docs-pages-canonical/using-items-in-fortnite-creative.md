@@ -1,0 +1,123 @@
+## https://dev.epicgames.com/documentation/en-us/fortnite/using-items-in-fortnite-creative
+
+  * [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation)
+    * [What's New in Unreal Editor for Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/whats-new-in-unreal-editor-for-fortnite)
+    * [Discover the Resources Waiting for You as a Fortnite Developer!](https://dev.epicgames.com/documentation/en-us/fortnite/discover-the-resources-waiting-for-you-as-a-fortnite-creator)
+    * [Get Started Creating in Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/get-started-creating-in-fortnite)
+    * [Island Settings](https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-uefn-and-fortnite-creative)
+    * [Editor User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/getting-to-know-the-user-interface-in-unreal-editor-for-fortnite)
+    * [Creative User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/creative-user-interface-for-fortnite-creative)
+    * [Import Content and Islands](https://dev.epicgames.com/documentation/en-us/fortnite/import-content-and-islands-in-unreal-editor-for-fortnite)
+    * [Building Basics](https://dev.epicgames.com/documentation/en-us/fortnite/building-basics-in-fortnite-creative)
+    * [Editor Best Practices](https://dev.epicgames.com/documentation/en-us/fortnite/editor-best-practices-in-unreal-editor-for-fortnite)
+    * [Programming with Verse](https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite)
+    * [Mobile Development](https://dev.epicgames.com/documentation/en-us/fortnite/mobile-development-in-fortnite)
+    * [UEFN Starter Templates](https://dev.epicgames.com/documentation/en-us/fortnite/unreal-editor-for-fortnite-starter-templates)
+    * [Game Collections](https://dev.epicgames.com/documentation/en-us/fortnite/game-collections-in-fortnite)
+    * [Template Islands](https://dev.epicgames.com/documentation/en-us/fortnite/template-islands-in-fortnite-creative)
+    * [Build a Game](https://dev.epicgames.com/documentation/en-us/fortnite/build-a-game-in-unreal-editor-for-fortnite)
+    * [Learn Game Mechanics](https://dev.epicgames.com/documentation/en-us/fortnite/learn-game-mechanics-in-unreal-editor-for-fortnite)
+    * [Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/device-design-examples-in-fortnite-creative)
+    * [Scene Graph](https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite)
+    * [AI and NPCs](https://dev.epicgames.com/documentation/en-us/fortnite/ai-and-npcs-in-unreal-editor-for-fortnite)
+    * [Animation and Cinematics](https://dev.epicgames.com/documentation/en-us/fortnite/animation-and-cinematics-in-unreal-editor-for-fortnite)
+    * [Using Devices](https://dev.epicgames.com/documentation/en-us/fortnite/using-devices-in-fortnite)
+    * Using Items
+      * [Ammo Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-ammo-items-in-fortnite-creative)
+      * [Attack Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-attack-items-in-fortnite-creative)
+      * [Crafting Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-crafting-items-in-fortnite-creative)
+      * [Crystal Crafting Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-crystal-crafting-items-in-fortnite-creative)
+      * [Dino Egg Crafting Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-dino-egg-items-in-fortnite-creative)
+      * [Disguise Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-disguise-items-in-fortnite-creative)
+      * [Egg Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-egg-items-in-fortnite-creative)
+      * [Explosive Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-explosive-items-in-fortnite-creative)
+      * [Fish Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-fish-items-in-fortnite-creative)
+      * [Fishing Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-fishing-items-in-fortnite-creative)
+      * [Flopper Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-flopper-items-in-fortnite-creative)
+      * [Food Crafting Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-food-crafting-items-in-fortnite-creative)
+      * [Gold Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-gold-items-in-fortnite-creative)
+      * [Grenade Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-grenade-items-in-fortnite-creative)
+      * [Halloween Candy Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-halloween-candy-items-in-fortnite-creative)
+      * [Healing Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-healing-items-in-fortnite-creative)
+      * [Ice Cream Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-ice-cream-items-in-fortnite-creative)
+      * [Mechanical Crafting Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-mechanical-crafting-items-in-fortnite-creative)
+      * [Mineral Ore Crafting Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-mineral-ore-crafting-items-in-fortnite-creative)
+      * [Mineral Powder Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-mineral-powder-items-in-fortnite-creative)
+      * [Produce Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-produce-items-in-fortnite-creative)
+      * [Nature Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-nature-items-in-fortnite-creative)
+      * [Objective Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-objective-items-in-fortnite-creative)
+      * [Portable Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-portable-items-in-fortnite-creative)
+      * [Power Crafting Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-power-crafting-items-in-fortnite-creative)
+      * [Primal Crafting Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-primal-crafting-items-in-fortnite-creative)
+      * [Ranged Weapon Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-ranged-weapon-items-in-fortnite-creative)
+      * [Restorative Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-restorative-items-in-fortnite-creative)
+      * [Shield Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-shield-items-in-fortnite-creative)
+      * [Shove Gameplay Item](https://dev.epicgames.com/documentation/en-us/fortnite/shove-gameplay-item-in-fortnite)
+      * [Slap Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-slap-items-in-fortnite-creative)
+      * [Trap Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-trap-items-in-fortnite-creative)
+      * [Travel Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-travel-items-in-fortnite-creative)
+      * [Twine Crafting Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-twine-crafting-items-in-fortnite-creative)
+      * [Vehicle Mod Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-vehicle-mod-items-in-fortnite-creative)
+      * [Wild Edible Crafting Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-wild-edible-crafting-items-in-fortnite-creative)
+      * [World Resource Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-world-resource-items-in-fortnite-creative)
+    * [Fortnite Weapons Primer](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-weapons-primer)
+    * [In-Game User Interfaces](https://dev.epicgames.com/documentation/en-us/fortnite/ingame-user-interfaces-in-unreal-editor-for-fortnite)
+    * [Physics](https://dev.epicgames.com/documentation/en-us/fortnite/physics)
+    * [Environments and Landscapes](https://dev.epicgames.com/documentation/en-us/fortnite/environments-and-landscapes-in-unreal-editor-for-fortnite)
+    * [Memory and Optimization](https://dev.epicgames.com/documentation/en-us/fortnite/memory-and-optimization-in-unreal-editor-for-fortnite)
+    * [Realistic Assets, Characters, and Environments](https://dev.epicgames.com/documentation/en-us/fortnite/realistic-assets-characters-and-environments-in-unreal-editor-for-fortnite)
+    * [Using Prefabs and Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative)
+    * [Audio](https://dev.epicgames.com/documentation/en-us/fortnite/audio-in-unreal-editor-for-fortnite)
+    * [Composing with Fortnite Patchwork](https://dev.epicgames.com/documentation/en-us/fortnite/composing-with-patchwork-in-fortnite-creative)
+    * [Lighting](https://dev.epicgames.com/documentation/en-us/fortnite/lighting-in-unreal-editor-for-fortnite)
+    * [Materials](https://dev.epicgames.com/documentation/en-us/fortnite/materials-in-unreal-editor-for-fortnite)
+    * [Modeling](https://dev.epicgames.com/documentation/en-us/fortnite/modeling-in-unreal-editor-for-fortnite)
+    * [Intro to Post-Processing](https://dev.epicgames.com/documentation/en-us/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite)
+    * [Visual Effects](https://dev.epicgames.com/documentation/en-us/fortnite/visual-effects-in-unreal-editor-for-fortnite)
+    * [In-Island Transactions](https://dev.epicgames.com/documentation/en-us/fortnite/in-island-transactions-in-fortnite)
+    * [Campaigns](https://dev.epicgames.com/documentation/en-us/fortnite/campaigns-in-fortnite)
+    * [Using Creator Portal](https://dev.epicgames.com/documentation/en-us/fortnite/using-creator-portal-in-fortnite-creative)
+    * [Collaborate and Publish](https://dev.epicgames.com/documentation/en-us/fortnite/collaborate-and-publish-in-unreal-editor-for-fortnite)
+    * [Island Moderation and Guidelines](https://dev.epicgames.com/documentation/en-us/fortnite/island-moderation-and-guidelines-in-fortnite-creative)
+    * [Promoting Your Fortnite Island](https://dev.epicgames.com/documentation/en-us/fortnite/promoting-your-fortnite-creative-island)
+    * [Community Building](https://dev.epicgames.com/documentation/en-us/fortnite/community-building-in-fortnite)
+    * [Education](https://dev.epicgames.com/documentation/en-us/fortnite/education-in-fortnite-creative)
+    * [Verse Language Reference: Book of Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-book-of-verse-reference)
+    * [Video Tutorials](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-video-tutorials)
+    * [Fortnite Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-glossary)
+    * [Verse Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary)
+    * [Verse API Reference](https://dev.epicgames.com/documentation/en-us/fortnite/verse-api)
+
+
+Table of Contents
+  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
+  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
+  3. Fortnite
+     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
+     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
+     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
+     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
+     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
+     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
+     * [](https://dev.epicgames.com/documentation/en-us/fab)
+  4. [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation "Fortnite Documentation")
+  5. Using Items
+
+
+# Using Items
+Learn how to add items to your devices or weapons, or place them for players to pick up and use! 
+![Using Items](https://dev.epicgames.com/community/api/documentation/image/a99a1ebe-8a18-4cad-92e6-b636ea53890a?resizing_type=fill&width=1920&height=335)
+Items include things that can be consumed by players, devices, or weapons. There are also items that can be used as crafting materials. Crafting materials are items that can be exchanged for other usable items, or that can be used as a crafting piece for a larger item.
+You can find a wide range of uses for these items. Find out more about the [items](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary) available in Fortnite Creative and how you can use them!
+You can find items in [Content Browser](https://dev.epicgames.com/documentation/en-us/fortnite/exploring-the-content-browser-menu-in-fortnite-creative), in the [Items Category](https://dev.epicgames.com/documentation/en-us/fortnite/items-category) . 
+  * [ consumables](https://dev.epicgames.com/community/search?query=consumables)
+
+
+* * *
+[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
+[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
+
+
+
+
+---
