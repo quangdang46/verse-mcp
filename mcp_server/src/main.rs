@@ -2,7 +2,6 @@
 //!
 //! Provides tools for:
 //! - Scanning UEFN projects for devices
-//! - Generating device connection graphs
 
 use anyhow::Result;
 use clap::Parser;
@@ -152,7 +151,7 @@ impl ServerHandler for VerseMcpHandler {
                 name: "verse-mcp".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_string(),
             },
-            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for placed devices and generate_device_graph to render device connections.".to_string()),
+            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for placed devices.".to_string()),
         }
     }
 
@@ -178,37 +177,12 @@ impl ServerHandler for VerseMcpHandler {
         );
         scan_schema.insert("required".to_string(), serde_json::json!(["project_path"]));
 
-        let mut graph_schema = rmcp::model::JsonObject::new();
-        graph_schema.insert("type".to_string(), serde_json::json!("object"));
-        graph_schema.insert(
-            "properties".to_string(),
-            serde_json::json!({
-                "project_path": {
-                    "type": "string",
-                    "description": "Path to UEFN project"
-                },
-                "format": {
-                    "type": "string",
-                    "enum": ["mermaid", "dot"],
-                    "description": "Output format (default: mermaid)"
-                }
-            }),
-        );
-        graph_schema.insert("required".to_string(), serde_json::json!(["project_path"]));
-
         Ok(rmcp::model::ListToolsResult {
-            tools: vec![
-                rmcp::model::Tool {
-                    name: "scan_map_devices".into(),
-                    description: "Scan UEFN project for all placed devices. Returns device types, triggers, receivers, and settings. Results are cached and invalidated when files change.".into(),
-                    input_schema: Arc::new(scan_schema),
-                },
-                rmcp::model::Tool {
-                    name: "generate_device_graph".into(),
-                    description: "Generate a diagram showing device connections in the project. Outputs Mermaid or DOT format for visualization.".into(),
-                    input_schema: Arc::new(graph_schema),
-                },
-            ],
+            tools: vec![rmcp::model::Tool {
+                name: "scan_map_devices".into(),
+                description: "Scan UEFN project for all placed devices. Returns device types, triggers, receivers, and settings. Results are cached and invalidated when files change.".into(),
+                input_schema: Arc::new(scan_schema),
+            }],
             next_cursor: None,
         })
     }
@@ -301,77 +275,6 @@ impl ServerHandler for VerseMcpHandler {
                         })
                     }
                 }
-            }
-            "generate_device_graph" => {
-                let scan_path = params
-                    .arguments
-                    .as_ref()
-                    .and_then(|args| args.get("project_path"))
-                    .and_then(|v| v.as_str())
-                    .map(PathBuf::from)
-                    .ok_or_else(|| rmcp::Error::invalid_params("project_path is required", None))?;
-
-                let format_str = params
-                    .arguments
-                    .as_ref()
-                    .and_then(|args| args.get("format"))
-                    .and_then(|v| v.as_str())
-                    .unwrap_or("mermaid");
-
-                let format = match format_str {
-                    "dot" => uasset_scan::GraphFormat::Dot,
-                    _ => uasset_scan::GraphFormat::Mermaid,
-                };
-
-                let output = {
-                    let cache_guard = self.cache.lock().unwrap();
-                    if let Some(ref cached) = *cache_guard {
-                        cached.output.clone()
-                    } else {
-                        std::mem::drop(cache_guard);
-
-                        match tools::scan_map_devices(&scan_path) {
-                            Ok(output) => {
-                                {
-                                    let mut cache_guard = self.cache.lock().unwrap();
-                                    *cache_guard = Some(ScanCache {
-                                        max_mtime: get_max_mtime(&scan_path),
-                                        cached_at: SystemTime::now(),
-                                        output: output.clone(),
-                                    });
-                                }
-                                output
-                            }
-                            Err(e) => {
-                                let error_json = serde_json::json!({
-                                    "error": e.to_string(),
-                                    "error_type": std::any::type_name_of_val(&e)
-                                });
-                                return Ok(rmcp::model::CallToolResult {
-                                    content: vec![Annotated::text(
-                                        serde_json::to_string_pretty(&error_json).unwrap(),
-                                    )],
-                                    is_error: Some(true),
-                                });
-                            }
-                        }
-                    }
-                };
-
-                let graph = uasset_scan::DeviceGrapher::generate(&output, format);
-
-                let result_json = serde_json::json!({
-                    "format": format_str,
-                    "graph": graph,
-                    "device_count": output.total_devices,
-                });
-
-                Ok(rmcp::model::CallToolResult {
-                    content: vec![Annotated::text(
-                        serde_json::to_string_pretty(&result_json).unwrap(),
-                    )],
-                    is_error: Some(false),
-                })
             }
             _ => Err(rmcp::Error::method_not_found::<CallToolRequestMethod>()),
         }

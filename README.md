@@ -1,6 +1,6 @@
 # Verse UEFN MCP Server
 
-> MCP server for Fortnite UEFN that scans placed devices from `.uasset` files and generates connection graphs.
+> MCP server for Fortnite UEFN that scans placed devices from `.uasset` files.
 
 [UEFN](https://dev.epicgames.com/community/fortnite/getting-started) | [Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-quick-reference) | [MCP](https://modelcontextprotocol.io/) | [Rust](https://www.rust-lang.org/)
 
@@ -21,8 +21,6 @@ It extracts placed-device information such as:
 - receivers
 - configured settings
 
-It also turns scanned output into a Mermaid or DOT connection graph.
-
 ---
 
 ## MCP Tools
@@ -30,7 +28,6 @@ It also turns scanned output into a Mermaid or DOT connection graph.
 | Tool | Input | Output |
 |---|---|---|
 | `scan_map_devices` | `project_path`, `force_refresh` (optional) | Full placed-device scan output grouped by type |
-| `generate_device_graph` | `project_path`, `format` (optional) | Mermaid or DOT device connection graph |
 | `query-docs` | `query` | Relevant Verse documentation excerpts and Verse code examples matching the query |
 
 ### `query-docs` implementation notes
@@ -132,14 +129,6 @@ AI: [Uses scan_map_devices]
 I found 47 devices across 15 types.
 ```
 
-### Render the connection graph
-
-```
-User: Show me the device graph.
-AI: [Uses generate_device_graph]
-I generated a Mermaid graph for the scanned devices.
-```
-
 ---
 
 ## Project status
@@ -150,7 +139,6 @@ I generated a Mermaid graph for the scanned devices.
 - [x] parallel scanning with rayon
 - [x] MCP server with stdio and HTTP (SSE) transport
 - [x] `scan_map_devices` with cache invalidation
-- [x] `generate_device_graph` with Mermaid and DOT output
 
 ### Current focus
 - improve scan summaries for large maps
@@ -169,4 +157,4 @@ The parser reads the UE5 asset binary format directly, extracts names and proper
 
 ## Contributing
 
-If you're building UEFN tooling and want to improve scan quality, graphing, or map-aware analysis, issues and PRs are welcome.
+If you're building UEFN tooling and want to improve scan quality or map-aware analysis, issues and PRs are welcome.
