@@ -1,0 +1,10 @@
+## https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/devices/hero_chest_device
+
+
+
+Table of Contents
+
+
+
+
+---

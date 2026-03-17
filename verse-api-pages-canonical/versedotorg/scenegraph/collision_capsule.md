@@ -1,0 +1,10 @@
+## https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/collision_capsule
+
+
+
+Table of Contents
+
+
+
+
+---

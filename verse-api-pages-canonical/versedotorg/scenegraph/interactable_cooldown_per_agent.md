@@ -1,0 +1,10 @@
+## https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/interactable_cooldown_per_agent
+
+
+
+Table of Contents
+
+
+
+
+---
