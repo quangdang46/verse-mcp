@@ -31,6 +31,31 @@ It also turns scanned output into a Mermaid or DOT connection graph.
 |---|---|---|
 | `scan_map_devices` | `project_path`, `force_refresh` (optional) | Full placed-device scan output grouped by type |
 | `generate_device_graph` | `project_path`, `format` (optional) | Mermaid or DOT device connection graph |
+| `query-docs` | `query` | Relevant Verse documentation excerpts and Verse code examples matching the query |
+
+### `query-docs` implementation notes
+
+Retrieves relevant Verse documentation excerpts and Verse code examples matching the query.
+
+Output:
+- matching documentation excerpts
+- relevant Verse code examples
+- concise results focused on the requested topic
+
+This tool is Verse-only for this project, so the `query` should focus on Verse or Fortnite UEFN topics.
+
+Important constraints:
+- Do not call this tool more than 3 times per question. If you cannot find what you need after 3 calls, use the best information you have.
+- `query` should be specific and include relevant details.
+- Do not include sensitive or confidential information in the query, including API keys, passwords, credentials, personal data, or proprietary code.
+
+Examples of good queries for this project:
+- `Find the latest Verse language documentation for editable properties and show examples of @editable usage.`
+- `Find Fortnite UEFN documentation about device events and listenable patterns with current code examples.`
+
+Examples of bad queries:
+- `verse`
+- `uefn docs`
 
 ---
 
