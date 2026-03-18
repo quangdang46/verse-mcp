@@ -244,7 +244,10 @@ fn extract_digest_title(path: &Path, lines: &[&str]) -> String {
     lines
         .iter()
         .map(|line| line.trim())
-        .find_map(|line| line.split_once("<public> := module:").map(|(module, _)| module.trim()))
+        .find_map(|line| {
+            line.split_once("<public> := module:")
+                .map(|(module, _)| module.trim())
+        })
         .map(ToOwned::to_owned)
         .unwrap_or_else(|| fallback_title(path))
 }
