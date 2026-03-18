@@ -1,10 +1,1 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/scenegraph/interactable_cooldown
-
-
-
-Table of Contents
-
-
-
-
----

@@ -14,6 +14,13 @@ const DIGEST_FILES: &[&str] = &[
     "assets/Verse.digest.verse",
 ];
 const SKIP_TITLES: &[&str] = &["table of contents"];
+const JUNK_MARKERS: &[&str] = &[
+    "# 404",
+    "Page not found",
+    "**No document**",
+    "The document you're looking for does not exist in this version.",
+    "```\nNot Found\n```",
+];
 
 fn main() -> Result<(), Box<dyn Error>> {
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR")?);
@@ -59,7 +66,9 @@ fn build_database(repo_root: &Path, output_path: &Path) -> Result<(), Box<dyn Er
 
     let mut rows = Vec::new();
     for path in iter_indexable_files(repo_root) {
-        rows.push(read_doc(repo_root, &path)?);
+        if let Some(row) = read_doc(repo_root, &path)? {
+            rows.push(row);
+        }
     }
 
     let tx = conn.unchecked_transaction()?;
@@ -140,7 +149,7 @@ fn iter_indexable_files(repo_root: &Path) -> Vec<PathBuf> {
     files
 }
 
-fn read_doc(repo_root: &Path, path: &Path) -> Result<DocRow, Box<dyn Error>> {
+fn read_doc(repo_root: &Path, path: &Path) -> Result<Option<DocRow>, Box<dyn Error>> {
     let raw_md = fs::read_to_string(path)?;
     let lines: Vec<&str> = raw_md.lines().collect();
     let relative_path = path
@@ -148,7 +157,9 @@ fn read_doc(repo_root: &Path, path: &Path) -> Result<DocRow, Box<dyn Error>> {
         .to_string_lossy()
         .replace('\\', "/");
     let doc_type = derive_doc_type(&relative_path);
-    let (title, source_url, content) = if path.extension().is_some_and(|ext| ext == "verse") {
+    let is_digest = path.extension().is_some_and(|ext| ext == "verse");
+
+    let (title, source_url, content) = if is_digest {
         (
             extract_digest_title(path, &lines),
             String::new(),
@@ -162,7 +173,11 @@ fn read_doc(repo_root: &Path, path: &Path) -> Result<DocRow, Box<dyn Error>> {
         )
     };
 
-    Ok(DocRow {
+    if !is_digest && (content.is_empty() || is_junk_doc(&raw_md)) {
+        return Ok(None);
+    }
+
+    Ok(Some(DocRow {
         path: relative_path,
         title,
         content,
@@ -174,7 +189,7 @@ fn read_doc(repo_root: &Path, path: &Path) -> Result<DocRow, Box<dyn Error>> {
             .modified()?
             .duration_since(std::time::UNIX_EPOCH)?
             .as_secs() as i64,
-    })
+    }))
 }
 
 fn extract_source_url(lines: &[&str]) -> String {
@@ -268,6 +283,10 @@ fn normalize_content(raw_md: &str) -> String {
         .replace_all(content.trim(), "\n\n")
         .trim()
         .to_string()
+}
+
+fn is_junk_doc(raw_md: &str) -> bool {
+    JUNK_MARKERS.iter().any(|marker| raw_md.contains(marker))
 }
 
 fn normalize_digest_content(raw_md: &str) -> String {

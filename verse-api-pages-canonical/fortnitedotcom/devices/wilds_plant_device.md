@@ -1,10 +1,1 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/devices/wilds_plant_device
-
-
-
-Table of Contents
-
-
-
-
----

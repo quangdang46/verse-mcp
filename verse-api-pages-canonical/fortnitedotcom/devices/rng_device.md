@@ -1,10 +1,1 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/devices/rng_device
-
-
-
-Table of Contents
-
-
-
-
----

@@ -1,35 +1,18 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes
 
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. 34.10 Fortnite Ecosystem Updates and Release Notes
-
-
 # 34.10 Fortnite Ecosystem Updates and Release Notes
-Find out what's new with the 34.10 release of Fortnite, out on March 11, 2025! 
+Find out what's new with the 34.10 release of Fortnite, out on March 11, 2025!
 ![34.10 Fortnite Ecosystem Updates and Release Notes](https://dev.epicgames.com/community/api/documentation/image/0b4d30fc-716f-44d0-a5af-547f86a9fe1f?resizing_type=fill&width=1920&height=335)
-On this page
 Content for levels now downloads before matchmaking, allowing players to load into creative islands much faster! Creator Portal now shows Accolades and Analytics device activation data to all team members. Have fun discovering LEGO® Spring content and the updated Assembly device. Seaport Prefabs and Galleries are here, along with new weapons and items! Don’t forget to check out the latest Verse code snippets to bring more functionality to your islands. Level up your knowledge with the Mission Selection Screen tutorial and brand new device design examples!
-##  Content Downloads Pre-Matchmaking 
-Before matchmaking starts, all players in the lobby will download the content needed to play an Unreal Editor for Fortnite experience. Previously, this download would happen once the player connected to the server — but now it happens before matchmaking. This will help players load into the island faster for those with slower internet connections or for players on mobile devices. 
+##  Content Downloads Pre-Matchmaking
+Before matchmaking starts, all players in the lobby will download the content needed to play an Unreal Editor for Fortnite experience. Previously, this download would happen once the player connected to the server — but now it happens before matchmaking. This will help players load into the island faster for those with slower internet connections or for players on mobile devices.
 Matchmaking will not start until all party members have downloaded the required content to play. This improves the experience for large islands because players won't be joining as late, and players won't be left in the lobby while their party members travel to the game.
-##  Creator Portal Metrics Updates 
-Accolades and Analytics device activation data is now available in the Creator Portal through your Project Analytics tab. This allows all team members with access to analytics to view device data regardless of who placed the devices. 
-##  Brand Island Updates 
-###  LEGO® Updates 
-####  Project Spring 
-Spring is here! With the new LEGO Spring Content, you can add festive flora and fun to your LEGO island. These galleries consist of 47 spring-festival themed props — think trees, flower stalls, picnic tables, benches, and more. 
+##  Creator Portal Metrics Updates
+Accolades and Analytics device activation data is now available in the Creator Portal through your Project Analytics tab. This allows all team members with access to analytics to view device data regardless of who placed the devices.
+##  Brand Island Updates
+###  LEGO® Updates
+####  Project Spring
+Spring is here! With the new LEGO Spring Content, you can add festive flora and fun to your LEGO island. These galleries consist of 47 spring-festival themed props — think trees, flower stalls, picnic tables, benches, and more.
   * Two new prefabs:
     * Spring Market
     * Spring Playground
@@ -37,12 +20,11 @@ Spring is here! With the new LEGO Spring Content, you can add festive flora and 
     * Spring Celebration Prop Gallery
     * Spring Woodland Nature Gallery
 
-
-####  Assembly Device 
-The Assembly device has gotten some quality-of-life updates! You can now select volume shapes — you’ve got three options. In UEFN, there’s a new setting for previewing material so you can customize the holographic preview. 
-###  Rocket Racing Secondary Tracks 
-Secondary tracks can now be located anywhere in the map without affecting respawns! Secondary tracks in Rocket Racing (RR Track), which are tracks players can only get to by teleporting, can now be marked as **Is Independent**. 
-##  New Weapons 
+####  Assembly Device
+The Assembly device has gotten some quality-of-life updates! You can now select volume shapes — you’ve got three options. In UEFN, there’s a new setting for previewing material so you can customize the holographic preview.
+###  Rocket Racing Secondary Tracks
+Secondary tracks can now be located anywhere in the map without affecting respawns! Secondary tracks in Rocket Racing (RR Track), which are tracks players can only get to by teleporting, can now be marked as **Is Independent**.
+##  New Weapons
   * Outlaw Shotgun
   * Pump & Dump
   * Lawless Blink Pump & Dump
@@ -52,12 +34,10 @@ Secondary tracks can now be located anywhere in the map without affecting respaw
   * Lawless Shockwave Rocket Launcher
   * Rocket Drill
 
-
-##  New Items 
+##  New Items
   * Lawless Slap Cannon
 
-
-##  New Prefabs & Galleries 
+##  New Prefabs & Galleries
   * Three Seaport City prefabs:
     * Seaport City Usagi Hotel
     * Seaport City Stores
@@ -72,29 +52,27 @@ Secondary tracks can now be located anywhere in the map without affecting respaw
     * Seaport City Prop Gallery
     * Seaport City Roof Gallery
 
-
-##  New Verse Code Snippets 
+##  New Verse Code Snippets
 Check out the latest Verse snippets added to the [Snippets Repository](https://dev.epicgames.com/community/fortnite/snippets)! Snippets are ready-made, copy-pastable code blocks that you can bring into your existing projects to add custom functionality.
 [**Heaps and Heapsort:**](https://dev.epicgames.com/community/snippets/Gw1G/fortnite-heaps-and-heapsort) A parametric type implementation of priority queues using Min-Heaps, including Heapsort, an application of priority queues for sorting arrays. Common applications of priority queues include pathfinding algorithms on graph structures such as Dijkstra's algorithm or A* pathfinding algorithm.
-[**Matrices:**](https://dev.epicgames.com/community/snippets/bO9r/fortnite-matrices) A Verse library containing an implementation of float matrices, including: matrix addition and multiplication, transposition, inversion, determinants, and solving systems of linear equations. 
+[**Matrices:**](https://dev.epicgames.com/community/snippets/bO9r/fortnite-matrices) A Verse library containing an implementation of float matrices, including: matrix addition and multiplication, transposition, inversion, determinants, and solving systems of linear equations.
 [**Graphs:**](https://dev.epicgames.com/community/snippets/2WVO/fortnite-graphs) A Verse library implementation of integer and float edge-weighted graphs, including methods for generating random graphs and an implementation of Dijkstra's path algorithm that uses both the Graphs and Heaps libraries. You can use edge-weighted graphs to represent distances or costs of traveling between objects in your game. Dijkstra's algorithm finds the shortest or lowest cost path between any two objects.
-##  Documentation Updates 
-Check out the latest tutorials and learning content online! 
-###  Mission Selection Screen Tutorial 
+##  Documentation Updates
+Check out the latest tutorials and learning content online!
+###  Mission Selection Screen Tutorial
 Check out this new [Mission Selection Screen tutorial](https://dev.epicgames.com/documentation/uefn/making-a-mission-selection-screen-in-unreal-editor-for-fortnite) that sends players directly into missions. You’ll learn how to:
   * Design and style a selection screen.
   * Add devices to the UI.
   * Teleport players to the mission they select.
 
-
 [![](https://dev.epicgames.com/community/api/documentation/image/42f53130-3b93-4ae0-845a-85321ba2f698?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/42f53130-3b93-4ae0-845a-85321ba2f698?resizing_type=fit)
-###  Device Design Examples 
+###  Device Design Examples
 Ready for some inspiration? We've got it with a new round of device design examples!
-**[Stat Creator Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite-creative/stat-creator-design-examples) **See some new ways to track player progress across your games, including a parkour skill example! 
+**[Stat Creator Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite-creative/stat-creator-design-examples) **See some new ways to track player progress across your games, including a parkour skill example!
 **[Skilled Interaction Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite-creative/skilled-interaction-device-design-examples)** From escaping a volcano to setting up a fishing game using this device, learn ways to help your players hone their outdoor skills — after all, spring is almost here!
-[**Switch Device Design Examples**](https://dev.epicgames.com/documentation/en-us/fortnite-creative/switch-device-design-examples) Let your players turn things on and off with a switch device, and build a King-of-the-Hill game while you're at it!  
+[**Switch Device Design Examples**](https://dev.epicgames.com/documentation/en-us/fortnite-creative/switch-device-design-examples) Let your players turn things on and off with a switch device, and build a King-of-the-Hill game while you're at it!
 
-##  Community Bug Fixes 
+##  Community Bug Fixes
 The following fixes are from issues that you submitted to us on the forums. Thank you for your patience and for reporting these issues!
   * Fixed an issue with assets not updating when overriding custom editable assets.
     * [Forum Report](https://forums.unrealengine.com/t/major-custom-assets-exposed-in-verse-not-working/2280994)
@@ -105,12 +83,10 @@ The following fixes are from issues that you submitted to us on the forums. Than
   * Fixed an issue with Hired NPC Guards not reviving DBNO players.
     * [Forum Report](https://forums.unrealengine.com/t/guard-navigation-and-revive-feature-broken-in-published-games/2288821)
 
-
-##  Fortnite Ecosystem Updates and Fixes 
+##  Fortnite Ecosystem Updates and Fixes
 **New:**
   * Added a user option to the Bank Vault device to control initial weak point delay.
   * Renamed the Bank Vault's **On Activated Send Event To** event to **On Sequence Started Send Event To**.
-
 
 **Fixes:**
   * Fixed the **Slow Motion On End Of Round** setting for Creative islands.
@@ -128,8 +104,7 @@ The following fixes are from issues that you submitted to us on the forums. Than
   * Fixed an issue where the Bank Vault device was not opening on Creative islands converted that had been converted to UEFN projects.
   * Fixed an issue where the Bank Vault **Place Thermite** interaction did not honor the **Infinite Consumables** island setting.
 
-
-##  UEFN Updates and Fixes 
+##  UEFN Updates and Fixes
 **New:**
   * Added a Search functionality to the metrics tree view for the Spatial Profiler.
   * Added a change that allows the maximum number of AI NPCs displayed to the client to match the maximum number of AI NPCs allowed to be spawned in a session. This value is now 90 for both at the time of this release.
@@ -138,7 +113,6 @@ The following fixes are from issues that you submitted to us on the forums. Than
   * Character Definitions will now generate a thumbnail matching the selected skin of that character in most cases.
   * UMG widget assets are now generated in the Verse digest. It's possible to add and remove them on-screen using `player_ui AddWidget/RemoveWidget`.
   * Thumbnails can now be generated on existing character definitions by swapping the character type, saving it, swapping it back, and then resaving it.
-
 
 **Fixes:**
   * Pushing changes for a map material no longer crashes the game.
@@ -149,62 +123,16 @@ The following fixes are from issues that you submitted to us on the forums. Than
   * Fixed a crash that occurred when running the Subdivide tool using the Loop subdivision scheme on a volume.
   * Fixed a crash that occurred when accepting the Duplicate tool on a volume.
 
-
-##  Scene Graph Update 
+##  Scene Graph Update
 The Scene Graph Verse path has been updated. Instead of `/UnrealEngine.com/Temporary/SceneGraph` you should now be using `/Verse.org/SceneGraph`.
-##  Verse Updates and Fixes 
-###  API Updates 
+##  Verse Updates and Fixes
+###  API Updates
 **New:**
-  * Change `(Verse.org/SpatialMath:)GetYawPitchRollDegrees` to return a `tuple(float, float, float)` instead of a `[]float`. 
-
+  * Change `(Verse.org/SpatialMath:)GetYawPitchRollDegrees` to return a `tuple(float, float, float)` instead of a `[]float`.
 
 **Fix:**
   * Fixed an issue where volume devices were not working with Verse tag queries.
 
-
-###  Tools Update 
+###  Tools Update
 **New:**
   * Improved error messaging by qualifying conflicting variables with the same name from different modules.
-
-
-  * [ verse](https://dev.epicgames.com/community/search?query=verse)
-  * [ release notes](https://dev.epicgames.com/community/search?query=release%20notes)
-  * [ uefn](https://dev.epicgames.com/community/search?query=uefn)
-  * [ bugs](https://dev.epicgames.com/community/search?query=bugs)
-  * [ fixes](https://dev.epicgames.com/community/search?query=fixes)
-  * [ creative](https://dev.epicgames.com/community/search?query=creative)
-  * [ fortnite](https://dev.epicgames.com/community/search?query=fortnite)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [ Content Downloads Pre-Matchmaking ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#contentdownloadspre-matchmaking)
-  * [ Creator Portal Metrics Updates ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#creatorportalmetricsupdates)
-  * [ Brand Island Updates ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#brandislandupdates)
-  * [ LEGO® Updates ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#lego%C2%AEupdates)
-  * [ Project Spring ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#projectspring)
-  * [ Assembly Device ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#assemblydevice)
-  * [ Rocket Racing Secondary Tracks ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#rocketracingsecondarytracks)
-  * [ New Weapons ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#newweapons)
-  * [ New Items ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#newitems)
-  * [ New Prefabs & Galleries ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#newprefabs&galleries)
-  * [ New Verse Code Snippets ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#newversecodesnippets)
-  * [ Documentation Updates ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#documentationupdates)
-  * [ Mission Selection Screen Tutorial ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#missionselectionscreentutorial)
-  * [ Device Design Examples ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#devicedesignexamples)
-  * [ Community Bug Fixes ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#communitybugfixes)
-  * [ Fortnite Ecosystem Updates and Fixes ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#fortniteecosystemupdatesandfixes)
-  * [ UEFN Updates and Fixes ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#uefnupdatesandfixes)
-  * [ Scene Graph Update ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#scenegraphupdate)
-  * [ Verse Updates and Fixes ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#verseupdatesandfixes)
-  * [ API Updates ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#apiupdates)
-  * [ Tools Update ](https://dev.epicgames.com/documentation/en-us/fortnite/34-10-fortnite-ecosystem-updates-and-release-notes#toolsupdate)
-
-
-
-
-
-
----

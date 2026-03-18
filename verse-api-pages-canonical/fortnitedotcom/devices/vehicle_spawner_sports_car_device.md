@@ -1,10 +1,1 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/devices/vehicle_spawner_sports_car_device
-
-
-
-Table of Contents
-
-
-
-
----

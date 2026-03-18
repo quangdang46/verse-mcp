@@ -1,10 +1,1 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/unrealenginedotcom/itemization/change_equipped_result
-
-
-
-Table of Contents
-
-
-
-
----

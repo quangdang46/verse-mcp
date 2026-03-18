@@ -1,27 +1,10 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/configure-the-simulation-settings-in-unreal-editor-for-fortnite
 
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. Configure the Simulation Settings
-
-
 # Configure the Simulation Settings
-Configure the simulation settings of the cloth asset to ensure expected behavior. 
+Configure the simulation settings of the cloth asset to ensure expected behavior.
 ![Configure the Simulation Settings](https://dev.epicgames.com/community/api/documentation/image/f059a581-85fb-491a-8cad-b62708671452?resizing_type=fill&width=1920&height=335)
-On this page
 To configure your simulation settings, you first need to set the proxy deformer. Then you can simulate collision and set up the solver, which controls the quality of the simulation.
-##  Set the Proxy Deformer 
+##  Set the Proxy Deformer
 In this section, you will set up the **Proxy Deformer**. This deformer uses the simulation mesh to deform the render mesh. You will also set up two selections for the jacket and holster to make sure they do not interfere with each other during simulation.
   1. Drag from the **Collection** pin and search for then select **WeightMapToSelection** , then connect the **Name** pin of the **MaxDistance Weight Map** to the **Weight Map Name** pin of the **WeightMapToSelection** node. The WeightmapToSelection node converts the painted weight map into a selection of vertices that can be processed by the Proxy Deformer.
 [![Add a WeightMapToSelection node and connect it to the AddWeightMap_MaxDistance node](https://dev.epicgames.com/community/api/documentation/image/2a050195-1b59-42bb-b057-445e47afc168?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/2a050195-1b59-42bb-b057-445e47afc168?resizing_type=fit)
@@ -30,15 +13,15 @@ In this section, you will set up the **Proxy Deformer**. This deformer uses the 
   3. The **Cloth Mesh Selection** tool is now active.
 [![The Cloth Mesh Selection tool is now active](https://dev.epicgames.com/community/api/documentation/image/1744333b-15df-4002-8f9d-c81000481d2f?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/1744333b-15df-4002-8f9d-c81000481d2f?resizing_type=fit)
 The Cloth Mesh Selection tool interface contains the following sections:
-Section  |  Description   
----|---  
-1. **Operations:** |  Imports a selection from a collection or toggles between the primary and secondary selections.  
-2. **Selection tools:** |  _**Flood Selection:** Selects the entire mesh from a current selection. _ **Grow Selection:** Increases the selection area within the current mesh. **Shrink Selection:** Decreases the selection area within the current mesh.  
-3. **Visualization:** |  Shows the cloth collection vertices and edges.  
-4. **Selection Actions:** |  _**Invert Selection:** Inverts the current selection. _ **Select All:** Selects all meshes in the collection.  
-5. **Selection Filter:** |  Toggles between selecting mesh vertices or polygons.  
-6. **Additional Selection Options, Ortho Viewport Behavior, Advanced:** |  Contains additional selection options, such as Ignore Occlusion and Hit Back Faces.  
-7. **Accept** or **Cancel** |  Accepts or cancels your selection.  
+Section  |  Description
+---|---
+1. **Operations:** |  Imports a selection from a collection or toggles between the primary and secondary selections.
+2. **Selection tools:** |  _**Flood Selection:** Selects the entire mesh from a current selection. _ **Grow Selection:** Increases the selection area within the current mesh. **Shrink Selection:** Decreases the selection area within the current mesh.
+3. **Visualization:** |  Shows the cloth collection vertices and edges.
+4. **Selection Actions:** |  _**Invert Selection:** Inverts the current selection. _ **Select All:** Selects all meshes in the collection.
+5. **Selection Filter:** |  Toggles between selecting mesh vertices or polygons.
+6. **Additional Selection Options, Ortho Viewport Behavior, Advanced:** |  Contains additional selection options, such as Ignore Occlusion and Hit Back Faces.
+7. **Accept** or **Cancel** |  Accepts or cancels your selection.
   4. **Click and drag** to select the **holsters** in the cloth collection. Click **Accept**.
 [![Click and drag to select the holsters in the cloth Collection](https://dev.epicgames.com/community/api/documentation/image/d0256f27-0799-43bc-9629-1be6bc9fe484?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/d0256f27-0799-43bc-9629-1be6bc9fe484?resizing_type=fit)
   5. Drag from the **Collection** pin and search for then select **Selection** under the **Cloth** category. Name the node **Selection_Jacket**. Go to the **Node Details** panel and set the **Name** to **JacketFaces** and the **Group** to **SimFaces**.
@@ -52,8 +35,7 @@ Section  |  Description
 [![Add a ProxyDeformer node and connect the WeightMapSelection node and the Holster Selection node](https://dev.epicgames.com/community/api/documentation/image/6481c7f0-6778-413e-a462-374b129887c3?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/6481c7f0-6778-413e-a462-374b129887c3?resizing_type=fit)
 [![Add an option pin and connect the Jacket Selection node](https://dev.epicgames.com/community/api/documentation/image/0a7c01f0-f4dd-44b3-83d0-146c793976f6?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/0a7c01f0-f4dd-44b3-83d0-146c793976f6?resizing_type=fit)
 
-
-##  Set the Simulation Self Collision 
+##  Set the Simulation Self Collision
 In this section, you will set up self collision for the simulation. You will create **collision layers** for the belt loops, the belt, and the jacket to ensure they do not interfere with each other during the simulation. In addition, you will also create weight maps for **thickness** and **friction** , and set up **kinematic collision**.
   1. Create a new **Selection** node and name it **Selection_BeltLoops**.
     1. Go to the **Node Details** panel and set the **Name** to **BeltLoops** and **Group** to **SimFaces**.
@@ -101,8 +83,7 @@ In this section, you will set up self collision for the simulation. You will cre
     4. Connect the **Name** pin from the **AddWeightMap_Thickness** node to the **Self Collision Thickness Weighted** pin of **SimulationSelfCollisionConfig.**
 [![Add a Simulation Self Collision Config node and connect the inputs as described above](https://dev.epicgames.com/community/api/documentation/image/5550df53-2001-4ab4-991c-307b2c5b7196?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/5550df53-2001-4ab4-991c-307b2c5b7196?resizing_type=fit)
 
-
-##  Set the Simulation Solver and Cloth Asset Terminal 
+##  Set the Simulation Solver and Cloth Asset Terminal
 In this section, you will set up the **Simulation Solver** , which controls the quality of the simulation. In addition, you will complete the asset by creating a **Cloth Asset Terminal.** This node evaluates the entire Dataflow graph and sets its result to the cloth asset in the Content Browser.
   1. Drag from the **Collection** pin of the **SimulationSelfCollisionConfig** node and search for then select **SimulationSolverConfig.**
     1. Set the Num Iterations to 2.
@@ -117,30 +98,5 @@ In this section, you will set up the **Simulation Solver** , which controls the 
 [![Set a skeletal mesh asset and an animation asset to preview the simulation](https://dev.epicgames.com/community/api/documentation/image/752d649b-f356-4010-a64f-49fc826cad5f?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/752d649b-f356-4010-a64f-49fc826cad5f?resizing_type=fit)
 [![The preview mesh plays the selected animation](https://dev.epicgames.com/community/api/documentation/image/e592ec58-0f45-4d23-878c-1b22689ae47c?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/e592ec58-0f45-4d23-878c-1b22689ae47c?resizing_type=fit)
 
-
-##  Next Steps 
+##  Next Steps
   * [![Import your Clothing Asset into UEFN](https://dev.epicgames.com/community/api/documentation/image/bf4e04b8-ace3-4f62-871c-45b43af044ca?resizing_type=fit&width=640&height=640) Import your Clothing Asset into UEFN A guide on migrating the clothing asset from Unreal Engine to Unreal Editor for Fortnite. ](https://dev.epicgames.com/documentation/en-us/fortnite/import-your-clothing-asset-into-unreal-editor-for-fortnite)
-
-
-  * [ collision](https://dev.epicgames.com/community/search?query=collision)
-  * [ simulation](https://dev.epicgames.com/community/search?query=simulation)
-  * [ mesh](https://dev.epicgames.com/community/search?query=mesh)
-  * [ clothing](https://dev.epicgames.com/community/search?query=clothing)
-  * [ high-fidelity](https://dev.epicgames.com/community/search?query=high-fidelity)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [ Set the Proxy Deformer ](https://dev.epicgames.com/documentation/en-us/fortnite/configure-the-simulation-settings-in-unreal-editor-for-fortnite#set-the-proxy-deformer)
-  * [ Set the Simulation Self Collision ](https://dev.epicgames.com/documentation/en-us/fortnite/configure-the-simulation-settings-in-unreal-editor-for-fortnite#set-the-simulation-self-collision)
-  * [ Set the Simulation Solver and Cloth Asset Terminal ](https://dev.epicgames.com/documentation/en-us/fortnite/configure-the-simulation-settings-in-unreal-editor-for-fortnite#set-the-simulation-solver-and-cloth-asset-terminal)
-  * [ Next Steps ](https://dev.epicgames.com/documentation/en-us/fortnite/configure-the-simulation-settings-in-unreal-editor-for-fortnite#next-steps)
-
-
-
-
-
-
----

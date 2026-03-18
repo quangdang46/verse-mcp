@@ -1,32 +1,14 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/using-disguise-items-in-fortnite-creative
 
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. Disguise Items
-
-
 # Disguise Items
-Help players hide who they truly are with Disguise items. 
+Help players hide who they truly are with Disguise items.
 ![Disguise Items](https://dev.epicgames.com/community/api/documentation/image/729d9aa6-0017-44ba-8c87-197b0bf12058?resizing_type=fill&width=1920&height=335)
-On this page
 Offer **Disguise** [items](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#items) for players to conceal themselves and blend in with the environment. Both the **Creepin Cardboard** and the **Sneaky Snowman** can replenish themselves when used so that players can decorate their surroundings with matching props to blend in.
 Disguise items include:
   * **Creepin’ Cardboard**
   * **Sneaky Snowman**
   * **Bush**
   * **Big Bush Bomb**
-
 
 ## Finding and Placing Items
 [![undefined](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/7056a433-b0c9-4303-9ab3-ffb35db98cd3/finding-disguise-consumables.png)](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/7056a433-b0c9-4303-9ab3-ffb35db98cd3/finding-disguise-consumables.png)
@@ -35,7 +17,6 @@ Click the image to enlarge.
   2. Click the **CONSUMABLES** tab.
   3. Scroll to find and select the item, use the **Search** box to look up the item by name, or check the list of relevant **Categories** specific to the item you're looking for to filter the view.
   4. Click the item, then click either **Equip** or **Add To Chest**.
-
 
 Clicking **Equip** will add the item to your [Equipment bar](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#equipmentbar). When you're back in Create mode, you can view any items you've [equipped](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#equip) by pressing the **F** key. You can select equipped items by either scrolling your middle mouse button or by pressing its corresponding number on your keyboard.
 From the [**Chest**](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#chesttab) tab, you can select either **Create Chest** or **Create Llama** to store the items in a [chest](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#chest) or a [llama](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#llama) for use [in-game](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#in-game).
@@ -50,12 +31,12 @@ You can manage these items in the [**Play** inventory](https://dev.epicgames.com
 You cannot reposition or copy items with the phone tool. To delete an item from your inventory in Create mode, you will have to select either _Respawn_ or _Back To Hub_ from the _Menu_. When you do this, your inventory clears.
 ## Using Disguise Items
 Players can use Creepin’ Cardboard and Sneaky Snowman by holding the right mouse button. Use the [aiming arc](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#aiming-arc) to position and throw the item and press the interact button to enter. The Bush can be entered by pressing the interact button.
-| Item | Usage  
----|---|---  
-![Creepin’ Cardboard](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/7ace96aa-f406-4ed0-bd7a-ea7a22ea7e04/creepin-cardboard.png) | **Creepin’ Cardboard** |  Can be thrown and entered for a player to disguise themselves as a prop. A player can still move freely and build while hiding inside this prop. To fully hide, a player must crouch while in disguise. While hiding, a player can also throw multiple copies of this prop to blend in with their surroundings. Enemy players can destroy this prop when inflicting damage. When thrown, this item will regenerate after 30 seconds. Players can equip this item a stack of one, which comes with 5 uses. ![Creepin’ Cardboard](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/7abeef28-5792-4910-a9e7-5640092b7b35/creepin-cardboard.gif)  
-![Sneaky Snowman](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/bd8ad84d-becf-4b9c-a1b9-2b40d46d4796/sneaky-snowman.png) | **Sneaky Snowman** |  Can be thrown and entered for players to disguise themselves as props. A player can still move freely and build while hiding inside this prop. To fully hide, a player must crouch while in disguise. While hiding, a player can also throw multiple copies of this prop to blend in with their surroundings. Enemy players can destroy this prop when inflicting damage. When destroyed, this prop will turn into a throwable snowball that deals 80 points of damage while freezing the contacting player’s feet, causing them to slide uncontrollably. This item will regenerate its uses after 30 seconds when thrown. Players can equip this item in stacks of one, which comes with 5 uses. ![Sneaky Snowman](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/2e1b4349-f548-4544-aeb1-ff4ea880d56d/sneaky-snowman.gif)  
-![Bush](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/a8c0d52d-80ae-47b7-860f-4344823afc50/bush.png) | **Bush** |  Can be consumed to apply a bush over the player. This bush will appear transparent to the player wearing it, allowing them to move and build freely. To fully hide, the player must crouch while in disguise. The Bush can only take damage once before it is destroyed. This item can be equipped in stacks of two. ![Bush](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/5b4db72b-8dec-4de3-97a4-8716e1b9b276/bush.gif)  
-![Big Bush Bomb](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/dcdc868e-0e52-4ab8-a20a-b5b5b636013a/big-bush-bomb.png) | **Big Bush Bomb** |  Can be thrown to deploy a large bush for players to hide in. This item can be equipped in stacks of four. ![Big Bush Bomb](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/365b53a2-27e5-40f7-8057-0f9980343ed3/big-bush-bomb.gif)  
+| Item | Usage
+---|---|---
+![Creepin’ Cardboard](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/7ace96aa-f406-4ed0-bd7a-ea7a22ea7e04/creepin-cardboard.png) | **Creepin’ Cardboard** |  Can be thrown and entered for a player to disguise themselves as a prop. A player can still move freely and build while hiding inside this prop. To fully hide, a player must crouch while in disguise. While hiding, a player can also throw multiple copies of this prop to blend in with their surroundings. Enemy players can destroy this prop when inflicting damage. When thrown, this item will regenerate after 30 seconds. Players can equip this item a stack of one, which comes with 5 uses. ![Creepin’ Cardboard](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/7abeef28-5792-4910-a9e7-5640092b7b35/creepin-cardboard.gif)
+![Sneaky Snowman](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/bd8ad84d-becf-4b9c-a1b9-2b40d46d4796/sneaky-snowman.png) | **Sneaky Snowman** |  Can be thrown and entered for players to disguise themselves as props. A player can still move freely and build while hiding inside this prop. To fully hide, a player must crouch while in disguise. While hiding, a player can also throw multiple copies of this prop to blend in with their surroundings. Enemy players can destroy this prop when inflicting damage. When destroyed, this prop will turn into a throwable snowball that deals 80 points of damage while freezing the contacting player’s feet, causing them to slide uncontrollably. This item will regenerate its uses after 30 seconds when thrown. Players can equip this item in stacks of one, which comes with 5 uses. ![Sneaky Snowman](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/2e1b4349-f548-4544-aeb1-ff4ea880d56d/sneaky-snowman.gif)
+![Bush](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/a8c0d52d-80ae-47b7-860f-4344823afc50/bush.png) | **Bush** |  Can be consumed to apply a bush over the player. This bush will appear transparent to the player wearing it, allowing them to move and build freely. To fully hide, the player must crouch while in disguise. The Bush can only take damage once before it is destroyed. This item can be equipped in stacks of two. ![Bush](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/5b4db72b-8dec-4de3-97a4-8716e1b9b276/bush.gif)
+![Big Bush Bomb](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/dcdc868e-0e52-4ab8-a20a-b5b5b636013a/big-bush-bomb.png) | **Big Bush Bomb** |  Can be thrown to deploy a large bush for players to hide in. This item can be equipped in stacks of four. ![Big Bush Bomb](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/365b53a2-27e5-40f7-8057-0f9980343ed3/big-bush-bomb.gif)
 ## Registering Items
 ![Registered Consumables](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/25567762-c94a-4f9d-8828-83007aec6c8a/registered-consumables.png)
 You can drop items directly onto devices that can either hold or [grant](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#grant) items. You must [register](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#register) these items to save in the device's memory.
@@ -66,7 +47,6 @@ To register an item for this kind of device, follow the steps below. (You can al
   2. In Create mode, stand directly beside the device registering the item.
   3. Press the **Tab** key to open the **PLAY** inventory screen.
   4. Click the item, then press either **Z** or **X** to split or drop the item. You can also drag the item to the side until a [backpack icon](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#backpack-icon) appears.
-
 
 The compatible device will automatically register the dropped item. Compatible devices that can hold items include:
   * **Vending Machine**
@@ -80,29 +60,9 @@ The compatible device will automatically register the dropped item. Compatible d
   * **Elimination Manager**
   * **Item Remover**
 
-
 Use these devices to set up a system for granting and spawning items onto your island.
 ## Using Items for Crafting
 You can pair items with each other and with weapons to create the process of [crafting](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#crafting), where players exchange one item or group of items for another.
 To do this, choose from the list of compatible devices above like the [**Conditional Button**](https://dev.epicgames.com/documentation/en-us/fortnite/using-conditional-button-devices-in-fortnite-creative) and [**Item Spawner**](https://dev.epicgames.com/documentation/en-us/fortnite/using-item-spawner-devices-in-fortnite-creative) to set up the crafting process.
 For example, you can require [**Flower Petals**](https://dev.epicgames.com/documentation/404) and [**Fibrous Herbs**](https://dev.epicgames.com/documentation/404) as items needed to craft a **Bush**.
 Visit our [video tutorials](https://mediaspace.unrealengine.com/playlist/dedicated/208434573/1_gxu6mwv5/1_qfnz9w5c) to learn more about working with items and for tips to enhance gameplay.
-  * [ disguise](https://dev.epicgames.com/community/search?query=disguise)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [Finding and Placing Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-disguise-items-in-fortnite-creative#findingandplacingitems)
-  * [Managing Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-disguise-items-in-fortnite-creative#managingitems)
-  * [Using Disguise Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-disguise-items-in-fortnite-creative#usingdisguiseitems)
-  * [Registering Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-disguise-items-in-fortnite-creative#registeringitems)
-  * [Using Items for Crafting](https://dev.epicgames.com/documentation/en-us/fortnite/using-disguise-items-in-fortnite-creative#usingitemsforcrafting)
-
-
-
-
-
-
----

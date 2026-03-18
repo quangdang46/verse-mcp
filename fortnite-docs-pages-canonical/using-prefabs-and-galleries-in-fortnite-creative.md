@@ -1,168 +1,67 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative
 
-  * [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation)
-    * [What's New in Unreal Editor for Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/whats-new-in-unreal-editor-for-fortnite)
-    * [Discover the Resources Waiting for You as a Fortnite Developer!](https://dev.epicgames.com/documentation/en-us/fortnite/discover-the-resources-waiting-for-you-as-a-fortnite-creator)
-    * [Get Started Creating in Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/get-started-creating-in-fortnite)
-    * [Island Settings](https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-uefn-and-fortnite-creative)
-    * [Editor User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/getting-to-know-the-user-interface-in-unreal-editor-for-fortnite)
-    * [Creative User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/creative-user-interface-for-fortnite-creative)
-    * [Import Content and Islands](https://dev.epicgames.com/documentation/en-us/fortnite/import-content-and-islands-in-unreal-editor-for-fortnite)
-    * [Building Basics](https://dev.epicgames.com/documentation/en-us/fortnite/building-basics-in-fortnite-creative)
-    * [Editor Best Practices](https://dev.epicgames.com/documentation/en-us/fortnite/editor-best-practices-in-unreal-editor-for-fortnite)
-    * [Programming with Verse](https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite)
-    * [Mobile Development](https://dev.epicgames.com/documentation/en-us/fortnite/mobile-development-in-fortnite)
-    * [UEFN Starter Templates](https://dev.epicgames.com/documentation/en-us/fortnite/unreal-editor-for-fortnite-starter-templates)
-    * [Game Collections](https://dev.epicgames.com/documentation/en-us/fortnite/game-collections-in-fortnite)
-    * [Template Islands](https://dev.epicgames.com/documentation/en-us/fortnite/template-islands-in-fortnite-creative)
-    * [Build a Game](https://dev.epicgames.com/documentation/en-us/fortnite/build-a-game-in-unreal-editor-for-fortnite)
-    * [Learn Game Mechanics](https://dev.epicgames.com/documentation/en-us/fortnite/learn-game-mechanics-in-unreal-editor-for-fortnite)
-    * [Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/device-design-examples-in-fortnite-creative)
-    * [Scene Graph](https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite)
-    * [AI and NPCs](https://dev.epicgames.com/documentation/en-us/fortnite/ai-and-npcs-in-unreal-editor-for-fortnite)
-    * [Animation and Cinematics](https://dev.epicgames.com/documentation/en-us/fortnite/animation-and-cinematics-in-unreal-editor-for-fortnite)
-    * [Using Devices](https://dev.epicgames.com/documentation/en-us/fortnite/using-devices-in-fortnite)
-    * [Using Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-items-in-fortnite-creative)
-    * [Fortnite Weapons Primer](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-weapons-primer)
-    * [In-Game User Interfaces](https://dev.epicgames.com/documentation/en-us/fortnite/ingame-user-interfaces-in-unreal-editor-for-fortnite)
-    * [Physics](https://dev.epicgames.com/documentation/en-us/fortnite/physics)
-    * [Environments and Landscapes](https://dev.epicgames.com/documentation/en-us/fortnite/environments-and-landscapes-in-unreal-editor-for-fortnite)
-    * [Memory and Optimization](https://dev.epicgames.com/documentation/en-us/fortnite/memory-and-optimization-in-unreal-editor-for-fortnite)
-    * [Realistic Assets, Characters, and Environments](https://dev.epicgames.com/documentation/en-us/fortnite/realistic-assets-characters-and-environments-in-unreal-editor-for-fortnite)
-    * Using Prefabs and Galleries
-      * [Audio and Visual Effects Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/audio-and-visual-effects-galleries-in-fortnite-creative)
-      * [Cabin Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/cabin-galleries-in-fortnite-creative)
-      * [Cabin Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/cabin-prefabs-in-fortnite-creative)
-      * [Castle Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/castle-galleries-in-fortnite-creative)
-      * [Castle Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/castle-prefabs-in-fortnite-creative)
-      * [Decoration Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/decoration-galleries-in-fortnite-creative)
-      * [Farm Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/farm-galleries-in-fortnite-creative)
-      * [Farm Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/farm-prefabs-in-fortnite-creative)
-      * [Futuristic Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/futuristic-galleries-in-fortnite-creative)
-      * [Futuristic Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/futuristic-prefabs-in-fortnite-creative)
-      * [Industrial Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/industrial-galleries-in-fortnite-creative)
-      * [Industrial Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/industrial-prefabs-in-fortnite-creative)
-      * [Military Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/miliitary-galleries-in-fortnite-creative)
-      * [Military Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/military-prefabs-in-fortnite-creative)
-      * [Nature and Terrain Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/nature-and-terrain-galleries-in-fortnite-creative)
-      * [Pacific Break Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/pacific-break-galleries-in-fortnite)
-      * [Prehistoric Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/prehistoric-galleries-in-fortnite-creative)
-      * [Prehistoric Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/prehistoric-prefabs-in-fortnite-creative)
-      * [Residential Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/residential-galleries-in-fortnite-creative)
-      * [Residential Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/residential-prefabs-in-fortnite-creative)
-      * [Retail Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/retail-galleries-in-fortnite-creative)
-      * [Retail Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/retail-prefabs-in-fortnite-creative)
-      * [Seaside Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/seaside-galleries-in-fortnite-creative)
-      * [Seaside Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/seaside-prefabs-in-fortnite-creative)
-      * [Seasonal Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/seasonal-galleries-in-fortnite-creative)
-      * [Sports Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/sports-galleries-in-fortnite-creative)
-      * [Sports Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/sports-prefabs-in-fortnite-creative)
-      * [Terrain Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/terrain-prefabs-in-fortnite-creative)
-      * [Vehicle Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/vehicle-galleries-in-fortnite-creative)
-      * [Western Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/western-galleries-in-fortnite-creative)
-      * [Western Prefabs](https://dev.epicgames.com/documentation/en-us/fortnite/western-prefabs-in-fortnite-creative)
-    * [Audio](https://dev.epicgames.com/documentation/en-us/fortnite/audio-in-unreal-editor-for-fortnite)
-    * [Composing with Fortnite Patchwork](https://dev.epicgames.com/documentation/en-us/fortnite/composing-with-patchwork-in-fortnite-creative)
-    * [Lighting](https://dev.epicgames.com/documentation/en-us/fortnite/lighting-in-unreal-editor-for-fortnite)
-    * [Materials](https://dev.epicgames.com/documentation/en-us/fortnite/materials-in-unreal-editor-for-fortnite)
-    * [Modeling](https://dev.epicgames.com/documentation/en-us/fortnite/modeling-in-unreal-editor-for-fortnite)
-    * [Intro to Post-Processing](https://dev.epicgames.com/documentation/en-us/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite)
-    * [Visual Effects](https://dev.epicgames.com/documentation/en-us/fortnite/visual-effects-in-unreal-editor-for-fortnite)
-    * [In-Island Transactions](https://dev.epicgames.com/documentation/en-us/fortnite/in-island-transactions-in-fortnite)
-    * [Campaigns](https://dev.epicgames.com/documentation/en-us/fortnite/campaigns-in-fortnite)
-    * [Using Creator Portal](https://dev.epicgames.com/documentation/en-us/fortnite/using-creator-portal-in-fortnite-creative)
-    * [Collaborate and Publish](https://dev.epicgames.com/documentation/en-us/fortnite/collaborate-and-publish-in-unreal-editor-for-fortnite)
-    * [Island Moderation and Guidelines](https://dev.epicgames.com/documentation/en-us/fortnite/island-moderation-and-guidelines-in-fortnite-creative)
-    * [Promoting Your Fortnite Island](https://dev.epicgames.com/documentation/en-us/fortnite/promoting-your-fortnite-creative-island)
-    * [Community Building](https://dev.epicgames.com/documentation/en-us/fortnite/community-building-in-fortnite)
-    * [Education](https://dev.epicgames.com/documentation/en-us/fortnite/education-in-fortnite-creative)
-    * [Verse Language Reference: Book of Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-book-of-verse-reference)
-    * [Video Tutorials](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-video-tutorials)
-    * [Fortnite Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-glossary)
-    * [Verse Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary)
-    * [Verse API Reference](https://dev.epicgames.com/documentation/en-us/fortnite/verse-api)
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation "Fortnite Documentation")
-  5. Using Prefabs and Galleries
-
-
 # Using Prefabs and Galleries
-Visually enhance your island with themed prefab and gallery assets! 
+Visually enhance your island with themed prefab and gallery assets!
 ![Using Prefabs and Galleries](https://dev.epicgames.com/community/api/documentation/image/179483ee-4097-42fe-b101-c1ffe2190428?resizing_type=fill&width=1920&height=335)
-On this page
-Want to create a western town? A medieval village? A futuristic techno-punk shopping mall? You can start building your theme island with prefabs and galleries. 
+Want to create a western town? A medieval village? A futuristic techno-punk shopping mall? You can start building your theme island with prefabs and galleries.
 Find what you need to outfit your island in the Creative Content **Prefabs** and **Galleries** categories!
-##  Access Prefabs and Galleries 
-  * **Creative:** From the **Content Menu > Galleries **category. 
-  * **UEFN:** From the **Content Browser > All > Fortnite > Galleries** folder. 
-
+##  Access Prefabs and Galleries
+  * **Creative:** From the **Content Menu > Galleries **category.
+  * **UEFN:** From the **Content Browser > All > Fortnite > Galleries** folder.
 
   1. From your Creative island, activate your Phone tool, then press the **Tab** key.
   2. Select **Content**.
 [![](https://dev.epicgames.com/community/api/documentation/image/b6481880-bd6b-475f-8388-8bf2a409d60a?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/b6481880-bd6b-475f-8388-8bf2a409d60a?resizing_type=fit)
   3. From here, you can go to the Prefabs or Galleries categories to explore the wide range of assets available.
 
-
 Check out the [Building Basics](https://dev.epicgames.com/documentation/en-us/fortnite/building-basics-in-fortnite-creative) section, which shows how to use prefab and gallery pieces to build structures like arenas and pre-game lobbies.
-##  Prefabs 
+##  Prefabs
 A **prefab** is a prefabricated structure. It could be a piece of furniture, like a chair or a table, a fully-furnished building, or anything in between.
 When you double-click a prefab in Creative Content, you can see all of the items that make up that prefab. You can equip a single item from a prefab by selecting only that item, or you can go back and select and equip the entire prefab.
 If you equip the entire prefab, you can still move or remove individual components once you've placed it on your island, or you can select and manipulate the entire prefab.
 Below is a description of each theme, and what those themes cover. Use the theme name listed to search for prefabs that fit that theme.
 [![](https://dev.epicgames.com/community/api/documentation/image/05a75382-2d7a-48a0-a424-77bfdffdd590?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/05a75382-2d7a-48a0-a424-77bfdffdd590?resizing_type=fit)
 _Searching for a theme like farm will return all of the prefabs that use a farm theme._
-###  Prefab Themes 
-Theme  |  Asset Description   
----|---  
-**Cabin** |  Woods and forest, and camping structures  
-**Castle** |  Medieval castle, dungeon, or fantasy-type structures  
-**Farm** |  Farm and farmland structures  
-**Industrial** |  Warehouse, factory, and city structures  
-**Military** |  Government facilities and secret bases  
-**Residential** |  Homes and personal dwelling structures  
-**Prehistoric** |  Ancient or preindustrial-inspired structures  
-**Retail** |  Shopping and restaurant structures  
-**Seaside** |  Coastal, ocean, and water-based structures  
-**Sports** |  Athletic and competitive activity-based structures  
-**Terrain** |  Landscapes and land formations  
-**Western** |  American Old West and desert-themed structures  
-##  Galleries 
+###  Prefab Themes
+Theme  |  Asset Description
+---|---
+**Cabin** |  Woods and forest, and camping structures
+**Castle** |  Medieval castle, dungeon, or fantasy-type structures
+**Farm** |  Farm and farmland structures
+**Industrial** |  Warehouse, factory, and city structures
+**Military** |  Government facilities and secret bases
+**Residential** |  Homes and personal dwelling structures
+**Prehistoric** |  Ancient or preindustrial-inspired structures
+**Retail** |  Shopping and restaurant structures
+**Seaside** |  Coastal, ocean, and water-based structures
+**Sports** |  Athletic and competitive activity-based structures
+**Terrain** |  Landscapes and land formations
+**Western** |  American Old West and desert-themed structures
+##  Galleries
 A **gallery** is a collection of assets with a related theme. Unlike a prefab, a gallery is not assembled into any kind of structure. You can, however, use gallery components like windows, walls, and doors, to build your own custom structures.
 When you double-click a gallery in Creative Content, you can expand it to see all of the assets contained within that gallery. You can select and equip the entire gallery, but as a developer, you'll probably find it more useful to expand the gallery and only equip specific items.
 Below is a description of each gallery theme, and what those themes cover. You can use the theme name to search for galleries that fit that theme.
-###  Gallery Themes 
-Theme  |  Asset Description   
----|---  
-**Audio and Visual Effects** |  Music, sound, and lighting props  
-**Cabin** |  Woods and forest, and camping structures  
-**Castle** |  Medieval castle, dungeon, or fantasy-type structures  
-**Decoration** |  Variety of non-themed props that can be placed for design  
-**Farm** |  Farm and farmland structures  
-**Industrial** |  Warehouse, factory, and city structures  
-**Military** |  Government facilities and secret bases  
-**Nature and Terrain** |  Landscapes and land formations  
-**Prehistoric** |  Ancient or pre industrial-inspired structures  
-**Residential** |  Homes and personal dwelling structures  
-**Retail** |  Shopping and restaurant structures  
-**Futuristic** |  Modern and advanced structures  
-**Seaside** |  Coastal, ocean, and water-based structures  
-**Seasonal** |  Summer, Fall, Winter, and Spring themed assets  
-**Sports** |  Athletic and competitive activity-based structures  
-**Vehicle** |  Car or movement-related assets and structures  
-**Western** |  American Old West and desert-themed structures  
-##  Deeper Dive 
+###  Gallery Themes
+Theme  |  Asset Description
+---|---
+**Audio and Visual Effects** |  Music, sound, and lighting props
+**Cabin** |  Woods and forest, and camping structures
+**Castle** |  Medieval castle, dungeon, or fantasy-type structures
+**Decoration** |  Variety of non-themed props that can be placed for design
+**Farm** |  Farm and farmland structures
+**Industrial** |  Warehouse, factory, and city structures
+**Military** |  Government facilities and secret bases
+**Nature and Terrain** |  Landscapes and land formations
+**Prehistoric** |  Ancient or pre industrial-inspired structures
+**Residential** |  Homes and personal dwelling structures
+**Retail** |  Shopping and restaurant structures
+**Futuristic** |  Modern and advanced structures
+**Seaside** |  Coastal, ocean, and water-based structures
+**Seasonal** |  Summer, Fall, Winter, and Spring themed assets
+**Sports** |  Athletic and competitive activity-based structures
+**Vehicle** |  Car or movement-related assets and structures
+**Western** |  American Old West and desert-themed structures
+##  Deeper Dive
 You will find more information on the various themes for both prefabs and galleries in the pages below.
   * [![Audio and Visual Effects Galleries](https://dev.epicgames.com/community/api/documentation/image/03a3dcf7-9043-4bea-aa5c-91a0f7fb8177?resizing_type=fit&width=640&height=640) Audio and Visual Effects Galleries Use props that have audio and visual effects to give your island extra flair. ](https://dev.epicgames.com/documentation/en-us/fortnite/audio-and-visual-effects-galleries-in-fortnite-creative)
   * [![Cabin Galleries](https://dev.epicgames.com/community/api/documentation/image/e13cf41c-cfdc-452b-9429-6e7282c87c8b?resizing_type=fit&width=640&height=640) Cabin Galleries Create the simple life with cabin galleries. ](https://dev.epicgames.com/documentation/en-us/fortnite/cabin-galleries-in-fortnite-creative)
@@ -195,26 +94,3 @@ You will find more information on the various themes for both prefabs and galler
   * [![Vehicle Galleries](https://dev.epicgames.com/community/api/documentation/image/6ffc6a66-10f6-4154-9f65-824ef3ddd393?resizing_type=fit&width=640&height=640) Vehicle Galleries Drive your gameplay to new heights with the Vehicle galleries. ](https://dev.epicgames.com/documentation/en-us/fortnite/vehicle-galleries-in-fortnite-creative)
   * [![Western Galleries](https://dev.epicgames.com/community/api/documentation/image/7131fddb-8b48-4879-a584-bb05515f4719?resizing_type=fit&width=640&height=640) Western Galleries Recreate the American Wild West with these galleries. ](https://dev.epicgames.com/documentation/en-us/fortnite/western-galleries-in-fortnite-creative)
   * [![Western Prefabs](https://dev.epicgames.com/community/api/documentation/image/3a0daccb-4a93-4de0-bf10-a41696384a3d?resizing_type=fit&width=640&height=640) Western Prefabs Recreate the American Old West and get ready for a wild shootout! ](https://dev.epicgames.com/documentation/en-us/fortnite/western-prefabs-in-fortnite-creative)
-
-
-  * [ prefabs](https://dev.epicgames.com/community/search?query=prefabs)
-  * [ gallery](https://dev.epicgames.com/community/search?query=gallery)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [ Access Prefabs and Galleries ](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative#access-prefabs-and-galleries)
-  * [ Prefabs ](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative#prefabs)
-  * [ Prefab Themes ](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative#prefab-themes)
-  * [ Galleries ](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative#galleries)
-  * [ Gallery Themes ](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative#gallery-themes)
-  * [ Deeper Dive ](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative#deeper-dive)
-
-
-
-
-
-
----

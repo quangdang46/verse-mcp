@@ -1,32 +1,14 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/using-crafting-items-in-fortnite-creative
 
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. Crafting Items
-
-
 # Crafting Items
-Use crafting items as resources for players to collect and exchange during gameplay. 
+Use crafting items as resources for players to collect and exchange during gameplay.
 ![Crafting Items](https://dev.epicgames.com/community/api/documentation/image/a72a7bf1-95c5-4aa2-af49-36390315413b?resizing_type=fill&width=1920&height=335)
-On this page
 Offer **crafting** items to players throughout gameplay as an island resource that can be collected and exchanged. Players cannot directly consume these items, but can collect them to simulate [crafting](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#crafting) by exchanging them for other usable items.
 Crafting items are:
   * **Animal Bones**
   * **Stink Sac**
   * **Mechanical Parts**
   * **Cube Monster Parts**
-
 
 Though more items are considered crafting items, only these items will show on the top row of the **Resources** bar as shown in [Managing Consumables](https://dev.epicgames.com/documentation/en-us/fortnite/using-crafting-items-in-fortnite-creative).
 These items could be required along with another to unlock requirements for [devices](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#device) like the [**Conditional Button**](https://dev.epicgames.com/documentation/en-us/fortnite/using-conditional-button-devices-in-fortnite-creative).
@@ -41,7 +23,7 @@ For example, you can blend Cube Monster Parts with props from the **Crashed Abdu
 To create the process of crafting, you will need to either [spawn](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#spawning) or [grant](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#grant) items onto the map for players to collect with the **Item Spawner** or **Item Granter**.
 Players can collect these items to exchange for usable items through devices like Conditional Button, which consumes equipped items. They can also use these items to craft other items that will build up to a larger item.
 Visit our [video tutorials](https://mediaspace.unrealengine.com/playlist/dedicated/208434573/1_gxu6mwv5/1_qfnz9w5c) to learn more about working with items and for tips to enhance gameplay.
-##  Finding and Placing Items 
+##  Finding and Placing Items
 [![Finding Crafting Consumables](https://dev.epicgames.com/community/api/documentation/image/61e562ec-a1bd-49fe-a110-94de992866fd?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/61e562ec-a1bd-49fe-a110-94de992866fd?resizing_type=fit)
 _Click image to enlarge._
   1. From **Build** mode, press the **Tab** key, then click **CREATIVE** on the top navigation bar to select the CREATIVE inventory screen if not already displayed.
@@ -49,27 +31,26 @@ _Click image to enlarge._
   3. On this screen, scroll to find and select the item, use the **Search** box to look up the item by name, or check the list of relevant **Categories** specific to the item you’re looking for to filter the view.
   4. Click the item, then click either **EQUIP** or **ADD TO CHEST**.
 
-
 Clicking **Equip** will add the item to your [Resources bar](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#resources-bar). (When you're back in Create mode, you can view items in your Resources bar by pressing the **Tab** key and selecting **Play**.)
 [![Crafting Items Chest Tab](https://dev.epicgames.com/community/api/documentation/image/0cfd1cf9-3e53-4516-b0a1-f2cf0fd60c0e?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/0cfd1cf9-3e53-4516-b0a1-f2cf0fd60c0e?resizing_type=fit)
 _Click image to enlarge._
 You may want to offer an item bundle to players through a [chest](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#chest) or [llama](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#llama). Selecting **Add To Chest** will add the item to the [Chest tab](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary). Each time you click it, the item count will increase by one, shown in a yellow box on the **Chest** tab.
 From the **Chest** tab, you can select either **Create Chest** or **Create Llama** to store the items in a Chest or a Llama for use [in-game](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#in-game).
 You can add up to fifteen items to the **Chest** tab. When it’s full, the **Add To Chest** tab will disappear. To add more items, you first have to remove items from the **Chest** tab.
-##  Managing Items 
+##  Managing Items
 You can manage these items when you are in [Play inventory](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#play-inventory). To access the **Play** inventory screen, press **Tab** and click **Play** in the top navigation bar. In the PLAY inventory, you can create or split item stacks, or remove them entirely from your Resources bar.
 [![Crafting Items Resources Bar](https://dev.epicgames.com/community/api/documentation/image/590cc33e-7ecb-41eb-87f7-2ef69ccf12ae?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/590cc33e-7ecb-41eb-87f7-2ef69ccf12ae?resizing_type=fit)
 _Click image to enlarge._
 Instead of dropping these items on the ground, it's best to grant them to players by using item-granting devices like the Item Spawner.
 You cannot reposition or copy items with the phone tool. To delete an item from your inventory in Create mode, you will have to select either _Respawn_ or _Back To Hub_ from the _Menu_. When you do this, your inventory clears.
-##  Crafting Items 
-|  Item  |  Usage   
----|---|---  
-[![Animal Bones](https://dev.epicgames.com/community/api/documentation/image/19956d80-8378-472b-8327-def6f99439c2?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/19956d80-8378-472b-8327-def6f99439c2?resizing_type=fit) |  **Animal Bones** |  Can be gathered from bone-themed props or wildlife to craft items like the **Pimal Pistol**.  
-[![Mechanical Parts](https://dev.epicgames.com/community/api/documentation/image/bb2c7b95-0c66-4bbd-8705-6289fdbfd9b6?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/bb2c7b95-0c66-4bbd-8705-6289fdbfd9b6?resizing_type=fit) |  **Mechanical Parts** |  Can be gathered from mechanical-themed props or vehicles to craft items like the **Clinger**.  
-[![Stink Sac](https://dev.epicgames.com/community/api/documentation/image/604e7f18-6df3-4fa4-846c-28ee4cd97d7f?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/604e7f18-6df3-4fa4-846c-28ee4cd97d7f?resizing_type=fit) |  **Stink Sac** |  Can be gathered from wildlife or trash-themed props to craft items like the **Stink Bomb**.  
-[![Cube Monster Parts](https://dev.epicgames.com/community/api/documentation/image/4fac2128-1805-4114-b38b-48f1eb8e1732?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/4fac2128-1805-4114-b38b-48f1eb8e1732?resizing_type=fit) |  **Cube Monster Parts** |  Can be gathered fas alien-themed items from **Galleries** like the **Kevin Cube** or **Zero Point** to craft items like the **Sideways Rifle**.  
-##  Registering Items 
+##  Crafting Items
+|  Item  |  Usage
+---|---|---
+[![Animal Bones](https://dev.epicgames.com/community/api/documentation/image/19956d80-8378-472b-8327-def6f99439c2?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/19956d80-8378-472b-8327-def6f99439c2?resizing_type=fit) |  **Animal Bones** |  Can be gathered from bone-themed props or wildlife to craft items like the **Pimal Pistol**.
+[![Mechanical Parts](https://dev.epicgames.com/community/api/documentation/image/bb2c7b95-0c66-4bbd-8705-6289fdbfd9b6?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/bb2c7b95-0c66-4bbd-8705-6289fdbfd9b6?resizing_type=fit) |  **Mechanical Parts** |  Can be gathered from mechanical-themed props or vehicles to craft items like the **Clinger**.
+[![Stink Sac](https://dev.epicgames.com/community/api/documentation/image/604e7f18-6df3-4fa4-846c-28ee4cd97d7f?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/604e7f18-6df3-4fa4-846c-28ee4cd97d7f?resizing_type=fit) |  **Stink Sac** |  Can be gathered from wildlife or trash-themed props to craft items like the **Stink Bomb**.
+[![Cube Monster Parts](https://dev.epicgames.com/community/api/documentation/image/4fac2128-1805-4114-b38b-48f1eb8e1732?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/4fac2128-1805-4114-b38b-48f1eb8e1732?resizing_type=fit) |  **Cube Monster Parts** |  Can be gathered fas alien-themed items from **Galleries** like the **Kevin Cube** or **Zero Point** to craft items like the **Sideways Rifle**.
+##  Registering Items
 [![Pairing Consumables](https://dev.epicgames.com/community/api/documentation/image/896c3b8f-3c8f-462b-b1e8-25c44a43acd2?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/896c3b8f-3c8f-462b-b1e8-25c44a43acd2?resizing_type=fit)
 _Click image to enlarge._
 You can drop items directly onto devices that can either hold or grant items. Above shows the Conditional Button, which holds two crafting items and an Item Granter that holds one usable item.
@@ -82,7 +63,6 @@ To register an item for this kind of device, follow these steps.
   2. In Create mode, stand directly beside the device that will register the item.
   3. Press the **Tab** key to open the **PLAY** inventory screen.
   4. Click the item, then press either **Z** or **X** to split or drop the item. You can also drag the item to the side until a [backpack icon](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary#backpack-icon) appears.
-
 
 The compatible device will automatically register the dropped item.
 Compatible devices that can hold items are:
@@ -97,25 +77,4 @@ Compatible devices that can hold items are:
   * **Elimination Manager**
   * **Item Remover**
 
-
 Use these devices to set up your own system for granting and spawning items onto your island.
-  * [ world-resource](https://dev.epicgames.com/community/search?query=world-resource)
-  * [ consumable](https://dev.epicgames.com/community/search?query=consumable)
-  * [ crafting](https://dev.epicgames.com/community/search?query=crafting)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [ Finding and Placing Items ](https://dev.epicgames.com/documentation/en-us/fortnite/using-crafting-items-in-fortnite-creative#finding-and-placing-items)
-  * [ Managing Items ](https://dev.epicgames.com/documentation/en-us/fortnite/using-crafting-items-in-fortnite-creative#managing-items)
-  * [ Crafting Items ](https://dev.epicgames.com/documentation/en-us/fortnite/using-crafting-items-in-fortnite-creative#crafting-items)
-  * [ Registering Items ](https://dev.epicgames.com/documentation/en-us/fortnite/using-crafting-items-in-fortnite-creative#registering-items)
-
-
-
-
-
-
----

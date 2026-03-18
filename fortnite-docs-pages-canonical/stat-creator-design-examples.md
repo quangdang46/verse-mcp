@@ -1,233 +1,112 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples
 
-  * [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation)
-    * [What's New in Unreal Editor for Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/whats-new-in-unreal-editor-for-fortnite)
-    * [Discover the Resources Waiting for You as a Fortnite Developer!](https://dev.epicgames.com/documentation/en-us/fortnite/discover-the-resources-waiting-for-you-as-a-fortnite-creator)
-    * [Get Started Creating in Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/get-started-creating-in-fortnite)
-    * [Island Settings](https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-uefn-and-fortnite-creative)
-    * [Editor User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/getting-to-know-the-user-interface-in-unreal-editor-for-fortnite)
-    * [Creative User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/creative-user-interface-for-fortnite-creative)
-    * [Import Content and Islands](https://dev.epicgames.com/documentation/en-us/fortnite/import-content-and-islands-in-unreal-editor-for-fortnite)
-    * [Building Basics](https://dev.epicgames.com/documentation/en-us/fortnite/building-basics-in-fortnite-creative)
-    * [Editor Best Practices](https://dev.epicgames.com/documentation/en-us/fortnite/editor-best-practices-in-unreal-editor-for-fortnite)
-    * [Programming with Verse](https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite)
-    * [Mobile Development](https://dev.epicgames.com/documentation/en-us/fortnite/mobile-development-in-fortnite)
-    * [UEFN Starter Templates](https://dev.epicgames.com/documentation/en-us/fortnite/unreal-editor-for-fortnite-starter-templates)
-    * [Game Collections](https://dev.epicgames.com/documentation/en-us/fortnite/game-collections-in-fortnite)
-    * [Template Islands](https://dev.epicgames.com/documentation/en-us/fortnite/template-islands-in-fortnite-creative)
-    * [Build a Game](https://dev.epicgames.com/documentation/en-us/fortnite/build-a-game-in-unreal-editor-for-fortnite)
-    * [Learn Game Mechanics](https://dev.epicgames.com/documentation/en-us/fortnite/learn-game-mechanics-in-unreal-editor-for-fortnite)
-    * [Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/device-design-examples-in-fortnite-creative)
-      * [Exploring Gameplay](https://dev.epicgames.com/documentation/en-us/fortnite/exploring-gameplay-in-fortnite-creative)
-      * [Air Vent Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/using-air-vent-device-design-examples-in-fortnite-creative)
-      * [Ascender Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/ascender-device-design-examples-in-fortnite-creative)
-      * [ATK Spawner Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/using-atk-spawner-device-design-examples-in-fortnite-creative)
-      * [Ball Spawner Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/using-ball-spawner-device-design-examples-in-fortnite-creative)
-      * [Barrier Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/barrier-device-design-examples-in-fortnite-creative)
-      * [Big Rig Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/big-rig-device-design-example-in-fortnite-creative)
-      * [Boat Spawner Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/boat-spawner-device-design-examples)
-      * [Button Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/using-button-device-design-examples-in-fortnite-creative)
-      * [Campfire Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/campfire-device-design-example-in-fortnite-creative)
-      * [Cannon Spawner Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/cannon-spawner-device-design-examples-in-fortnite)
-      * [Chair Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/chair-device-design-examples)
-      * [Cinematic Sequence Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/cinematic-sequenceples-in-fortnite)
-      * [Color Changing Tile Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/using-color-changing-tile-device-design-examples-in-fortnite-creative)
-      * [Conditional Button Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/conditional-button-device-design-examples-in-fortnite-creative)
-      * [Conversation Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/conversation-device-design-examples)
-      * [Creature Manager Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/creature-manager-device-design-examples-in-fortnite-creative)
-      * [Creature Spawner Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/creature-spawner-device-design-examples-in-fortnite)
-      * [D-Launcher Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/dlauncher-device-design-examples-in-fortnite-creative)
-      * [Damage Volume Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/damage-volume-design-examples-in-fortnite)
-      * [Down But Not Out Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/down-but-not-out-device-design-examples-in-fortnite-creative)
-      * [Elimination Manager Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/elimination-manager-device-design-examples-in-fortnite-creative)
-      * [Explosive Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/explosive-device-design-example-in-fortnite-creative)
-      * [First Person Camera Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/first-person-camera-device-design-examples-in-fortnite-creative)
-      * [Fishing Zone Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/fishing-zone-device-design-examples-in-fortnite)
-      * [Grind Rail Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/grind-rail-device-design-example-in-fortnite-creative)
-      * [Grind Vine Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/grind-vine-device-design-example-in-fortnite-creative)
-      * [Health Powerup Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/health-powerup-design-examples-in-fortnite)
-      * [HUD Message Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/hud-message-device-design-example-in-fortnite-creative)
-      * [Item Granter Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/item-granter-device-design-examples-in-fortnite)
-      * [Item Remover Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/item-remover-device-design-example-in-fortnite-creative)
-      * [Lock Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/lock-device-design-examples)
-      * [Objective Devices Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/objective-devices-design-examples-in-fortnite)
-      * [Orbit Camera Device Design Example](https://dev.epicgames.com/documentation/en-us/fortnite/orbit-camera-device-design-example-in-fortnite-creative)
-      * [Post Process Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/post-process-device-design-examples-in-fortnite)
-      * [Prop Manipulator Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/prop-manipulator-device-design-examples-in-fortnite)
-      * [Skilled Interaction Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/skilled-interaction-device-design-examples)
-      * [Stat Counter Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/stat-counter-design-examples-in-fortnite-creative)
-      * Stat Creator Device Design Examples
-      * [Stat Powerup Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/stat-powerup-device-design-examples-in-fortnite)
-      * [Switch Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/switch-device-design-examples)
-      * [Timer Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/timer-device-design-examples-in-fortnite)
-      * [Tracker Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/tracker-device-design-examples)
-      * [Trigger Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/trigger-device-design-examples)
-      * [Vehicle Mod Box Spawner Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/vehicle-mod-box-spawner-device-design-examples-in-fortnite)
-      * [Visual Effect Powerup Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/visual-effect-powerup-device-design-examples-in-fortnite)
-      * [Wildlife Spawner Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/wildlife-spawner-device-design-examples)
-    * [Scene Graph](https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite)
-    * [AI and NPCs](https://dev.epicgames.com/documentation/en-us/fortnite/ai-and-npcs-in-unreal-editor-for-fortnite)
-    * [Animation and Cinematics](https://dev.epicgames.com/documentation/en-us/fortnite/animation-and-cinematics-in-unreal-editor-for-fortnite)
-    * [Using Devices](https://dev.epicgames.com/documentation/en-us/fortnite/using-devices-in-fortnite)
-    * [Using Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-items-in-fortnite-creative)
-    * [Fortnite Weapons Primer](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-weapons-primer)
-    * [In-Game User Interfaces](https://dev.epicgames.com/documentation/en-us/fortnite/ingame-user-interfaces-in-unreal-editor-for-fortnite)
-    * [Physics](https://dev.epicgames.com/documentation/en-us/fortnite/physics)
-    * [Environments and Landscapes](https://dev.epicgames.com/documentation/en-us/fortnite/environments-and-landscapes-in-unreal-editor-for-fortnite)
-    * [Memory and Optimization](https://dev.epicgames.com/documentation/en-us/fortnite/memory-and-optimization-in-unreal-editor-for-fortnite)
-    * [Realistic Assets, Characters, and Environments](https://dev.epicgames.com/documentation/en-us/fortnite/realistic-assets-characters-and-environments-in-unreal-editor-for-fortnite)
-    * [Using Prefabs and Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative)
-    * [Audio](https://dev.epicgames.com/documentation/en-us/fortnite/audio-in-unreal-editor-for-fortnite)
-    * [Composing with Fortnite Patchwork](https://dev.epicgames.com/documentation/en-us/fortnite/composing-with-patchwork-in-fortnite-creative)
-    * [Lighting](https://dev.epicgames.com/documentation/en-us/fortnite/lighting-in-unreal-editor-for-fortnite)
-    * [Materials](https://dev.epicgames.com/documentation/en-us/fortnite/materials-in-unreal-editor-for-fortnite)
-    * [Modeling](https://dev.epicgames.com/documentation/en-us/fortnite/modeling-in-unreal-editor-for-fortnite)
-    * [Intro to Post-Processing](https://dev.epicgames.com/documentation/en-us/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite)
-    * [Visual Effects](https://dev.epicgames.com/documentation/en-us/fortnite/visual-effects-in-unreal-editor-for-fortnite)
-    * [In-Island Transactions](https://dev.epicgames.com/documentation/en-us/fortnite/in-island-transactions-in-fortnite)
-    * [Campaigns](https://dev.epicgames.com/documentation/en-us/fortnite/campaigns-in-fortnite)
-    * [Using Creator Portal](https://dev.epicgames.com/documentation/en-us/fortnite/using-creator-portal-in-fortnite-creative)
-    * [Collaborate and Publish](https://dev.epicgames.com/documentation/en-us/fortnite/collaborate-and-publish-in-unreal-editor-for-fortnite)
-    * [Island Moderation and Guidelines](https://dev.epicgames.com/documentation/en-us/fortnite/island-moderation-and-guidelines-in-fortnite-creative)
-    * [Promoting Your Fortnite Island](https://dev.epicgames.com/documentation/en-us/fortnite/promoting-your-fortnite-creative-island)
-    * [Community Building](https://dev.epicgames.com/documentation/en-us/fortnite/community-building-in-fortnite)
-    * [Education](https://dev.epicgames.com/documentation/en-us/fortnite/education-in-fortnite-creative)
-    * [Verse Language Reference: Book of Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-book-of-verse-reference)
-    * [Video Tutorials](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-video-tutorials)
-    * [Fortnite Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-glossary)
-    * [Verse Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary)
-    * [Verse API Reference](https://dev.epicgames.com/documentation/en-us/fortnite/verse-api)
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation "Fortnite Documentation")
-  5. [Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/device-design-examples-in-fortnite-creative "Device Design Examples")
-  6. Stat Creator Device Design Examples
-
-
 # Stat Creator Device Design Examples
-Want some new ways to track player progress across your games? 
+Want some new ways to track player progress across your games?
 ![Stat Creator Device Design Examples](https://dev.epicgames.com/community/api/documentation/image/1dcabe45-d57f-4e7b-a682-1a72e0ef0351?resizing_type=fill&width=1920&height=335)
-On this page
 Get ready to discover some fun and unique ways to track player progress as they play your games!
-##  Set Up a Basic Custom Stat 
+##  Set Up a Basic Custom Stat
 The **Stat Creator** device is perfect for making unique ways to track player progress in your Island. In this example, you’ll make a stat that tracks the number of explosions that a player has triggered!
-###  Devices Used 
+###  Devices Used
   * 1 x [Stat Creator](https://dev.epicgames.com/documentation/en-us/fortnite/using-stat-creator-devices-in-fortnite-creative) device
   * 1 x [Player Spawner](https://dev.epicgames.com/documentation/en-us/fortnite/using-player-spawn-pad-devices-in-fortnite-creative) device
   * 1 x [Stat Counter](https://dev.epicgames.com/documentation/en-us/fortnite/using-stat-counter-devices-in-fortnite-creative) device
   * 3 x [Explosive ](https://dev.epicgames.com/documentation/en-us/fortnite/using-explosive-devices-in-fortnite-creative)devices
 
-
-###  Set Up the Devices 
+###  Set Up the Devices
   1. Place a **Player Spawner** device.
   2. Place a **Stat Creator** device.
   3. Customize the device:
 [![](https://dev.epicgames.com/community/api/documentation/image/882e39ce-0c50-4cc5-98d5-bbb1c2e07952?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/882e39ce-0c50-4cc5-98d5-bbb1c2e07952?resizing_type=fit)
-Option  |  Value   
----|---  
-Stat Name |  Explosions Triggered  
-Stat Icon |  Bomb  
+Option  |  Value
+---|---
+Stat Name |  Explosions Triggered
+Stat Icon |  Bomb
   4. Place a **Stat Counter** device.
   5. Customize the counter:
 [![](https://dev.epicgames.com/community/api/documentation/image/ba4aba5b-98ee-4718-928f-02ad3f167fa2?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/ba4aba5b-98ee-4718-928f-02ad3f167fa2?resizing_type=fit)
-Option  |  Value   
----|---  
-Comparison Value |  3  
-Value Override Type |  Add  
-Value Override |  1  
-Visible in Game |  No  
-  6. Place an **Explosive** device. 
+Option  |  Value
+---|---
+Comparison Value |  3
+Value Override Type |  Add
+Value Override |  1
+Visible in Game |  No
+  6. Place an **Explosive** device.
   7. Configure the device to set **Player Damage** to **0** :
 [![](https://dev.epicgames.com/community/api/documentation/image/02b93d76-abd0-4315-ac05-45e0f953c0dd?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/02b93d76-abd0-4315-ac05-45e0f953c0dd?resizing_type=fit)
-  8. Configure the following **events** on the **Explosion** device so that it adds one to the **Explosions Triggered** stat when it explodes. 
-
+  8. Configure the following **events** on the **Explosion** device so that it adds one to the **Explosions Triggered** stat when it explodes.
 
 You now have the basic functionality for a custom stat!
-###  Design Tip 
+###  Design Tip
 The combination of **Stat Creator** and **Stat Counter** devices is great for creating, changing, and tracking a stat. In this example, it would be easy to add another device and trigger it when the player successfully triggers three explosions.
-##  Build a Parkour Skill Mechanic 
+##  Build a Parkour Skill Mechanic
 The **Stat Creator** can be configured to have different levels of a statistic, allowing you to create your own custom gameplay skills! You’ll use this to set up a **parkour skill** stat that gives players an upgrade when they level up!
-###  Devices Used 
+###  Devices Used
   * 1 x Stat Creator device
   * 1 x Player Spawner device
   * 1 x [Stat Counter](https://dev.epicgames.com/documentation/en-us/fortnite/using-stat-counter-devices-in-fortnite-creative) device
   * 2 x [Trigger ](https://dev.epicgames.com/documentation/en-us/fortnite/using-trigger-devices-in-fortnite-creative)devices
   * 1 x [Movement Modifier](https://dev.epicgames.com/documentation/en-us/fortnite/movement-modifier) device
 
-
-###  Set Up the Gameplay 
+###  Set Up the Gameplay
   1. Place the **Slick Pegs** , **Peg and Rails** , and **Ice Rails** prefabs, one after the other.
   2. Place a **Player Spawner** device at the beginning of the Slick Pegs parkour prefab.
   3. Place a **Stat Creator** device and customize:
 [![](https://dev.epicgames.com/community/api/documentation/image/541e3f81-7264-4d8f-8861-a91e511071ea?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/541e3f81-7264-4d8f-8861-a91e511071ea?resizing_type=fit)
-Option  |  Value   
----|---  
-Stat Name |  Parkour Skill  
-Max Value |  2  
-Max Level |  2  
-Stat Icon |  Running  
+Option  |  Value
+---|---
+Stat Name |  Parkour Skill
+Max Value |  2
+Max Level |  2
+Stat Icon |  Running
   4. Place a **Stat Counter** device and customize:
 [![](https://dev.epicgames.com/community/api/documentation/image/d5d24a7c-1e3a-45b4-9c14-8e2dd6c4cc8d?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/d5d24a7c-1e3a-45b4-9c14-8e2dd6c4cc8d?resizing_type=fit)
-Option  |  Value   
----|---  
-Tracked Stat |  Parkour Skill  
-Value Override Type |  Add  
-Value Override |  1  
-Visible in Game |  No  
+Option  |  Value
+---|---
+Tracked Stat |  Parkour Skill
+Value Override Type |  Add
+Value Override |  1
+Visible in Game |  No
   5. Place a **Movement Modifier** device and customize:
 [![](https://dev.epicgames.com/community/api/documentation/image/ae3bd0ff-b425-478e-ab82-66cc8f2309dd?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/ae3bd0ff-b425-478e-ab82-66cc8f2309dd?resizing_type=fit)
-Option  |  Value   
----|---  
-Speed |  2.0  
-Infinite Duration |  True  
-Visible During Game |  No  
-Pad Has Collision |  Off  
+Option  |  Value
+---|---
+Speed |  2.0
+Infinite Duration |  True
+Visible During Game |  No
+Pad Has Collision |  Off
   6. Place a large **Trigger** device at the end of the first parkour segment, as shown:
 [![](https://dev.epicgames.com/community/api/documentation/image/796e3557-787c-49da-b14c-dc0de2329a50?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/796e3557-787c-49da-b14c-dc0de2329a50?resizing_type=fit)
   7. Customize the **Trigger** :
 [![](https://dev.epicgames.com/community/api/documentation/image/0ed37a9b-849b-46a9-9fa2-a01c839481bb?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/0ed37a9b-849b-46a9-9fa2-a01c839481bb?resizing_type=fit)
 Value
-Option  |  Value   
----|---  
-Visible In Game |  Off  
-Times Can Trigger |  1  
-Visible During Game |  No  
-Pad Has Collision |  Off  
+Option  |  Value
+---|---
+Visible In Game |  Off
+Times Can Trigger |  1
+Visible During Game |  No
+Pad Has Collision |  Off
   8. Configure the following event on the trigger so that it increases the **Parkour Skill** value when the player reaches it:
 [![](https://dev.epicgames.com/community/api/documentation/image/dd3e5a2f-3213-4d22-9074-fc0079b69684?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/dd3e5a2f-3213-4d22-9074-fc0079b69684?resizing_type=fit)
-Event  |  Select Device  |  Select Function   
----|---|---  
-On Triggered |  Stat Counter |  Override Value  
+Event  |  Select Device  |  Select Function
+---|---|---
+On Triggered |  Stat Counter |  Override Value
   9. Duplicate this trigger and place the copy on the end of the second parkour section.
-  10. Configure the following event on the **Stat Creator** device so that it gives the player a movement upgrade when they level up. 
+  10. Configure the following event on the **Stat Creator** device so that it gives the player a movement upgrade when they level up.
 
-
-###  Modify Island Settings 
+###  Modify Island Settings
 Make the following modifications to the island settings.
   1. Go to **Island Settings > Player**.
   2. Under **Locomotion** , change **Allow Manting** to **Off.**
 [![](https://dev.epicgames.com/community/api/documentation/image/f164bed8-3b6d-4f36-a5b1-610bf5ac6e46?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/f164bed8-3b6d-4f36-a5b1-610bf5ac6e46?resizing_type=fit)
 
-
 You now have the basic functionality for a parkour skill leveling system!
-###  Design Tip 
-This example only uses one level, but you can easily add levels with other upgrades and rewards! 
+###  Design Tip
+This example only uses one level, but you can easily add levels with other upgrades and rewards!
 A skill system like this is a great way to give incentives for players to complete certain tasks a number of times, so get creative with which skills you want to track!
-##  Build a Target Level Minigame 
-The **Stat Creator** can track levels that raise and lower based on different gameplay triggers, allowing for multiple types of stat tracking! 
+##  Build a Target Level Minigame
+The **Stat Creator** can track levels that raise and lower based on different gameplay triggers, allowing for multiple types of stat tracking!
 In this example, you’ll create a system that tracks the player’s “wanted level” based on their actions in-game, and spawns enemies to match!
-###  Devices Used 
+###  Devices Used
   * 1 x Stat Creator device
   * 1 x Player Spawner device
   * 1 x Item Granter device
@@ -236,150 +115,146 @@ In this example, you’ll create a system that tracks the player’s “wanted l
   * 3 x [Button ](https://dev.epicgames.com/documentation/en-us/fortnite/using-button-devices-in-fortnite-creative)devices
   * 3 x [Stat Counter](https://dev.epicgames.com/documentation/en-us/fortnite/using-stat-counter-devices-in-fortnite-creative) devices
 
-
-###  Set Up the Player 
+###  Set Up the Player
   1. Begin with the **Greasy Grove POI Island** starter island.
   2. Place a **Player Spawner** device and customize so the spawner is not visible in-game:
 [![](https://dev.epicgames.com/community/api/documentation/image/36a20d8a-b344-4c47-93d5-9f8a430569d0?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/36a20d8a-b344-4c47-93d5-9f8a430569d0?resizing_type=fit)
   3. Place an **Item Granter** device and register a Legendary **Tactical Assault Rifle** to the device.
   4. Customize the **Item Granter** device:
 [![](https://dev.epicgames.com/community/api/documentation/image/9afafc66-6812-422f-9e70-880033e52d58?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/9afafc66-6812-422f-9e70-880033e52d58?resizing_type=fit)
-Option  |  Value   
----|---  
-Receiving Players |  All  
-Spare Weapon Ammo |  999  
-Grant on Game Start |  On  
+Option  |  Value
+---|---
+Receiving Players |  All
+Spare Weapon Ammo |  999
+Grant on Game Start |  On
 
-
-###  Configure the Basic Target Stat 
+###  Configure the Basic Target Stat
   1. Place a **Stat Creator** device and customize:
 [![](https://dev.epicgames.com/community/api/documentation/image/b08ef58c-774b-4518-af13-5f7ab50c08db?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/b08ef58c-774b-4518-af13-5f7ab50c08db?resizing_type=fit)
 [![](https://dev.epicgames.com/community/api/documentation/image/920f0e2d-c5bd-48e7-8e68-90a5385c49f0?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/920f0e2d-c5bd-48e7-8e68-90a5385c49f0?resizing_type=fit)
-Option  |  Value   
----|---  
-Stat Name |  Target  
-Max Value |  500  
-Max Level |  3  
-Per Level Points Multiplier |  1.5X  
-Can Lose Level from Point Loss |  Yes  
-Stat Color |  #FF0100  
-Stat Icon |  Exclamation  
+Option  |  Value
+---|---
+Stat Name |  Target
+Max Value |  500
+Max Level |  3
+Per Level Points Multiplier |  1.5X
+Can Lose Level from Point Loss |  Yes
+Stat Color |  #FF0100
+Stat Icon |  Exclamation
   2. Place a **Stat Powerup** device in a place that the player can’t reach. This powerup will raise the player’s **Target Stat** when they eliminate a guard.
   3. Customize the powerup:
 [![](https://dev.epicgames.com/community/api/documentation/image/b9cc79c0-73b3-44c8-abd0-1056d18b3671?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/b9cc79c0-73b3-44c8-abd0-1056d18b3671?resizing_type=fit)
 [![](https://dev.epicgames.com/community/api/documentation/image/01ba3aac-1c8b-4ba4-a8b9-264086907a68?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/01ba3aac-1c8b-4ba4-a8b9-264086907a68?resizing_type=fit)
-Option  |  Value   
----|---  
-Stat to Apply |  Target  
-Magnitude |  100  
-Effect Duration |  Instant  
-Time to Respawn |  Instant  
-Ambient Audio |  Off  
-Pick Up Audio |  Off  
-Who Can See This Powerup |  None  
+Option  |  Value
+---|---
+Stat to Apply |  Target
+Magnitude |  100
+Effect Duration |  Instant
+Time to Respawn |  Instant
+Ambient Audio |  Off
+Pick Up Audio |  Off
+Who Can See This Powerup |  None
   4. Duplicate this device and rename it to **Decrease Target Stat Powerup**. Change its **Magnitude** setting to **-250**. This will decrease the player’s **Target Stat** when they call off the guards.
   5. Place a **Guard Spawner** device that will spawn guards when the player has a **Target Level** of at least**1** (which will be always), then customize it:
 [![](https://dev.epicgames.com/community/api/documentation/image/e8ea580e-492a-43c1-bcbb-ca65b8671b9e?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/e8ea580e-492a-43c1-bcbb-ca65b8671b9e?resizing_type=fit)
-Option  |  Value   
----|---  
-Spawn Count |  2  
-Guard Team Option |  Team Wildlife & Creatures  
-Spawn Radius |  25M  
-Max Patrol Distance |  25.0M  
-Drop Inventory on Elimination |  No  
+Option  |  Value
+---|---
+Spawn Count |  2
+Guard Team Option |  Team Wildlife & Creatures
+Spawn Radius |  25M
+Max Patrol Distance |  25.0M
+Drop Inventory on Elimination |  No
   6. Configure the following event on the Guard Spawner device to increase the player’s Target Stat when a guard is eliminated.
 [![](https://dev.epicgames.com/community/api/documentation/image/02e67977-0374-4f32-97e1-f9dbbba28d79?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/02e67977-0374-4f32-97e1-f9dbbba28d79?resizing_type=fit)
-Event  |  Select Device  |  Select Function   
----|---|---  
-On Eliminated |  Increase Target Stat Powerup |  Pickup  
+Event  |  Select Device  |  Select Function
+---|---|---
+On Eliminated |  Increase Target Stat Powerup |  Pickup
   7. Duplicate the Guard Spawner device and place it next to the previous guard spawner. It will spawn guards when the player has a Target Level of at least 2.
   8. Customize the new Guard Spawner device:
 [![](https://dev.epicgames.com/community/api/documentation/image/e4752b56-a310-41e1-bfb2-179f4008834f?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/e4752b56-a310-41e1-bfb2-179f4008834f?resizing_type=fit)
 [![](https://dev.epicgames.com/community/api/documentation/image/bfc9c796-e3e2-4b9e-aaae-6cf10ae1e941?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/bfc9c796-e3e2-4b9e-aaae-6cf10ae1e941?resizing_type=fit)
-Option  |  Value   
----|---  
-Guard Type |  Ghost  
-Spawn Count |  3  
-Guard Team Option |  Team Wildlife & Creatures  
-Spawn Radius |  25M  
-Enabled at Game Start |  Disabled  
-Max Patrol Distance |  25.0M  
-Drop Inventory on Elimination |  No  
+Option  |  Value
+---|---
+Guard Type |  Ghost
+Spawn Count |  3
+Guard Team Option |  Team Wildlife & Creatures
+Spawn Radius |  25M
+Enabled at Game Start |  Disabled
+Max Patrol Distance |  25.0M
+Drop Inventory on Elimination |  No
   9. Duplicate the guard spawner one more time and place it next to the other two. It will spawn guards when the player has a Target Level of 3.
   10. Customize the third guard spawner:
 [![](https://dev.epicgames.com/community/api/documentation/image/6f91b693-70b4-4534-bf33-ad30e20b3521?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/6f91b693-70b4-4534-bf33-ad30e20b3521?resizing_type=fit)
-Option  |  Value   
----|---  
-Guard Type |  Grotto  
-Guard Team Option |  Team Wildlife & Creatures  
-Spawn Radius |  25M  
-Enabled at Game Start |  Disabled  
-Max Patrol Distance |  25.0M  
-Drop Inventory on Elimination |  No  
+Option  |  Value
+---|---
+Guard Type |  Grotto
+Guard Team Option |  Team Wildlife & Creatures
+Spawn Radius |  25M
+Enabled at Game Start |  Disabled
+Max Patrol Distance |  25.0M
+Drop Inventory on Elimination |  No
   11. Place a **Button** device inside a nearby house.
   12. Customize the button:
 [![](https://dev.epicgames.com/community/api/documentation/image/894699a8-5334-4685-9c6c-8b7d25225c31?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/894699a8-5334-4685-9c6c-8b7d25225c31?resizing_type=fit)
-Option  |  Value   
----|---  
-Interact Time |  1.0 Second  
-Reset Delay |  10 Seconds  
-Interaction Text |  Call them off!  
+Option  |  Value
+---|---
+Interact Time |  1.0 Second
+Reset Delay |  10 Seconds
+Interaction Text |  Call them off!
   13. Configure the following event on the button to decrease the player’s Target Stat when they call off the guards by interacting with the button.
 [![](https://dev.epicgames.com/community/api/documentation/image/23a9803c-2b3c-4385-af24-dee0d298e164?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/23a9803c-2b3c-4385-af24-dee0d298e164?resizing_type=fit)
-Event  |  Select Device  |  Select Function   
----|---|---  
-On Interact |  Decrease Target Stat Powerup |  Pickup  
+Event  |  Select Device  |  Select Function
+---|---|---
+On Interact |  Decrease Target Stat Powerup |  Pickup
 
-
-###  Configure the Leveling System 
+###  Configure the Leveling System
   1. Place a **Stat Counter** device and customize:
 [![](https://dev.epicgames.com/community/api/documentation/image/d2b47888-e1c2-45f8-9089-698489d69dac?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/d2b47888-e1c2-45f8-9089-698489d69dac?resizing_type=fit)
-Option  |  Value   
----|---  
-Tracked Stat |  Target (Level)  
-Compare Type |  Equal To  
-Broadcast Events On Stat Change |  On  
-Visible in Game |  No  
+Option  |  Value
+---|---
+Tracked Stat |  Target (Level)
+Compare Type |  Equal To
+Broadcast Events On Stat Change |  On
+Visible in Game |  No
   2. Configure the following event on the stat counter to disable the Level 2 Guard Spawner when the player’s level changes to Level 1.
 [![](https://dev.epicgames.com/community/api/documentation/image/5c2aec4c-d365-4a06-8c25-93e2cd4c4c47?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/5c2aec4c-d365-4a06-8c25-93e2cd4c4c47?resizing_type=fit)
-Event  |  Select Device  |  Select Function   
----|---|---  
-On Compare Success |  Level 2 Guard Spawner |  Disable  
+Event  |  Select Device  |  Select Function
+---|---|---
+On Compare Success |  Level 2 Guard Spawner |  Disable
   3. Place another **Stat Counter** device and customize:
 [![](https://dev.epicgames.com/community/api/documentation/image/1602890d-c235-4e96-81e6-fdedb7300ca9?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/1602890d-c235-4e96-81e6-fdedb7300ca9?resizing_type=fit)
-Option  |  Value   
----|---  
-Tracked Stat |  Target (Level)  
-Compare Type |  Equal To  
-Comparison Value |  2  
-Broadcast Events On Stat Change |  On  
-Visible in Game |  No  
-  4. Configure the following event to disable the **Level 3 Guard Spawner** and enable the **Level 2 Guard Spawner** when the player’s level changes to Level 2. 
+Option  |  Value
+---|---
+Tracked Stat |  Target (Level)
+Compare Type |  Equal To
+Comparison Value |  2
+Broadcast Events On Stat Change |  On
+Visible in Game |  No
+  4. Configure the following event to disable the **Level 3 Guard Spawner** and enable the **Level 2 Guard Spawner** when the player’s level changes to Level 2.
 You must call events on both of these spawners because you don't know whether the player will be leveling up to Level 2 from Level 1 or down from Level 3.
 [![](https://dev.epicgames.com/community/api/documentation/image/d0747069-8b33-4e11-be83-07911d092b3b?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/d0747069-8b33-4e11-be83-07911d092b3b?resizing_type=fit)
-Event  |  Select Device  |  Select Function   
----|---|---  
-On Compare Success |  Level 2 Guard Spawner |  Enable  
-On Compare Success |  Level 3 Guard Spawner |  Disable  
+Event  |  Select Device  |  Select Function
+---|---|---
+On Compare Success |  Level 2 Guard Spawner |  Enable
+On Compare Success |  Level 3 Guard Spawner |  Disable
   5. Place one more **Stat Counter** device and customize:
 [![](https://dev.epicgames.com/community/api/documentation/image/7f688287-4992-444f-8333-f6692b6b07c2?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/7f688287-4992-444f-8333-f6692b6b07c2?resizing_type=fit)
-Option  |  Value   
----|---  
-Tracked Stat |  Target (Level)  
-Compare Type |  Equal To  
-Comparison Value |  3  
-Broadcast Events On Stat Change |  On  
-Visible in Game |  No  
+Option  |  Value
+---|---
+Tracked Stat |  Target (Level)
+Compare Type |  Equal To
+Comparison Value |  3
+Broadcast Events On Stat Change |  On
+Visible in Game |  No
   6. Configure the following event to enable the **Level 3 Guard Spawner** when the player’s level changes to Level 3.
 [![](https://dev.epicgames.com/community/api/documentation/image/a708bf82-3123-4e62-a9be-fd6532d79510?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/a708bf82-3123-4e62-a9be-fd6532d79510?resizing_type=fit)
-Event  |  Select Device  |  Select Function   
----|---|---  
-On Compare Success |  Level 3 Guard Spawner |  Enable  
+Event  |  Select Device  |  Select Function
+---|---|---
+On Compare Success |  Level 3 Guard Spawner |  Enable
   7. Duplicate the cluster of three guard spawners and place the copies in a different area.
   8. Repeat the previous step.
 
-
-###  Modify Island Settings 
+###  Modify Island Settings
 Make the following modifications to the island settings.
   1. Go to **Island Settings > Player**.
   2. Under **Equipment** , change **Environment Damage** to **Off**.
@@ -388,43 +263,7 @@ Make the following modifications to the island settings.
   4. Under **Eliminations** , change **Eliminated Player’s Items** to **Keep**.
 [![](https://dev.epicgames.com/community/api/documentation/image/5f05779f-56d9-4812-9ec0-aac4fba996ac?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/5f05779f-56d9-4812-9ec0-aac4fba996ac?resizing_type=fit)
 
-
 You now have a working target system with the Stat Creator device!
-###  Design Tip 
-This is a classic system that can spruce up all kinds of open world games! 
+###  Design Tip
+This is a classic system that can spruce up all kinds of open world games!
 You can also use this with a multiplayer map — maybe the player with the most eliminations has a higher Target Level and gives other players more points for an elimination!
-
-
-  * [ game design](https://dev.epicgames.com/community/search?query=game%20design)
-  * [ stat creator](https://dev.epicgames.com/community/search?query=stat%20creator)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [ Set Up a Basic Custom Stat ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#setupabasiccustomstat)
-  * [ Devices Used ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#devicesused)
-  * [ Set Up the Devices ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#setupthedevices)
-  * [ Design Tip ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#designtip)
-  * [ Build a Parkour Skill Mechanic ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#buildaparkourskillmechanic)
-  * [ Devices Used ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#devicesused-2)
-  * [ Set Up the Gameplay ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#setupthegameplay)
-  * [ Modify Island Settings ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#modifyislandsettings)
-  * [ Design Tip ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#designtip-2)
-  * [ Build a Target Level Minigame ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#buildatargetlevelminigame)
-  * [ Devices Used ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#devicesused-3)
-  * [ Set Up the Player ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#setuptheplayer)
-  * [ Configure the Basic Target Stat ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#configurethebasictargetstat)
-  * [ Configure the Leveling System ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#configurethelevelingsystem)
-  * [ Modify Island Settings ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#modifyislandsettings-2)
-  * [ Design Tip ](https://dev.epicgames.com/documentation/en-us/fortnite/stat-creator-design-examples#designtip-3)
-
-
-Related documents
-[ Stat Creator Devices  ![Stat Creator Devices](https://dev.epicgames.com/community/api/documentation/image/c6344ada-1522-494a-b901-e082214448ba?resizing_type=fit&width=160&height=92) ](https://dev.epicgames.com/documentation/en-us/fortnite/using-stat-creator-devices-in-fortnite-creative)
-
-
-
-
----

@@ -1,105 +1,63 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/using-heavy-turret-devices-in-fortnite-creative
 
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. Heavy Turret Devices
-
-
 # Heavy Turret Devices
-Give players a weapon that can eliminate vehicles on the ground or in the sky! 
+Give players a weapon that can eliminate vehicles on the ground or in the sky!
 ![Heavy Turret Devices](https://dev.epicgames.com/community/api/documentation/image/3a9b9072-916d-4248-a898-2d6c16897582?resizing_type=fill&width=1920&height=335)
-On this page
 The **Heavy Turret** is a ground-based version of the turret on the Armored Battle Bus. You can place these devices around your island for players to use to eliminate vehicles, [NPCs](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary), or other players.
 For help on how to find the Heavy Turret device, see [Using Devices](https://dev.epicgames.com/documentation/en-us/fortnite/using-devices-in-fortnite).
 If you're using multiple copies of a device on an island, it can be helpful to [rename](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary) them. You can choose names that relate to each device's purpose, so it's easier to remember what each one does.
-##  Device Options 
+##  Device Options
 You can configure this device with the following options.
 Default values are **bold**.
-Option  |  Value  |  Description   
----|---|---  
-**Enabled During Phase** |  Always, None, Pre-Game Only, Gameplay Only  |  Determines the game [phases](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary) during which the device will be enabled. Pre-Game includes all phases prior to the Game starting (the waiting for players lobby on Featured Islands and the Game Start Countdown).  
-**Enable Respawn** |  On,  _Off_ |  Determines if the vehicle will respawn after being destroyed. If set to Off, the following option is hidden: Respawn Time.   
-**Respawn Time** |  Never, **Instant** , Pick an amount of time |  When the vehicle is destroyed, this determines the amount of time before another one spawns.  
+Option  |  Value  |  Description
+---|---|---
+**Enabled During Phase** |  Always, None, Pre-Game Only, Gameplay Only  |  Determines the game [phases](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-glossary) during which the device will be enabled. Pre-Game includes all phases prior to the Game starting (the waiting for players lobby on Featured Islands and the Game Start Countdown).
+**Enable Respawn** |  On,  _Off_ |  Determines if the vehicle will respawn after being destroyed. If set to Off, the following option is hidden: Respawn Time.
+**Respawn Time** |  Never, **Instant** , Pick an amount of time |  When the vehicle is destroyed, this determines the amount of time before another one spawns.
 **Respawn Vehicle When Enabled** |  **Yes** , No, Only When Needed |  Determines whether the device respawns a vehicle when it is enabled.
   * **Yes** : a vehicle spawns when the device is enabled.
   * **Only When Needed** : The device only spawns if the original was destroyed.
   * **No** : The device doesn't spawn a vehicle when it is enabled.
 
-  
 **Destroy Vehicle When Disabled** |  **Yes** , No |  Determines whether an existing vehicle is destroyed when the device is enabled.
   * **Yes** : An existing vehicle is destroyed when the device is disabled.
   * **No** : A spawned vehicle remains when the device is disabled.
 
-  
-Activating Team |  **Any** , Pick a team |  Determines which team owns the vehicle spawner.  
+Activating Team |  **Any** , Pick a team |  Determines which team owns the vehicle spawner.
 Allowed Class |  All, Any, No Class, Pick a class  |  Determines which classes can use the vehicle.
   * All: All players can use the vehicle, even those without an assigned class.
-  * Any: Any player who has an assigned class can use it. 
-  * No Class: Only players with no assigned class can use it. 
+  * Any: Any player who has an assigned class can use it.
+  * No Class: Only players with no assigned class can use it.
 
-  
-**Visible During Game** |  **On** , Off |  Determines whether the device is visible during the game. This affects its collision properties.  
-Vehicle Indestructible |  Off,  _On_ |  Determines if the vehicle can be destroyed by damage. If set to On, the following options becomes hidden: Vehicle Health.   
-**Vehicle Health** |  **400 (Default)** , Indestructible, Pick an amount of health |  Determines how much damage the vehicle can take before it is destroyed.  
-Destroy When Stuck Under Water |  On, Off  |  Determines if the vehicle will destroy itself when it’s stuck under water.  
-Water Destruction Timer |  Instant, **5 Seconds** , Pick an amount of time |  When the vehicle drives through deep water, this determines how long the vehicle lasts before being destroyed.  
-**Visible During Game** |  On, Off  |  Determines whether the spawner is visible during the game.  
-##  Direct Event Binding 
-###  Functions 
+**Visible During Game** |  **On** , Off |  Determines whether the device is visible during the game. This affects its collision properties.
+Vehicle Indestructible |  Off,  _On_ |  Determines if the vehicle can be destroyed by damage. If set to On, the following options becomes hidden: Vehicle Health.
+**Vehicle Health** |  **400 (Default)** , Indestructible, Pick an amount of health |  Determines how much damage the vehicle can take before it is destroyed.
+Destroy When Stuck Under Water |  On, Off  |  Determines if the vehicle will destroy itself when it’s stuck under water.
+Water Destruction Timer |  Instant, **5 Seconds** , Pick an amount of time |  When the vehicle drives through deep water, this determines how long the vehicle lasts before being destroyed.
+**Visible During Game** |  On, Off  |  Determines whether the spawner is visible during the game.
+##  Direct Event Binding
+###  Functions
 A function listens for an event on a device then performs an action.
   1. For any function, click the option, then Select Device to access and select from the Device dropdown menu.
   2. Once you've selected a device, click Select Event to bind the device to an event that will trigger the function for the device.
   3. If more than one device or event triggers a function, click the Add button to add a line and repeat these steps
 
-
-Option  |  Description   
----|---  
-**Enable When Receiving From** |  Enables the device when an event occurs.  
-**Disable When Receiving From** |  Disables the device when an event occurs.  
-**Respawn Vehicle When Receiving From** |  Respawns the vehicle when an event occurs.  
-**Destroy Vehicle When Receiving From** |  Destroys the vehicle when an event occurs.  
-**Assigns Driver When Receiving From** |  Seats the instigating player in the vehicle when an event occurs.  
-###  Events 
+Option  |  Description
+---|---
+**Enable When Receiving From** |  Enables the device when an event occurs.
+**Disable When Receiving From** |  Disables the device when an event occurs.
+**Respawn Vehicle When Receiving From** |  Respawns the vehicle when an event occurs.
+**Destroy Vehicle When Receiving From** |  Destroys the vehicle when an event occurs.
+**Assigns Driver When Receiving From** |  Seats the instigating player in the vehicle when an event occurs.
+###  Events
 An event tells another device when to perform a function.
   1. For any function, click the option, then Select Device to access and select from the Device dropdown menu.
   2. Once you've selected a device, click Select Function to bind this event to a function for that device.
   3. If more than one function is triggered by the event, click the Add button to add a line and repeat these steps.
 
-
-Option  |  Description   
----|---  
-**On Player Enters Vehicle Send Event To** |  When a player enters the vehicle, an event is sent to the selected device.  
-**On Player Exits Vehicle Send Event To** |  When a player exits the vehicle an event is sent to the selected device.  
-**On Vehicle Spawns Send Event To** |  When the vehicle is spawned an event is sent to the selected device.  
-**On Vehicle is Destroyed Send Event To** |  When the vehicle is destroyed an event is sent to the selected device.  
-  * [ device](https://dev.epicgames.com/community/search?query=device)
-  * [ vehicle](https://dev.epicgames.com/community/search?query=vehicle)
-  * [ turret](https://dev.epicgames.com/community/search?query=turret)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [ Device Options ](https://dev.epicgames.com/documentation/en-us/fortnite/using-heavy-turret-devices-in-fortnite-creative#device-options)
-  * [ Direct Event Binding ](https://dev.epicgames.com/documentation/en-us/fortnite/using-heavy-turret-devices-in-fortnite-creative#channels)
-  * [ Functions ](https://dev.epicgames.com/documentation/en-us/fortnite/using-heavy-turret-devices-in-fortnite-creative#functions)
-  * [ Events ](https://dev.epicgames.com/documentation/en-us/fortnite/using-heavy-turret-devices-in-fortnite-creative#events)
-
-
-
-
-
-
----
+Option  |  Description
+---|---
+**On Player Enters Vehicle Send Event To** |  When a player enters the vehicle, an event is sent to the selected device.
+**On Player Exits Vehicle Send Event To** |  When a player exits the vehicle an event is sent to the selected device.
+**On Vehicle Spawns Send Event To** |  When the vehicle is spawned an event is sent to the selected device.
+**On Vehicle is Destroyed Send Event To** |  When the vehicle is destroyed an event is sent to the selected device.

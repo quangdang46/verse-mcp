@@ -1,113 +1,36 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite
 
-  * [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation)
-    * [What's New in Unreal Editor for Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/whats-new-in-unreal-editor-for-fortnite)
-    * [Discover the Resources Waiting for You as a Fortnite Developer!](https://dev.epicgames.com/documentation/en-us/fortnite/discover-the-resources-waiting-for-you-as-a-fortnite-creator)
-    * [Get Started Creating in Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/get-started-creating-in-fortnite)
-    * [Island Settings](https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-uefn-and-fortnite-creative)
-    * [Editor User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/getting-to-know-the-user-interface-in-unreal-editor-for-fortnite)
-    * [Creative User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/creative-user-interface-for-fortnite-creative)
-    * [Import Content and Islands](https://dev.epicgames.com/documentation/en-us/fortnite/import-content-and-islands-in-unreal-editor-for-fortnite)
-    * [Building Basics](https://dev.epicgames.com/documentation/en-us/fortnite/building-basics-in-fortnite-creative)
-    * [Editor Best Practices](https://dev.epicgames.com/documentation/en-us/fortnite/editor-best-practices-in-unreal-editor-for-fortnite)
-    * [Programming with Verse](https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite)
-    * [Mobile Development](https://dev.epicgames.com/documentation/en-us/fortnite/mobile-development-in-fortnite)
-    * [UEFN Starter Templates](https://dev.epicgames.com/documentation/en-us/fortnite/unreal-editor-for-fortnite-starter-templates)
-    * [Game Collections](https://dev.epicgames.com/documentation/en-us/fortnite/game-collections-in-fortnite)
-    * [Template Islands](https://dev.epicgames.com/documentation/en-us/fortnite/template-islands-in-fortnite-creative)
-    * [Build a Game](https://dev.epicgames.com/documentation/en-us/fortnite/build-a-game-in-unreal-editor-for-fortnite)
-    * [Learn Game Mechanics](https://dev.epicgames.com/documentation/en-us/fortnite/learn-game-mechanics-in-unreal-editor-for-fortnite)
-    * [Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/device-design-examples-in-fortnite-creative)
-    * [Scene Graph](https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite)
-    * [AI and NPCs](https://dev.epicgames.com/documentation/en-us/fortnite/ai-and-npcs-in-unreal-editor-for-fortnite)
-    * [Animation and Cinematics](https://dev.epicgames.com/documentation/en-us/fortnite/animation-and-cinematics-in-unreal-editor-for-fortnite)
-    * [Using Devices](https://dev.epicgames.com/documentation/en-us/fortnite/using-devices-in-fortnite)
-    * [Using Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-items-in-fortnite-creative)
-    * [Fortnite Weapons Primer](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-weapons-primer)
-    * [In-Game User Interfaces](https://dev.epicgames.com/documentation/en-us/fortnite/ingame-user-interfaces-in-unreal-editor-for-fortnite)
-    * [Physics](https://dev.epicgames.com/documentation/en-us/fortnite/physics)
-    * [Environments and Landscapes](https://dev.epicgames.com/documentation/en-us/fortnite/environments-and-landscapes-in-unreal-editor-for-fortnite)
-    * [Memory and Optimization](https://dev.epicgames.com/documentation/en-us/fortnite/memory-and-optimization-in-unreal-editor-for-fortnite)
-    * [Realistic Assets, Characters, and Environments](https://dev.epicgames.com/documentation/en-us/fortnite/realistic-assets-characters-and-environments-in-unreal-editor-for-fortnite)
-      * [Talisman Environment Template](https://dev.epicgames.com/documentation/en-us/fortnite/talisman-environment-template-in-unreal-editor-for-fortnite)
-      * [Talisman Art Asset Gallery](https://dev.epicgames.com/documentation/en-us/fortnite/talisman-art-asset-gallery-in-unreal-editor-for-fortnite)
-      * [MetaHuman Overview](https://dev.epicgames.com/documentation/en-us/fortnite/metahuman-overview-in-unreal-editor-for-fortnite)
-      * [Talisman MetaHuman Template](https://dev.epicgames.com/documentation/en-us/fortnite/talisman-metahuman-template-in-unreal-editor-for-fortnite)
-      * [Importing MetaHuman Animations](https://dev.epicgames.com/documentation/en-us/fortnite/importing-metahuman-animations-in-unreal-editor-for-fortnite)
-      * Making a Sweater with Marvelous Designer
-      * [Creating Clothing Assets for UEFN using Unreal Engine](https://dev.epicgames.com/documentation/en-us/fortnite/creating-clothing-assets-for-unreal-editor-for-fortnite-using-unreal-engine)
-    * [Using Prefabs and Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative)
-    * [Audio](https://dev.epicgames.com/documentation/en-us/fortnite/audio-in-unreal-editor-for-fortnite)
-    * [Composing with Fortnite Patchwork](https://dev.epicgames.com/documentation/en-us/fortnite/composing-with-patchwork-in-fortnite-creative)
-    * [Lighting](https://dev.epicgames.com/documentation/en-us/fortnite/lighting-in-unreal-editor-for-fortnite)
-    * [Materials](https://dev.epicgames.com/documentation/en-us/fortnite/materials-in-unreal-editor-for-fortnite)
-    * [Modeling](https://dev.epicgames.com/documentation/en-us/fortnite/modeling-in-unreal-editor-for-fortnite)
-    * [Intro to Post-Processing](https://dev.epicgames.com/documentation/en-us/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite)
-    * [Visual Effects](https://dev.epicgames.com/documentation/en-us/fortnite/visual-effects-in-unreal-editor-for-fortnite)
-    * [In-Island Transactions](https://dev.epicgames.com/documentation/en-us/fortnite/in-island-transactions-in-fortnite)
-    * [Campaigns](https://dev.epicgames.com/documentation/en-us/fortnite/campaigns-in-fortnite)
-    * [Using Creator Portal](https://dev.epicgames.com/documentation/en-us/fortnite/using-creator-portal-in-fortnite-creative)
-    * [Collaborate and Publish](https://dev.epicgames.com/documentation/en-us/fortnite/collaborate-and-publish-in-unreal-editor-for-fortnite)
-    * [Island Moderation and Guidelines](https://dev.epicgames.com/documentation/en-us/fortnite/island-moderation-and-guidelines-in-fortnite-creative)
-    * [Promoting Your Fortnite Island](https://dev.epicgames.com/documentation/en-us/fortnite/promoting-your-fortnite-creative-island)
-    * [Community Building](https://dev.epicgames.com/documentation/en-us/fortnite/community-building-in-fortnite)
-    * [Education](https://dev.epicgames.com/documentation/en-us/fortnite/education-in-fortnite-creative)
-    * [Verse Language Reference: Book of Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-book-of-verse-reference)
-    * [Video Tutorials](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-video-tutorials)
-    * [Fortnite Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-glossary)
-    * [Verse Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary)
-    * [Verse API Reference](https://dev.epicgames.com/documentation/en-us/fortnite/verse-api)
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation "Fortnite Documentation")
-  5. [Realistic Assets, Characters, and Environments](https://dev.epicgames.com/documentation/en-us/fortnite/realistic-assets-characters-and-environments-in-unreal-editor-for-fortnite "Realistic Assets, Characters, and Environments")
-  6. Making a Sweater with Marvelous Designer
-
-
 # Making a Sweater with Marvelous Designer
-Make a custom sweater for a MetaHuman using Marvelous Designer. 
+Make a custom sweater for a MetaHuman using Marvelous Designer.
 ![Making a Sweater with Marvelous Designer](https://dev.epicgames.com/community/api/documentation/image/f32d26f5-50bf-4261-aaa9-37839bee9992?resizing_type=fill&width=1920&height=335)
-On this page
 This tutorial walks you through creating a custom garment for imported MetaHumans in Marvelous Designer.
 You're going to create a crewneck sweatshirt from a sample garment provided in Marvelous. Then, you'll craft your sweatshirt by editing each pattern, such as the sleeves and collars.
 At the end of this tutorial, you should have a customized crewneck sweatshirt file that you can import into Unreal Engine (UE) to create a cloth asset.
 [![Marvelous Sweater](https://dev.epicgames.com/community/api/documentation/image/76f7f7a3-0f28-403c-b55b-b03686549f15?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/76f7f7a3-0f28-403c-b55b-b03686549f15?resizing_type=fit)
-##  Add a Custom MetaHuman 
+##  Add a Custom MetaHuman
 To import a MetaHuman into Marvelous Designer, follow these steps:
   1. Navigate to **File** > **Add** > **Avatar** to import a custom MetaHuman.
 [![Importing Avatar](https://dev.epicgames.com/community/api/documentation/image/ae766a20-35e4-4a1b-8ed9-251c7afda8b5?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/ae766a20-35e4-4a1b-8ed9-251c7afda8b5?resizing_type=fit)
   2. Import and load a MetaHuman with the following settings.
 [![Import Settings](https://dev.epicgames.com/community/api/documentation/image/81e53bfc-c3ef-4d4c-b7f7-56130d123c4d?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/81e53bfc-c3ef-4d4c-b7f7-56130d123c4d?resizing_type=fit)
-Option  |  Value   
----|---  
-**Load Type** |  Open  
-**Object Type** |  Avatar  
-**Auto Create Fitting Suit** |  True  
-**Camera** |  False  
-**Joint Animation** |  False  
-**Cache Animation (MC)** |  False  
-**Automatically Add Arrangement Points** |  True  
-**Scale** |  cm (DAZ Studio)  
-**%** |  100.00%  
-**Axis Conversion** |  X, Y (Up), Z  
-**Align Bottom to Ground** |  False  
-**Move Garment to Start Position** |  False  
+Option  |  Value
+---|---
+**Load Type** |  Open
+**Object Type** |  Avatar
+**Auto Create Fitting Suit** |  True
+**Camera** |  False
+**Joint Animation** |  False
+**Cache Animation (MC)** |  False
+**Automatically Add Arrangement Points** |  True
+**Scale** |  cm (DAZ Studio)
+**%** |  100.00%
+**Axis Conversion** |  X, Y (Up), Z
+**Align Bottom to Ground** |  False
+**Move Garment to Start Position** |  False
   3. Click on any part of the MetaHuman. Then, in the **Property Editor** , navigate to **Smooth Avatar** , and check the box for the **Smooth** option.
 [![Smooth Avatar](https://dev.epicgames.com/community/api/documentation/image/9ca01427-fd58-44dc-8b6a-a19423949daa?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/9ca01427-fd58-44dc-8b6a-a19423949daa?resizing_type=fit)
 
-
-##  Use a Garment as a Starting Point 
+##  Use a Garment as a Starting Point
 To create a crewneck sweatshirt using a T-shirt as a starting point, follow these steps:
   1. In the **Library** , select **Garment** , and drag "Tshirt.zpac" into the **3D** window.
 [![Library Garment](https://dev.epicgames.com/community/api/documentation/image/a84dad71-3a64-4fc6-bccf-ff4b756c9f13?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/a84dad71-3a64-4fc6-bccf-ff4b756c9f13?resizing_type=fit)
@@ -118,8 +41,7 @@ To create a crewneck sweatshirt using a T-shirt as a starting point, follow thes
   4. The garment should now be simulated for you to unfold and sew your garment into patterns.
 [![Garment](https://dev.epicgames.com/community/api/documentation/image/7e1aff41-0105-4db4-8086-bd9709892110?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/7e1aff41-0105-4db4-8086-bd9709892110?resizing_type=fit)
 
-
-##  Unfold Symmetric Editing 
+##  Unfold Symmetric Editing
 To unfold and then sew the garment patterns together to create your sweatshirt, follow these steps;
   1. In the **2D Pattern** window, right-click on the body pattern, then select **Remove Linked Editing**.
 [![Remove Linked Editing](https://dev.epicgames.com/community/api/documentation/image/2f21b9a8-3c6d-4375-81a4-8bcd483daba9?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/2f21b9a8-3c6d-4375-81a4-8bcd483daba9?resizing_type=fit)
@@ -140,19 +62,17 @@ To unfold and then sew the garment patterns together to create your sweatshirt, 
 [![Twisted Segments](https://dev.epicgames.com/community/api/documentation/image/dd731a0b-3264-4fbd-ba93-8ba8feb3daf2?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/dd731a0b-3264-4fbd-ba93-8ba8feb3daf2?resizing_type=fit)
   10. Click the **Simulation** button to apply your changes.
 
-
-##  Extend the Sleeves 
+##  Extend the Sleeves
 To extend your pattern's sleeves:
   1. In the **2D Pattern** window, click **Edit Pattern**. Then, select the segments on the end of the sleeves.
 [![Extend Sleeves](https://dev.epicgames.com/community/api/documentation/image/96ae30c7-0a79-461e-a4dc-af546213428c?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/96ae30c7-0a79-461e-a4dc-af546213428c?resizing_type=fit)
   2. Drag the sleeves to a desired length. Then, click the **Simulation** button.
 
-
 If you notice the garment incorrectly colliding with the avatar, use the **Select/Move** tool while simulating to adjust the pattern by clicking and dragging it.
 [![Sleeve Adjustment](https://dev.epicgames.com/community/api/documentation/image/737c1d49-e07e-4807-a520-c044ba81b8d5?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/737c1d49-e07e-4807-a520-c044ba81b8d5?resizing_type=fit)
 [![Finished Sleeve](https://dev.epicgames.com/community/api/documentation/image/d387d63e-6c62-4245-8618-135e467f2fac?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/d387d63e-6c62-4245-8618-135e467f2fac?resizing_type=fit)
 Your garment's sleeve should now be at your desired length.
-##  Adjust the Garment's Shape 
+##  Adjust the Garment's Shape
 To edit the garment's shape, follow these steps:
   1. Using the **Edit Pattern** tool, make the garment's neckline tighter by moving points along the neckline.
 ![Before](https://dev.epicgames.com/community/api/documentation/image/4bf37968-0cb6-42a3-bca5-cb15ea80fddf?resizing_type=fit&width=1920&height=1080)
@@ -161,7 +81,7 @@ Before
 After
   2. In the **2D Pattern** window, click the **Sewing** icon. Then, select **Check Sewing Length**.
 [![Check Sewing Length](https://dev.epicgames.com/community/api/documentation/image/dbffedc2-b9cf-4d9e-acd9-2f9eec551058?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/dbffedc2-b9cf-4d9e-acd9-2f9eec551058?resizing_type=fit)
-As you change the patterns, make sure the lengths of the two sewing segments are stitched together match. 
+As you change the patterns, make sure the lengths of the two sewing segments are stitched together match.
   3. Navigate to **Edit Pattern** , and select the **Edit Curvature** tool.
 [![Edit Curvature](https://dev.epicgames.com/community/api/documentation/image/5692e3f4-ec2d-41e5-b093-5c035cee0c3c?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/5692e3f4-ec2d-41e5-b093-5c035cee0c3c?resizing_type=fit)
   4. Select and then drag a segment to make adjustments to the garment's curves.
@@ -183,10 +103,9 @@ After Size
 Before
 After
 
-
 Your garment should now be shaped to your preferences.
 [![Simulated Garment](https://dev.epicgames.com/community/api/documentation/image/38af20af-ed8c-4d4a-8533-c4e1ede02e6c?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/38af20af-ed8c-4d4a-8533-c4e1ede02e6c?resizing_type=fit)
-##  Create the Sleeve and Waistbands 
+##  Create the Sleeve and Waistbands
 To create the sleeve and waist bands for your garment, follow these steps:
   1. Use the **Edit Pattern** tool to select a segment line on the sleeve. Then, right-click on the segment, and select **Offset as Internal Line**.
 [![Offset as Internal Line](https://dev.epicgames.com/community/api/documentation/image/fb072b77-3c2c-498e-83e8-59789f2a307e?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/fb072b77-3c2c-498e-83e8-59789f2a307e?resizing_type=fit)
@@ -200,9 +119,8 @@ To create the sleeve and waist bands for your garment, follow these steps:
   6. Select **Simulate** , and use the **Move/Select** tool to adjust the garment to your desired position.
 [![Shaped Garment](https://dev.epicgames.com/community/api/documentation/image/30b0c74a-d04d-4f4f-b001-a830ecee8d21?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/30b0c74a-d04d-4f4f-b001-a830ecee8d21?resizing_type=fit)
 
-
 Continue to adjust the pattern until you achieve your desired shape.
-##  Make the Collar 
+##  Make the Collar
 To create the collar for your garment:
   1. Select the neckline segments from the front and back body patterns to determine the total length of one side.
 [![Neckline Segment](https://dev.epicgames.com/community/api/documentation/image/c513b7e9-874f-4cfe-98c5-5f8c2b3775ef?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/c513b7e9-874f-4cfe-98c5-5f8c2b3775ef?resizing_type=fit)
@@ -228,10 +146,9 @@ To create the collar for your garment:
   12. In the **Property Editor** , navigate to **3D Seamline** , and set its **Intensity** and **Thickness** options to **0** to remove the seamline in render.
 [![Property Editor](https://dev.epicgames.com/community/api/documentation/image/15d68d01-f41f-4bb8-983d-4e16f8401249?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/15d68d01-f41f-4bb8-983d-4e16f8401249?resizing_type=fit)
 
-
 [![Finished Collar](https://dev.epicgames.com/community/api/documentation/image/0babe294-27e8-411b-a516-875f9bed0595?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/0babe294-27e8-411b-a516-875f9bed0595?resizing_type=fit)
 Your garment should now have a collar.
-##  Add Details 
+##  Add Details
 To add details to your garment, follow these steps:
   1. Select the shoulder line segment then use the **Edit Pattern** tool and select **Offset as Internal Line**.
 [![Shoulder Offset](https://dev.epicgames.com/community/api/documentation/image/a58b3f71-2cf6-4048-96e4-c889b1a9a8fb?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/a58b3f71-2cf6-4048-96e4-c889b1a9a8fb?resizing_type=fit)
@@ -258,10 +175,9 @@ To add details to your garment, follow these steps:
   12. Use **Cut and Sew** for your internal shape.
 [![](https://dev.epicgames.com/community/api/documentation/image/94a84b8d-5142-4799-a02c-74ae6513251e?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/94a84b8d-5142-4799-a02c-74ae6513251e?resizing_type=fit)
 
-
 [![Detailed Garment](https://dev.epicgames.com/community/api/documentation/image/1c478b39-4c54-4dec-9026-304e06866ca8?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/1c478b39-4c54-4dec-9026-304e06866ca8?resizing_type=fit)
 Every pattern that has its own fabric should now be in separate pieces.
-##  Assign Fabrics to Patterns and Adjust Properties 
+##  Assign Fabrics to Patterns and Adjust Properties
 To assign fabrics and patterns to your garment, follow these steps:
   1. Add a new fabric for each of your fabric styles, then adjust their properties in the **Property Editor**.
 [![](https://dev.epicgames.com/community/api/documentation/image/d63991e7-91a0-4411-92e4-12cb7d9c16dc?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/d63991e7-91a0-4411-92e4-12cb7d9c16dc?resizing_type=fit)
@@ -269,11 +185,10 @@ To assign fabrics and patterns to your garment, follow these steps:
   3. Add the provided texture maps provided in the default Marvelous Asset Library or import your own.
 [![](https://dev.epicgames.com/community/api/documentation/image/5f28548d-2abd-4e4f-b20f-79ac14fcd361?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/5f28548d-2abd-4e4f-b20f-79ac14fcd361?resizing_type=fit)
 
-
 For example, the body panels fabric uses textures downloaded from Megascans and uses AO for the **Texture** setting and Normal for the **Normal Map** setting.
 [![](https://dev.epicgames.com/community/api/documentation/image/f8e581d3-3d0a-48f9-b9d3-1f96314dc0c2?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/f8e581d3-3d0a-48f9-b9d3-1f96314dc0c2?resizing_type=fit)
 Above is an example pattern used in this project.
-##  Add Buttons 
+##  Add Buttons
 To add buttons to your garment:
   1. Navigate to the **Button** panel, then access the **Property Editor**. Choose your desired button style, and adjust it as needed.
 [![Button Panel](https://dev.epicgames.com/community/api/documentation/image/2caf401f-1b95-40f5-8a85-7a8505d876be?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/2caf401f-1b95-40f5-8a85-7a8505d876be?resizing_type=fit)
@@ -286,71 +201,41 @@ To add buttons to your garment:
   5. In the **Property Editor** , adjust the simulation settings so that the button sits correctly on the garment without colliding or floating on it.
 [![Property Editor](https://dev.epicgames.com/community/api/documentation/image/5f59efd8-6113-40c4-9cf6-b98a0c00ec41?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/5f59efd8-6113-40c4-9cf6-b98a0c00ec41?resizing_type=fit)
 
-
 [![Buttoned Garment](https://dev.epicgames.com/community/api/documentation/image/24e4ac56-4665-4457-9416-6f77486d82c0?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/24e4ac56-4665-4457-9416-6f77486d82c0?resizing_type=fit)
 Your finished sweater garment should look similar to the photo above.
-##  Export your Garment 
+##  Export your Garment
 To export your sweater, follow these steps:
   1. In the **UV Editor** , navigate to the **UV Packing** icon.
 [![UV Editor](https://dev.epicgames.com/community/api/documentation/image/b130f31e-bba9-459e-b4be-8f558e03354a?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/b130f31e-bba9-459e-b4be-8f558e03354a?resizing_type=fit)
   2. Check the box for **0-1 (Default)** to pack the UVs, and click **Apply**.
 [![UV Packing](https://dev.epicgames.com/community/api/documentation/image/1c29869c-5e60-4316-8e36-bf11db70ee0f?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/1c29869c-5e60-4316-8e36-bf11db70ee0f?resizing_type=fit)
-The UV shells will be rearranged and scaled as you change the patterns. When there are no UV shells overlapping or going out of bounds, they should similar to the image below. Be sure to do this step before exporting if you have made changes to your pattern . 
+The UV shells will be rearranged and scaled as you change the patterns. When there are no UV shells overlapping or going out of bounds, they should similar to the image below. Be sure to do this step before exporting if you have made changes to your pattern .
   3. Navigate to **File** > **Export** > **USD** to export the .usda file.
 [![Export](https://dev.epicgames.com/community/api/documentation/image/bc2c348b-d8df-48b7-8cec-37fda019ae4e?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/bc2c348b-d8df-48b7-8cec-37fda019ae4e?resizing_type=fit)
   4. Use the following settings in the **Export USD** window.
 [![Export Settings](https://dev.epicgames.com/community/api/documentation/image/461cf64b-7a23-45cf-aab5-475cbfe968b2?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/461cf64b-7a23-45cf-aab5-475cbfe968b2?resizing_type=fit)
-Option  |  Value   
----|---  
-**Mesh** |  Prim Path: /Mesh  
-**Material** |  Prim Path: /Material  
-**Select All Patterns** |  True  
-**Select All Avatars** |  False  
-**Select All Graphics and Trims** |  True - Thick  
-**Unified UV Coordinates** |  True  
-**Image Size** |  2048 pixels  
-**Fill Texture Seams** |  5 pixels  
-**Diffuse Map** |  True  
-**Metalness Map** |  False  
-**Normal Map** |  True  
-**Roughness Map** |  False  
-**Opacity Map** |  False  
-**Displacement Map** |  Map  
-**Include Garment Simulation Data** |  True  
+Option  |  Value
+---|---
+**Mesh** |  Prim Path: /Mesh
+**Material** |  Prim Path: /Material
+**Select All Patterns** |  True
+**Select All Avatars** |  False
+**Select All Graphics and Trims** |  True - Thick
+**Unified UV Coordinates** |  True
+**Image Size** |  2048 pixels
+**Fill Texture Seams** |  5 pixels
+**Diffuse Map** |  True
+**Metalness Map** |  False
+**Normal Map** |  True
+**Roughness Map** |  False
+**Opacity Map** |  False
+**Displacement Map** |  Map
+**Include Garment Simulation Data** |  True
   5. Select **OK** to export your sweater as a .usd file.
 
-
 You can then import this .usd file into UE to [convert it to a cloth asset](https://dev.epicgames.com/documentation/en-us/fortnite/create-your-clothing-asset-in-unreal-engine-in-unreal-editor-for-fortnite).
-##  Downloadable Learning Assets 
+##  Downloadable Learning Assets
 [![](https://dev.epicgames.com/community/api/documentation/image/7233b0bb-a315-4315-8d93-4b37792785b8?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/7233b0bb-a315-4315-8d93-4b37792785b8?resizing_type=fit)
 As part of the Talisman: MetaHuman template, you can access several downloadable assets including the Marvelous Designer garment files and an Unreal Engine project with the Captain Elli MetaHuman wearing the sweater from this tutorial. To learn how to access the downloadable files, see the [Talisman MetaHuman Template tutorial](https://dev.epicgames.com/documentation/en-us/fortnite/talisman-metahuman-template-in-unreal-editor-for-fortnite).
 [![](https://dev.epicgames.com/community/api/documentation/image/71f1c0c1-cfb7-44c3-92f5-c6387b8cd090?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/71f1c0c1-cfb7-44c3-92f5-c6387b8cd090?resizing_type=fit)
 You can view these assets set up within the Talisman template by navigating to **Content Browser** > **Characters** > **Cloth** > **Captain** > **Sample** and opening "CA_Cap_Sweatshirt".
-  * [ mesh](https://dev.epicgames.com/community/search?query=mesh)
-  * [ clothing](https://dev.epicgames.com/community/search?query=clothing)
-  * [ high-fidelity](https://dev.epicgames.com/community/search?query=high-fidelity)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [ Add a Custom MetaHuman ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#add-a-custom-meta-human)
-  * [ Use a Garment as a Starting Point ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#use-a-garment-as-a-starting-point)
-  * [ Unfold Symmetric Editing ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#unfold-symmetric-editing)
-  * [ Extend the Sleeves ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#extend-the-sleeves)
-  * [ Adjust the Garment's Shape ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#adjust-the-garment-s-shape)
-  * [ Create the Sleeve and Waistbands ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#create-the-sleeve-and-waistbands)
-  * [ Make the Collar ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#make-the-collar)
-  * [ Add Details ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#add-details)
-  * [ Assign Fabrics to Patterns and Adjust Properties ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#assign-fabrics-to-patterns-and-adjust-properties)
-  * [ Add Buttons ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#add-buttons)
-  * [ Export your Garment ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#export-your-garment)
-  * [ Downloadable Learning Assets ](https://dev.epicgames.com/documentation/en-us/fortnite/making-a-sweater-with-marvelous-designer-in-unreal-editor-for-fortnite#downloadable-learning-assets)
-
-
-
-
-
-
----

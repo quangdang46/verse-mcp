@@ -1,27 +1,11 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-uefn-and-fortnite-creative
 
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. Island Settings
-
-
 # Island Settings
-Control gameplay through Island Settings in both UEFN and Creative! 
+Control gameplay through Island Settings in both UEFN and Creative!
 ![Island Settings](https://dev.epicgames.com/community/api/documentation/image/76f8e05b-c306-4cb9-9f9c-6cdcc59b9b05?resizing_type=fill&width=1920&height=335)
-**Island Setting** s are the settings you can control that affect the island you're currently on. 
-How you set your parameters in Island Settings defines both your game mode and how players can interact within the game. 
-These settings can be modified both in **Fortnite Creative** and in **Unreal Editor for Fortnite**. 
+**Island Setting** s are the settings you can control that affect the island you're currently on.
+How you set your parameters in Island Settings defines both your game mode and how players can interact within the game.
+These settings can be modified both in **Fortnite Creative** and in **Unreal Editor for Fortnite**.
 **Default island settings may vary between Creative and UEFN.**
   * [![Island Settings in UEFN](https://dev.epicgames.com/community/api/documentation/image/7ebe4678-7f4a-4b98-a445-73e75b54ec0a?resizing_type=fit&width=640&height=640) Island Settings in UEFN See how to modify Island Settings in UEFN. ](https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-unreal-editor-for-fortnite)
   * [![Island Settings in Fortnite Creative](https://dev.epicgames.com/community/api/documentation/image/8c9144a6-d6f4-4110-9dbf-c44a1e8cfcf0?resizing_type=fit&width=640&height=640) Island Settings in Fortnite Creative Learn how to use Island Settings to improve the game or experience for your players! ](https://dev.epicgames.com/documentation/en-us/fortnite/understanding-island-settings-in-fortnite-creative)
@@ -36,19 +20,3 @@ These settings can be modified both in **Fortnite Creative** and in **Unreal Edi
   * [![Permissions Setting](https://dev.epicgames.com/community/api/documentation/image/01f36cb3-39c7-4e30-9964-89eea8440507?resizing_type=fit&width=640&height=640) Permissions Setting Control who can edit your island in Create mode. ](https://dev.epicgames.com/documentation/en-us/fortnite/permissions-settings-in-fortnite-creative)
   * [![Media Capture Tool](https://dev.epicgames.com/community/api/documentation/image/1b809d35-bb35-4ca6-9918-90ec2d89ed18?resizing_type=fit&width=640&height=640) Media Capture Tool Generate an image from your island that you can use for your lobby background. ](https://dev.epicgames.com/documentation/en-us/fortnite/media-capture-tool-for-fortnite)
   * [![Event Browser](https://dev.epicgames.com/community/api/documentation/image/43b35937-ac63-4ae9-b503-e648b8b97a51?resizing_type=fit&width=640&height=640) Event Browser See what devices you have on your island, and the functions and events associated with them. ](https://dev.epicgames.com/documentation/en-us/fortnite/event-browser-in-fortnite-creative)
-
-
-  * [ fortnite creative](https://dev.epicgames.com/community/search?query=fortnite%20creative)
-  * [ uefn](https://dev.epicgames.com/community/search?query=uefn)
-  * [ island settings](https://dev.epicgames.com/community/search?query=island%20settings)
-  * [ customize gameplay](https://dev.epicgames.com/community/search?query=customize%20gameplay)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-
-
-
-
----

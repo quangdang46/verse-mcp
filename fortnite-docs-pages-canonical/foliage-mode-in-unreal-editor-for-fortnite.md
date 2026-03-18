@@ -1,117 +1,41 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/foliage-mode-in-unreal-editor-for-fortnite
 
-  * [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation)
-    * [What's New in Unreal Editor for Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/whats-new-in-unreal-editor-for-fortnite)
-    * [Discover the Resources Waiting for You as a Fortnite Developer!](https://dev.epicgames.com/documentation/en-us/fortnite/discover-the-resources-waiting-for-you-as-a-fortnite-creator)
-    * [Get Started Creating in Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/get-started-creating-in-fortnite)
-    * [Island Settings](https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-uefn-and-fortnite-creative)
-    * [Editor User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/getting-to-know-the-user-interface-in-unreal-editor-for-fortnite)
-    * [Creative User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/creative-user-interface-for-fortnite-creative)
-    * [Import Content and Islands](https://dev.epicgames.com/documentation/en-us/fortnite/import-content-and-islands-in-unreal-editor-for-fortnite)
-    * [Building Basics](https://dev.epicgames.com/documentation/en-us/fortnite/building-basics-in-fortnite-creative)
-    * [Editor Best Practices](https://dev.epicgames.com/documentation/en-us/fortnite/editor-best-practices-in-unreal-editor-for-fortnite)
-    * [Programming with Verse](https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite)
-    * [Mobile Development](https://dev.epicgames.com/documentation/en-us/fortnite/mobile-development-in-fortnite)
-    * [UEFN Starter Templates](https://dev.epicgames.com/documentation/en-us/fortnite/unreal-editor-for-fortnite-starter-templates)
-    * [Game Collections](https://dev.epicgames.com/documentation/en-us/fortnite/game-collections-in-fortnite)
-    * [Template Islands](https://dev.epicgames.com/documentation/en-us/fortnite/template-islands-in-fortnite-creative)
-    * [Build a Game](https://dev.epicgames.com/documentation/en-us/fortnite/build-a-game-in-unreal-editor-for-fortnite)
-    * [Learn Game Mechanics](https://dev.epicgames.com/documentation/en-us/fortnite/learn-game-mechanics-in-unreal-editor-for-fortnite)
-    * [Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/device-design-examples-in-fortnite-creative)
-    * [Scene Graph](https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite)
-    * [AI and NPCs](https://dev.epicgames.com/documentation/en-us/fortnite/ai-and-npcs-in-unreal-editor-for-fortnite)
-    * [Animation and Cinematics](https://dev.epicgames.com/documentation/en-us/fortnite/animation-and-cinematics-in-unreal-editor-for-fortnite)
-    * [Using Devices](https://dev.epicgames.com/documentation/en-us/fortnite/using-devices-in-fortnite)
-    * [Using Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-items-in-fortnite-creative)
-    * [Fortnite Weapons Primer](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-weapons-primer)
-    * [In-Game User Interfaces](https://dev.epicgames.com/documentation/en-us/fortnite/ingame-user-interfaces-in-unreal-editor-for-fortnite)
-    * [Physics](https://dev.epicgames.com/documentation/en-us/fortnite/physics)
-    * [Environments and Landscapes](https://dev.epicgames.com/documentation/en-us/fortnite/environments-and-landscapes-in-unreal-editor-for-fortnite)
-      * Foliage Mode
-      * [Fortnite Tools Mode](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-tools-mode-in-fortnite)
-      * [Procedural Building Template](https://dev.epicgames.com/documentation/en-us/fortnite/procedural-building-template-in-unreal-editor-for-fortnite)
-      * [Changing Terrain with Landscape Mode](https://dev.epicgames.com/documentation/en-us/fortnite/landscape-mode-in-unreal-editor-for-fortnite)
-      * [Water Tools](https://dev.epicgames.com/documentation/en-us/fortnite/water-tools-in-unreal-editor-for-fortnite)
-      * [Create a Custom Landscape](https://dev.epicgames.com/documentation/en-us/fortnite/create-a-custom-landscape-in-unreal-editor-for-fortnite)
-      * [Editing Landscape Material](https://dev.epicgames.com/documentation/en-us/fortnite/editing-landscape-material-in-unreal-editor-for-fortnite)
-    * [Memory and Optimization](https://dev.epicgames.com/documentation/en-us/fortnite/memory-and-optimization-in-unreal-editor-for-fortnite)
-    * [Realistic Assets, Characters, and Environments](https://dev.epicgames.com/documentation/en-us/fortnite/realistic-assets-characters-and-environments-in-unreal-editor-for-fortnite)
-    * [Using Prefabs and Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative)
-    * [Audio](https://dev.epicgames.com/documentation/en-us/fortnite/audio-in-unreal-editor-for-fortnite)
-    * [Composing with Fortnite Patchwork](https://dev.epicgames.com/documentation/en-us/fortnite/composing-with-patchwork-in-fortnite-creative)
-    * [Lighting](https://dev.epicgames.com/documentation/en-us/fortnite/lighting-in-unreal-editor-for-fortnite)
-    * [Materials](https://dev.epicgames.com/documentation/en-us/fortnite/materials-in-unreal-editor-for-fortnite)
-    * [Modeling](https://dev.epicgames.com/documentation/en-us/fortnite/modeling-in-unreal-editor-for-fortnite)
-    * [Intro to Post-Processing](https://dev.epicgames.com/documentation/en-us/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite)
-    * [Visual Effects](https://dev.epicgames.com/documentation/en-us/fortnite/visual-effects-in-unreal-editor-for-fortnite)
-    * [In-Island Transactions](https://dev.epicgames.com/documentation/en-us/fortnite/in-island-transactions-in-fortnite)
-    * [Campaigns](https://dev.epicgames.com/documentation/en-us/fortnite/campaigns-in-fortnite)
-    * [Using Creator Portal](https://dev.epicgames.com/documentation/en-us/fortnite/using-creator-portal-in-fortnite-creative)
-    * [Collaborate and Publish](https://dev.epicgames.com/documentation/en-us/fortnite/collaborate-and-publish-in-unreal-editor-for-fortnite)
-    * [Island Moderation and Guidelines](https://dev.epicgames.com/documentation/en-us/fortnite/island-moderation-and-guidelines-in-fortnite-creative)
-    * [Promoting Your Fortnite Island](https://dev.epicgames.com/documentation/en-us/fortnite/promoting-your-fortnite-creative-island)
-    * [Community Building](https://dev.epicgames.com/documentation/en-us/fortnite/community-building-in-fortnite)
-    * [Education](https://dev.epicgames.com/documentation/en-us/fortnite/education-in-fortnite-creative)
-    * [Verse Language Reference: Book of Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-book-of-verse-reference)
-    * [Video Tutorials](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-video-tutorials)
-    * [Fortnite Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-glossary)
-    * [Verse Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary)
-    * [Verse API Reference](https://dev.epicgames.com/documentation/en-us/fortnite/verse-api)
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation "Fortnite Documentation")
-  5. [Environments and Landscapes](https://dev.epicgames.com/documentation/en-us/fortnite/environments-and-landscapes-in-unreal-editor-for-fortnite "Environments and Landscapes")
-  6. Foliage Mode
-
-
 # Foliage Mode
-Create a breathtaking landscape quickly using Foliage Mode. 
+Create a breathtaking landscape quickly using Foliage Mode.
 ![Foliage Mode](https://dev.epicgames.com/community/api/documentation/image/2a3fe045-bc80-4771-b7fe-449526fc0f7d?resizing_type=fill&width=1920&height=335)
-On this page
 **Foliage Mode** provides a way to quickly create forests and woods on your terrain to make realistic-looking landscapes. Use the Foliage tools to determine how to add trees, bushes, flowers, and more to your project. This editing mode works with [Landscape Mode](https://dev.epicgames.com/documentation/en-us/fortnite/landscape-mode-in-unreal-editor-for-fortnite).
-##  How It Works 
+##  How It Works
 To access Foliage Mode, click the Selection Mode dropdown and select Foliage Mode. The Foliage Mode panel opens to the left of the viewport window. (For in-depth information on this mode, see [Foliage Mode](https://docs.unrealengine.com/foliage-mode-in-unreal-engine/) for Unreal Engine.)
 [![Select Foliage Mode from the dropdown menu.](https://dev.epicgames.com/community/api/documentation/image/55926306-9bbc-4bb1-a46e-b9b51c7dc75a?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/55926306-9bbc-4bb1-a46e-b9b51c7dc75a?resizing_type=fit)
 To use the Foliage Mode tools, open the [**Content Browser**](https://dev.epicgames.com/documentation/en-us/fortnite/unreal-editor-for-fortnite-glossary#content-browser), then drag selected foliage [static meshes](https://dev.epicgames.com/documentation/en-us/fortnite/unreal-editor-for-fortnite-glossary#static-mesh) from the **Environment** > **Foliage** folder into the **Mesh List**. You can add more than just trees or grasses — you can add any type of static mesh to the Mesh List.
 Foliage Mode works with imported static meshes as well. Foliage Mode does not work with Fortnite Props because these elements have Blueprint scripting that cause trees and bushes to move as though wind is blowing them, where a static mesh does not move at all.
 Use Foliage Mode when [greyboxing](https://dev.epicgames.com/documentation/en-us/fortnite/greyboxing-in-unreal-editor-for-fortnite) your level to plan where you will place foliage. Create simple shapes with [Modeling Mode](https://dev.epicgames.com/documentation/en-us/fortnite/modeling-mode-in-unreal-editor-for-fortnite), then add the shapes to the Mesh List and paint the shapes onto the terrain to get an idea of how the foliage will look.
-##  Foliage Tools 
+##  Foliage Tools
 Foliage Mode uses scalable tools that you can set to your preference for each tool, or tailor to foliage types for all foliage in the Mesh List.
 [![Foliage Mode toolset](https://dev.epicgames.com/community/api/documentation/image/cd53c25c-278a-4d95-8229-89f9de30efa9?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/cd53c25c-278a-4d95-8229-89f9de30efa9?resizing_type=fit)
-Tool  |  Description  |  Image   
----|---|---  
-Select |  Drag static meshes into the Mesh List to use in your project, or search for specific static meshes from the search bar. Click the **+Foliage** button to select static meshes from the dropdown menu or create a new static mesh asset that uses mesh instancing for non-interactive foliage. |  [![Select options](https://dev.epicgames.com/community/api/documentation/image/963f5484-361e-4f8b-ab81-af58e960331f?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/963f5484-361e-4f8b-ab81-af58e960331f?resizing_type=fit)  
-All |  Select all static meshes in your project applied with the Foliage Mode tool. You can use this to create copies of the selected foliage and move the copies, or simply move all selected foliage. |  [![All tool selects all foliage in the project added using Foliage Mode.](https://dev.epicgames.com/community/api/documentation/image/0a32570c-a405-4bc4-9465-50da770fb9c6?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/0a32570c-a405-4bc4-9465-50da770fb9c6?resizing_type=fit)  
-Deselect |  Deselects all static meshes in your project applied with foliage mode. |  [![Deselects all foliage in the project.](https://dev.epicgames.com/community/api/documentation/image/a1c3fb33-be2c-4fa5-8620-88e818aa2e21?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/a1c3fb33-be2c-4fa5-8620-88e818aa2e21?resizing_type=fit)  
-Invalid |  Selects invalid foliage instances. These are foliage meshes that are not aligned to the data layer and are hovering above it. This way, you don’t wind up with floating foliage above your terrain. |   
-Lasso |  Selects a range of applied foliage or foliage added to the Mesh List. Once selected you can copy or move the lassoed foliage. |  [![Select a section of applied foliage.](https://dev.epicgames.com/community/api/documentation/image/be43ec14-560b-41f5-a136-a45c52bfaf69?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/be43ec14-560b-41f5-a136-a45c52bfaf69?resizing_type=fit)  
-Paint |  Paints the terrain with the selected foliage in the Mesh List. Paint settings determine the distribution and number of static meshes applied to the terrain when painting. |   
+Tool  |  Description  |  Image
+---|---|---
+Select |  Drag static meshes into the Mesh List to use in your project, or search for specific static meshes from the search bar. Click the **+Foliage** button to select static meshes from the dropdown menu or create a new static mesh asset that uses mesh instancing for non-interactive foliage. |  [![Select options](https://dev.epicgames.com/community/api/documentation/image/963f5484-361e-4f8b-ab81-af58e960331f?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/963f5484-361e-4f8b-ab81-af58e960331f?resizing_type=fit)
+All |  Select all static meshes in your project applied with the Foliage Mode tool. You can use this to create copies of the selected foliage and move the copies, or simply move all selected foliage. |  [![All tool selects all foliage in the project added using Foliage Mode.](https://dev.epicgames.com/community/api/documentation/image/0a32570c-a405-4bc4-9465-50da770fb9c6?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/0a32570c-a405-4bc4-9465-50da770fb9c6?resizing_type=fit)
+Deselect |  Deselects all static meshes in your project applied with foliage mode. |  [![Deselects all foliage in the project.](https://dev.epicgames.com/community/api/documentation/image/a1c3fb33-be2c-4fa5-8620-88e818aa2e21?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/a1c3fb33-be2c-4fa5-8620-88e818aa2e21?resizing_type=fit)
+Invalid |  Selects invalid foliage instances. These are foliage meshes that are not aligned to the data layer and are hovering above it. This way, you don’t wind up with floating foliage above your terrain. |
+Lasso |  Selects a range of applied foliage or foliage added to the Mesh List. Once selected you can copy or move the lassoed foliage. |  [![Select a section of applied foliage.](https://dev.epicgames.com/community/api/documentation/image/be43ec14-560b-41f5-a136-a45c52bfaf69?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/be43ec14-560b-41f5-a136-a45c52bfaf69?resizing_type=fit)
+Paint |  Paints the terrain with the selected foliage in the Mesh List. Paint settings determine the distribution and number of static meshes applied to the terrain when painting. |
 Reapply |  Select a mesh or meshes from the Mesh List and change the settings for Foliage Instances already placed in the world:
   * Select the **Reapply tool** then select the Foliage type you want to apply changes to in the Mesh List.
   * In the **Foliage Details** section, make your changes.
   * Paint the changes on to the Foliage Instances in the level.
 
-|   
-Single |  Paints a single instance of the foliage in a single place. If there are multiple static meshes in the Mesh List, all will be applied at once to the same spot when the Single tool is selected. |   
-Fill |  Fills a targeted piece of terrain with the selected foliage. This works on other static meshes created for the terrain. |   
-Erase |  Erases the selected foliage from the terrain. You can uncheck selected foliage you want to erase from the scenery if you don’t want to erase all foliage. |  [![Erase tool](https://dev.epicgames.com/community/api/documentation/image/dc878058-397e-4e87-8699-75b02434d1d9?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/dc878058-397e-4e87-8699-75b02434d1d9?resizing_type=fit)  
-Remove |  Removes all selected foliage from the terrain. |  [![Remove tool](https://dev.epicgames.com/community/api/documentation/image/7ed34894-24c2-4f89-8b15-6adac7037704?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/7ed34894-24c2-4f89-8b15-6adac7037704?resizing_type=fit)  
-Move |  Moves the selected foliage to the current level. This tool works with Data Layers to identify which layer the foliage sits on, then provides a way for you to move the foliage to another data layer. |   
-##  Paint Tools 
+|
+Single |  Paints a single instance of the foliage in a single place. If there are multiple static meshes in the Mesh List, all will be applied at once to the same spot when the Single tool is selected. |
+Fill |  Fills a targeted piece of terrain with the selected foliage. This works on other static meshes created for the terrain. |
+Erase |  Erases the selected foliage from the terrain. You can uncheck selected foliage you want to erase from the scenery if you don’t want to erase all foliage. |  [![Erase tool](https://dev.epicgames.com/community/api/documentation/image/dc878058-397e-4e87-8699-75b02434d1d9?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/dc878058-397e-4e87-8699-75b02434d1d9?resizing_type=fit)
+Remove |  Removes all selected foliage from the terrain. |  [![Remove tool](https://dev.epicgames.com/community/api/documentation/image/7ed34894-24c2-4f89-8b15-6adac7037704?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/7ed34894-24c2-4f89-8b15-6adac7037704?resizing_type=fit)
+Move |  Moves the selected foliage to the current level. This tool works with Data Layers to identify which layer the foliage sits on, then provides a way for you to move the foliage to another data layer. |
+##  Paint Tools
 Use the Paint tools to scale, rotate, add foliage to your project and much more.
-Paint Tools  |  Description   
----|---  
+Paint Tools  |  Description
+---|---
 [![All the paint tools](https://dev.epicgames.com/community/api/documentation/image/25452039-4aea-46d8-8477-8b2e0a64e43b?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/25452039-4aea-46d8-8477-8b2e0a64e43b?resizing_type=fit) |  **Brush Options** :
   * **Brush Size** - Determines the size of the brush.
   * **Paint Density** - Determines the number of static mesh instances and their spacing inside of the paint brush.
@@ -191,25 +115,3 @@ Paint Tools  |  Description
 
 **HLOD** :
   * **Include in HLOD** - When checked, the foliage is included in the HLOD draws.
-
-  
-  * [ landscape](https://dev.epicgames.com/community/search?query=landscape)
-  * [ static mesh](https://dev.epicgames.com/community/search?query=static%20mesh)
-  * [ foliage](https://dev.epicgames.com/community/search?query=foliage)
-  * [ world building](https://dev.epicgames.com/community/search?query=world%20building)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [ How It Works ](https://dev.epicgames.com/documentation/en-us/fortnite/foliage-mode-in-unreal-editor-for-fortnite#how-it-works)
-  * [ Foliage Tools ](https://dev.epicgames.com/documentation/en-us/fortnite/foliage-mode-in-unreal-editor-for-fortnite#foliage-tools)
-  * [ Paint Tools ](https://dev.epicgames.com/documentation/en-us/fortnite/foliage-mode-in-unreal-editor-for-fortnite#paint-tools)
-
-
-
-
-
-
----

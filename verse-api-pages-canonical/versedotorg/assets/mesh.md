@@ -1,42 +1,9 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/assets/mesh
 
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. mesh class
-
-
 # mesh class
-Learn technical details about the mesh class. 
-On this page
-|   
----|---  
-Verse `using` statement | `using { /Verse.org/Assets }`  
+Learn technical details about the mesh class.
+|
+---|---
+Verse `using` statement | `using { /Verse.org/Assets }`
 ## Members
 This class has no members.
-  * [ api](https://dev.epicgames.com/community/search?query=api)
-  * [ class](https://dev.epicgames.com/community/search?query=class)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [Members](https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/assets/mesh#members)
-
-
-
-
-
-
----

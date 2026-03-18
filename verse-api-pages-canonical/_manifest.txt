@@ -707,7 +707,7 @@ https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/devices/npc_spawner_device/spawn	fortnitedotcom/devices/npc_spawner_device/spawn.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/devices/npc_spawner_device/spawnat	fortnitedotcom/devices/npc_spawner_device/spawnat.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/fortnitedotcom/devices/vehicle_mod_box_settings/applydefaultvisuals	fortnitedotcom/devices/vehicle_mod_box_settings/applydefaultvisuals.md
-https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/result/result(success_type,error_type	versedotorg/verse/result/result(success_type_error_type.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/result/result(success_type,error_type	versedotorg/verse/result/result(success_type,error_type.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/unrealenginedotcom/temporary/spatialmath/transform	unrealenginedotcom/temporary/spatialmath/transform.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/unrealenginedotcom/temporary/spatialmath/angulardistance	unrealenginedotcom/temporary/spatialmath/angulardistance.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/unrealenginedotcom/temporary/spatialmath/applylocalrotationy	unrealenginedotcom/temporary/spatialmath/applylocalrotationy.md
@@ -873,10 +873,10 @@ https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/con
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/unrealenginedotcom/temporary/spatialmath/isfinite-2	unrealenginedotcom/temporary/spatialmath/isfinite-2.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/concurrency/task/task(t)/await	versedotorg/concurrency/task/task(t)/await.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/assets/input_action/input_action(t)	versedotorg/assets/input_action/input_action(t).md
-https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/result/result(success_type,error_type)	versedotorg/verse/result/result(success_type_error_type).md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/result/result(success_type,error_type)	versedotorg/verse/result/result(success_type,error_type).md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/concurrency/awaitable/awaitable(payload)	versedotorg/concurrency/awaitable/awaitable(payload).md
-https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/result/result(success_type,error_type)/getsuccess	versedotorg/verse/result/result(success_type_error_type)/getsuccess.md
-https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/result/result(success_type,error_type)/geterror	versedotorg/verse/result/result(success_type_error_type)/geterror.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/result/result(success_type,error_type)/getsuccess	versedotorg/verse/result/result(success_type,error_type)/getsuccess.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/result/result(success_type,error_type)/geterror	versedotorg/verse/result/result(success_type,error_type)/geterror.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/concurrency/awaitable/awaitable(payload)/await	versedotorg/concurrency/awaitable/awaitable(payload)/await.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/abs	versedotorg/verse/abs.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/abs-1	versedotorg/verse/abs-1.md

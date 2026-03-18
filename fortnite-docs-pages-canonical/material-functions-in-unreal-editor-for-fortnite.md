@@ -1,25 +1,8 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/material-functions-in-unreal-editor-for-fortnite
 
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. Material Functions
-
-
 # Material Functions
-Learn how to use material functions to create materials that perform well on low-end platforms. 
+Learn how to use material functions to create materials that perform well on low-end platforms.
 ![Material Functions](https://dev.epicgames.com/community/api/documentation/image/02912910-02b2-4b6c-bf9f-5f5d0f557097?resizing_type=fill&width=1920&height=335)
-On this page
 **Material functions** are self-contained node networks that perform specific operations, such as complex math equations. These networks provide a way to create reusable assets by packaging parts of a [material graph](https://dev.epicgames.com/documentation/en-us/fortnite/unreal-editor-for-fortnite-glossary#material-graph) that can be inserted into other material graphs.
 This helps you create materials that can perform well on platforms that require simple materials and graphics because material functions don’t require a lot of memory. Using the Shading Path Switch material node in a material graph can help improve performance on low-end platforms as well.
 Shading path switches provide a way to set up different behaviors for different platforms on a material node, so if you want the material to do something specific when the island is running on mobile, then you can implement that behavior on the mobile path.
@@ -34,7 +17,6 @@ To use material functions in your material graph, do the following:
   4. Select a material function from the **Material Function dropdown menu** in the Details panel.
 ![Select the Material Function you need from the Details panel.](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/5a8cfb75-f0c1-41ef-8f05-852de10ab545/details-panel.png)
 
-
 To create materials that perform across platforms and align with the materials used in Fortnite Battle Royale Chapter 4, use the MF_QualitySwitch_Material_Attributes Material node. This node provides a way to target specific platforms without having to create an expensive material.
 [![undefined](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/0f2067e9-7ce3-458a-b341-4dae2c41a838/inexpensive-material-node.png)](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/0f2067e9-7ce3-458a-b341-4dae2c41a838/inexpensive-material-node.png)
 Click image to enlarge. The image on the left is an expensive material. The material node on the right performs the same function as the one on the left, but is much cheaper to use in the material graph.
@@ -42,22 +24,3 @@ Try one of the [material tutorials](https://dev.epicgames.com/documentation/en-u
 For a list of available material functions in UEFN, see [Material Library](https://dev.epicgames.com/documentation/en-us/fortnite/material-library-in-unreal-editor-for-fortnite).
 To learn more about what the available material functions do in your material graph, see [Material Functions Overview](https://docs.unrealengine.com/unreal-engine-material-functions-overview/) in Unreal Engine documentation.
 [Penguin](https://sketchfab.com/3d-models/penguin-5d5ddab9a9bf4933a7615bb2d5ed0f9d) by [patrakeevasveta](https://sketchfab.com/patrakeevasveta) licensed under [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/).
-  * [ materials](https://dev.epicgames.com/community/search?query=materials)
-  * [ performance](https://dev.epicgames.com/community/search?query=performance)
-  * [ information](https://dev.epicgames.com/community/search?query=information)
-  * [ memory](https://dev.epicgames.com/community/search?query=memory)
-  * [ quality control](https://dev.epicgames.com/community/search?query=quality%20control)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [Using Material Functions](https://dev.epicgames.com/documentation/en-us/fortnite/material-functions-in-unreal-editor-for-fortnite#usingmaterialfunctions)
-
-
-
-
-
-
----

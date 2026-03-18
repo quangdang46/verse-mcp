@@ -1,23 +1,7 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/placing-foliage-in-a-custom-landscape-in-unreal-editor-for-fortnite
 
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. Placing Foliage
-
-
 # Placing Foliage
-Populate your island with foliage to finish off your terrain. 
+Populate your island with foliage to finish off your terrain.
 ![Placing Foliage](https://dev.epicgames.com/community/api/documentation/image/067f2c48-481d-4e2e-b4ce-ed8680b80fe1?resizing_type=fill&width=1920&height=335)
 The last step to creating terrain is adding **foliage**.
 The Content Browser has a **Nature** folder in the main Gallery folder that contains hundreds of flowers, trees, shrubs, and bushes. Some plants are themed according to seasons as well.
@@ -28,17 +12,3 @@ Use tall grasses and swamp plants next to the water. Tall grass also looks good 
 When placing foliage, group your trees, rocks, and flowers together in small clusters, and allow green spaces between the groups for a more natural look. This also lets players openly explore your island.
 [![Balance the amount of plants you place for a natural looking terrain.](https://dev.epicgames.com/community/api/documentation/image/ce991388-fe6e-493d-a945-0852915cf640?resizing_type=fit)](https://dev.epicgames.com/community/api/documentation/image/ce991388-fe6e-493d-a945-0852915cf640?resizing_type=fit)
 Use the search bar in the Content Browser to quickly find the kind of foliage you’re looking for.
-  * [ landscapes](https://dev.epicgames.com/community/search?query=landscapes)
-  * [ foliage](https://dev.epicgames.com/community/search?query=foliage)
-  * [ tutorial](https://dev.epicgames.com/community/search?query=tutorial)
-  * [ terrain editor](https://dev.epicgames.com/community/search?query=terrain%20editor)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-
-
-
-
----

@@ -1,87 +1,8 @@
 ## https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse
 
-  * [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation)
-    * [What's New in Unreal Editor for Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/whats-new-in-unreal-editor-for-fortnite)
-    * [Discover the Resources Waiting for You as a Fortnite Developer!](https://dev.epicgames.com/documentation/en-us/fortnite/discover-the-resources-waiting-for-you-as-a-fortnite-creator)
-    * [Get Started Creating in Fortnite](https://dev.epicgames.com/documentation/en-us/fortnite/get-started-creating-in-fortnite)
-    * [Island Settings](https://dev.epicgames.com/documentation/en-us/fortnite/island-settings-in-uefn-and-fortnite-creative)
-    * [Editor User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/getting-to-know-the-user-interface-in-unreal-editor-for-fortnite)
-    * [Creative User Interface](https://dev.epicgames.com/documentation/en-us/fortnite/creative-user-interface-for-fortnite-creative)
-    * [Import Content and Islands](https://dev.epicgames.com/documentation/en-us/fortnite/import-content-and-islands-in-unreal-editor-for-fortnite)
-    * [Building Basics](https://dev.epicgames.com/documentation/en-us/fortnite/building-basics-in-fortnite-creative)
-    * [Editor Best Practices](https://dev.epicgames.com/documentation/en-us/fortnite/editor-best-practices-in-unreal-editor-for-fortnite)
-    * [Programming with Verse](https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite)
-      * Editable Properties
-      * [Debugging and Troubleshooting](https://dev.epicgames.com/documentation/en-us/fortnite/debugging-and-troubleshooting-in-verse)
-      * [Debug Your Game with Debug Draw](https://dev.epicgames.com/documentation/en-us/fortnite/debug-your-game-with-debug-draw-in-verse)
-      * [Exposing Assets with Asset Reflection to Verse](https://dev.epicgames.com/documentation/en-us/fortnite/exposing-assets-with-asset-reflection-to-verse-in-unreal-editor-for-fortnite)
-      * [Using Persistable Data in Verse](https://dev.epicgames.com/documentation/en-us/fortnite/using-persistable-data-in-verse)
-      * [Verse Persistence Best Practices](https://dev.epicgames.com/documentation/en-us/fortnite/verse-persistence-best-practices)
-      * [Linked Lists](https://dev.epicgames.com/documentation/en-us/fortnite/linked-lists-in-verse)
-      * [Gameplay Tags](https://dev.epicgames.com/documentation/en-us/fortnite/gameplay-tags-in-verse)
-      * [Stacks and Queues](https://dev.epicgames.com/documentation/en-us/fortnite/stacks-and-queues-in-verse)
-      * [Sorting Algorithms in Verse](https://dev.epicgames.com/documentation/en-us/fortnite/sorting-algorithms-in-verse)
-    * [Mobile Development](https://dev.epicgames.com/documentation/en-us/fortnite/mobile-development-in-fortnite)
-    * [UEFN Starter Templates](https://dev.epicgames.com/documentation/en-us/fortnite/unreal-editor-for-fortnite-starter-templates)
-    * [Game Collections](https://dev.epicgames.com/documentation/en-us/fortnite/game-collections-in-fortnite)
-    * [Template Islands](https://dev.epicgames.com/documentation/en-us/fortnite/template-islands-in-fortnite-creative)
-    * [Build a Game](https://dev.epicgames.com/documentation/en-us/fortnite/build-a-game-in-unreal-editor-for-fortnite)
-    * [Learn Game Mechanics](https://dev.epicgames.com/documentation/en-us/fortnite/learn-game-mechanics-in-unreal-editor-for-fortnite)
-    * [Device Design Examples](https://dev.epicgames.com/documentation/en-us/fortnite/device-design-examples-in-fortnite-creative)
-    * [Scene Graph](https://dev.epicgames.com/documentation/en-us/fortnite/scene-graph-in-unreal-editor-for-fortnite)
-    * [AI and NPCs](https://dev.epicgames.com/documentation/en-us/fortnite/ai-and-npcs-in-unreal-editor-for-fortnite)
-    * [Animation and Cinematics](https://dev.epicgames.com/documentation/en-us/fortnite/animation-and-cinematics-in-unreal-editor-for-fortnite)
-    * [Using Devices](https://dev.epicgames.com/documentation/en-us/fortnite/using-devices-in-fortnite)
-    * [Using Items](https://dev.epicgames.com/documentation/en-us/fortnite/using-items-in-fortnite-creative)
-    * [Fortnite Weapons Primer](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-weapons-primer)
-    * [In-Game User Interfaces](https://dev.epicgames.com/documentation/en-us/fortnite/ingame-user-interfaces-in-unreal-editor-for-fortnite)
-    * [Physics](https://dev.epicgames.com/documentation/en-us/fortnite/physics)
-    * [Environments and Landscapes](https://dev.epicgames.com/documentation/en-us/fortnite/environments-and-landscapes-in-unreal-editor-for-fortnite)
-    * [Memory and Optimization](https://dev.epicgames.com/documentation/en-us/fortnite/memory-and-optimization-in-unreal-editor-for-fortnite)
-    * [Realistic Assets, Characters, and Environments](https://dev.epicgames.com/documentation/en-us/fortnite/realistic-assets-characters-and-environments-in-unreal-editor-for-fortnite)
-    * [Using Prefabs and Galleries](https://dev.epicgames.com/documentation/en-us/fortnite/using-prefabs-and-galleries-in-fortnite-creative)
-    * [Audio](https://dev.epicgames.com/documentation/en-us/fortnite/audio-in-unreal-editor-for-fortnite)
-    * [Composing with Fortnite Patchwork](https://dev.epicgames.com/documentation/en-us/fortnite/composing-with-patchwork-in-fortnite-creative)
-    * [Lighting](https://dev.epicgames.com/documentation/en-us/fortnite/lighting-in-unreal-editor-for-fortnite)
-    * [Materials](https://dev.epicgames.com/documentation/en-us/fortnite/materials-in-unreal-editor-for-fortnite)
-    * [Modeling](https://dev.epicgames.com/documentation/en-us/fortnite/modeling-in-unreal-editor-for-fortnite)
-    * [Intro to Post-Processing](https://dev.epicgames.com/documentation/en-us/fortnite/intro-to-postprocessing-in-unreal-editor-for-fortnite)
-    * [Visual Effects](https://dev.epicgames.com/documentation/en-us/fortnite/visual-effects-in-unreal-editor-for-fortnite)
-    * [In-Island Transactions](https://dev.epicgames.com/documentation/en-us/fortnite/in-island-transactions-in-fortnite)
-    * [Campaigns](https://dev.epicgames.com/documentation/en-us/fortnite/campaigns-in-fortnite)
-    * [Using Creator Portal](https://dev.epicgames.com/documentation/en-us/fortnite/using-creator-portal-in-fortnite-creative)
-    * [Collaborate and Publish](https://dev.epicgames.com/documentation/en-us/fortnite/collaborate-and-publish-in-unreal-editor-for-fortnite)
-    * [Island Moderation and Guidelines](https://dev.epicgames.com/documentation/en-us/fortnite/island-moderation-and-guidelines-in-fortnite-creative)
-    * [Promoting Your Fortnite Island](https://dev.epicgames.com/documentation/en-us/fortnite/promoting-your-fortnite-creative-island)
-    * [Community Building](https://dev.epicgames.com/documentation/en-us/fortnite/community-building-in-fortnite)
-    * [Education](https://dev.epicgames.com/documentation/en-us/fortnite/education-in-fortnite-creative)
-    * [Verse Language Reference: Book of Verse](https://dev.epicgames.com/documentation/en-us/fortnite/verse-language-book-of-verse-reference)
-    * [Video Tutorials](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-creative-video-tutorials)
-    * [Fortnite Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-glossary)
-    * [Verse Glossary](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary)
-    * [Verse API Reference](https://dev.epicgames.com/documentation/en-us/fortnite/verse-api)
-
-
-Table of Contents
-  1. ![Epic Games](https://edc-cdn.net/assets/images/logo-epic.svg)[Developer](https://dev.epicgames.com/)
-  2. [Documentation](https://dev.epicgames.com/documentation/ "Documentation")
-  3. Fortnite
-     * [](https://dev.epicgames.com/documentation/en-us/unreal-engine)
-     * [](https://dev.epicgames.com/documentation/en-us/fortnite)
-     * [](https://dev.epicgames.com/documentation/en-us/twinmotion)
-     * [](https://dev.epicgames.com/documentation/en-us/metahuman)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan)
-     * [](https://dev.epicgames.com/documentation/en-us/realityscan-mobile)
-     * [](https://dev.epicgames.com/documentation/en-us/fab)
-  4. [Fortnite Documentation](https://dev.epicgames.com/documentation/en-us/fortnite/fortnite-documentation "Fortnite Documentation")
-  5. [Programming with Verse](https://dev.epicgames.com/documentation/en-us/fortnite/programming-with-verse-in-unreal-editor-for-fortnite "Programming with Verse")
-  6. Editable Properties
-
-
 # Editable Properties
-Learn how to expose device properties from your Verse-authored device and modify them in Unreal Editor for Fortnite. 
+Learn how to expose device properties from your Verse-authored device and modify them in Unreal Editor for Fortnite.
 ![Editable Properties](https://dev.epicgames.com/community/api/documentation/image/2548ccbc-4870-4d86-82a4-5c8f7f1bb79e?resizing_type=fill&width=1920&height=335)
-On this page
 Creative devices in UEFN often come with a wide selection of user options that you can use to customize the way the device works. You can choose which player spawners belong to which team, what time of day it is, and even create custom classes and change the rules of the game.
 ![Editable Creative Device Properties](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/9837bf2b-812f-41b9-b12a-00a6dab5bc11/editable-creative-device-properties.png)
 [Verse devices](https://dev.epicgames.com/documentation/en-us/fortnite/create-your-own-device-in-verse) allow you to write your own Verse code to customize your game and affect the game world, but every time you change your code, you have to push your changes and test it again. Even small changes like adjusting the value of a number require recompiling.
@@ -91,7 +12,6 @@ Advantages of this approach include:
   * **Faster iteration** Test different configurations for your creative devices without any code changes.
   * **Reusability** Reuse the same device with different properties and values. For example, you could enable specific behaviors based on a [`logic`](https://dev.epicgames.com/documentation/404) type property that's exposed to the editor.
   * **Simplification** Quickly see how a device can be used based on its properties instead of having to dive into the code to understand how it works.
-
 
 ## Exposing a Variable to the Editor
 To expose a [variable](https://dev.epicgames.com/documentation/404) to the editor as an editable property, you add the `@editable` [attribute](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary#attribute) to your variable.
@@ -103,10 +23,10 @@ Follow these steps to create a Verse device and expose a variable to the editor:
      using { /Fortnite.com/Devices }
      using { /Verse.org/Simulation }
      using { /UnrealEngine.com/Temporary/Diagnostics }
-		
+
      # A Verse-authored creative device that can be placed in a level
      editable_testing_device := class(creative_device):
-		
+
          # A basic editable integer.
          @editable
          BasicInt:int = 0
@@ -117,11 +37,11 @@ Copy full snippet
 ```
      # A Verse-authored creative device that can be placed in a level
      editable_testing_device := class(creative_device):
-		
+
          # A basic editable integer.
          @editable
          BasicInt:int = 0
-		
+
          # Runs when the device is started in a running game
          OnBegin<override>()<suspends>:void=
              Print("The value of BasicInt is: {BasicInt}!")
@@ -134,7 +54,6 @@ Copy full snippet
 Changing the value of an editable property only changes for that instance of the device. If you have multiple Verse devices in your level, each can have a different value for this property.
   7. Click **Launch Session** to test out your code. When the game begins, the value of `BasicInt` should be printed to the console. You can change the value of `BasicInt` on your Verse device without pushing changes, and the new value will be printed to the console.
 
-
 ## Adding a Verse Reference to a Creative Device in Your Level
 Verse devices can also reference other Creative devices. Referencing a device this way lets you call that device’s functions, such as turning a barrier on or off, or assigning a player to a team. Because your Verse device doesn’t know about these devices before the game starts, you can set them as editable references to run code on them at runtime.
 Follow these steps to set up a reference to a Barrier device in your level, then turn it on and off on a loop:
@@ -143,11 +62,11 @@ Follow these steps to set up a reference to a Barrier device in your level, then
 ```
      # A Verse-authored creative device that can be placed in a level
      editable_testing_device := class(creative_device):
-		
+
          # A basic editable integer.
          @editable
          BasicInt:int = 0
-		
+
          # Reference to a Barrier device in the level.
          @editable
          Barrier:barrier_device = barrier_device{}
@@ -159,7 +78,7 @@ Copy full snippet
      # Reference to a Barrier device in the level.
      @editable
      Barrier:barrier_device = barrier_device{}
-		
+
      # The amount of time to wait before turning the barrier on or off.
      @editable
      BarrierSleepTime:float = 3.0
@@ -170,9 +89,9 @@ Copy full snippet
 ```
      # Runs when the device is started in a running game
      OnBegin<override>()<suspends>:void=
-		
+
          Print("The value of BasicInt is: {BasicInt}!")
-		        
+
          # Loop turning the barrier on and off, waiting for a
          # BarrierSleepTime amount of seconds each time.
          loop:
@@ -191,7 +110,6 @@ Copy full snippet
 ![Select the Barrier Device in the Outliner](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/35b6957e-76dd-4090-a510-73f3dec4b680/select-barrier-in-outliner.png)
   8. Click **Push Changes** to update your edit session. When the game begins, the barrier should loop turning on and off. You can change the value of `BarrierSleepTime` on your Verse device to change the rate at which the barrier toggles.
 
-
 ## Exposing an Array to the Editor
 While it’s good to have a reference to the device you want to modify, what happens if you want to reference multiples of the same device? Creating an editable reference for each device isn’t scalable, so you can use [arrays](https://dev.epicgames.com/documentation/404) instead.
 You can expose a resizable array to the editor to store and reference multiple objects at the same time. By iterating through the array, you can operate on each device in your level from a single block of code!
@@ -200,11 +118,11 @@ Follow these steps to add an editable array reference.
 ```
      # A Verse-authored creative device that can be placed in a level
      editable_testing_device := class(creative_device):
-		
+
          # A basic editable integer.
          @editable
          BasicInt:int = 0
-		
+
          # Array of references to the Barrier devices in the level.
          @editable
          Barriers:[]barrier_device = array{}
@@ -215,9 +133,9 @@ Copy full snippet
 ```
      # Runs when the device is started in a running game
      OnBegin<override>()<suspends>:void=
-		
+
          Print("The value of BasicInt is: {BasicInt}!")
-		
+
          loop:
              # Iterate through each barrier in the Barriers array and turn it off.
              for:
@@ -232,9 +150,9 @@ Copy full snippet
 ```
      # Runs when the device is started in a running game
      OnBegin<override>()<suspends>:void=
-		
+
          Print("The value of BasicInt is: {BasicInt}!")
-		
+
          loop:
              # Iterate through each barrier in the Barriers array and turn it off.
              for:
@@ -242,7 +160,7 @@ Copy full snippet
              do:
                  Barrier.Disable()
                  Sleep(BarrierSleepTime)
-		
+
              # Iterate through each barrier in the Barriers array and turn it on.
              for:
                  Barrier:Barriers
@@ -261,7 +179,6 @@ If you want to remove elements from your array in the editor: _Choose**Remove Al
   7. Click **Push Changes** to update your edit session. When the game starts, your barriers should loop, turning off in sequence then on in sequence. You can change the **BarrierSleepTime** to change the rate they turn on and off.
 Your code will iterate through each barrier in the array in the order that you set them on your Verse device. You can drag and reorder elements in the **Barriers** array on the details panel to change the order in which the barriers turn on and off.
 
-
 Each copy of this **editable_testing_device** device that you place in the level will have its own editable values for `Barriers`, which you can then use to change which Barrier devices the Verse device references.
 ## Exposing Custom Types to the Editor
 You can use custom [classes](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary#class) to group data and functions to create custom behavior, and by exposing them to the editor you can assign their values just like a Verse device. In this example, you’ll build a custom class that stores an array of barriers. This way you can handle multiple arrays with only one Verse device!
@@ -271,18 +188,18 @@ Follow these steps to expose a custom type to the editor:
      # A class with editable values. This class needs the <concrete> specifier
      # to expose editable values to the editor.
      barrier_array := class<concrete>():
-		
+
          # Array of references to the Barrier devices in the level.
          @editable
          Barriers:[]barrier_device = array{}
-		
+
          # The amount of time to wait before turning the barrier on or off.
          @editable
          BarrierSleepTime:float = 3.0
-		
+
          # Loops turning each barrier in the Barriers array on and off in sequence.
          BarrierSequence()<suspends>:void=
-		
+
              loop:
                  # Iterate through each barrier in the Barriers array and turn it off.
                  for:
@@ -303,14 +220,14 @@ Copy full snippet
 ```
      # A Verse-authored creative device that can be placed in a level
      editable_testing_device := class(creative_device):
-		
+
          # An editable array of integers.
          @editable
          BarrierArrays:[]barrier_array = array{}
-		
+
          # Runs when the device is started in a running game
          OnBegin<override>()<suspends>:void=
-		
+
              # Spawn a BarrierSequence function for each BarrierArray class.
              for:
                  BarrierArray:BarrierArrays
@@ -326,7 +243,6 @@ Making an editable property an array of your custom types adds flexibility to th
   6. Expand the `BarrierArrays` section to see its properties. You can add elements to each of the `Barriers` arrays, and change the `BarrierSleepTime` for each of them.
 ![See the exposed properties of the editable_testing_device that has an editable class property](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/7c8e130e-9610-4873-9968-4ee6da29e2aa/editable-custom-classes.png)
   7. Click **Push Changes** to update your edit session. When the game starts, each array of barriers should loop, turning off in sequence, then on in sequence. You can change the **BarrierSleepTime** to change the rate at which they turn on and off.
-
 
 ## Adding a Verse Reference to a Creative Device in Your Level
 In addition to Creative devices, you can also reference Creative props on your Verse devices. Referencing Creative props in this way lets you use a number of useful functions, such as spawning props, changing their materials and mesh, and even [animating them!](https://dev.epicgames.com/documentation/en-us/fortnite/animating-prop-movement-in-verse).
@@ -345,19 +261,19 @@ Copy full snippet
      using { /Fortnite.com/Devices }
      using { /Verse.org/Simulation }
      using { /UnrealEngine.com/Temporary/Diagnostics }
-		
+
      # See https://dev.epicgames.com/documentation/en-us/uefn/create-your-own-device-in-verse for how to create a verse device.
-		
+
      # A Verse-authored creative device that can be placed in a level
      blinking_prop_device := class(creative_device):
-		
+
          # Reference to a creative prop in the level.
          @editable
          BlinkingProp:creative_prop = creative_prop{}
-		
+
          # Runs when the device is started in a running game
          OnBegin<override>()<suspends>:void=
-		
+
              # Loop hiding and showing the creative prop.
              loop:
                  BlinkingProp.Hide()
@@ -371,7 +287,6 @@ Copy full snippet
   5. Drag a Creative prop into the level. (This example uses **Chair01**.) Set the Creative prop as the **BlinkingProp** on your Verse device.
 ![Editable Creative Prop](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/2d762de0-40c1-4a4f-9c72-79104bf1d460/editable-creative-prop.png)
   6. Launch your edit session. When the game begins, the prop should blink on and off on a loop!
-
 
 ## Tooltips and Categories
 You can use Tooltips and Categories to organize your editable values and add tooltips to the editor.
@@ -406,9 +321,9 @@ Editable values also work with [NPC Character definitions](https://dev.epicgames
 ```
     using { /Fortnite.com/AI }
     using { /Verse.org/Simulation }
-    
+
     NPCIntTip <public><localizes>:message := "Editables work with NPCs as well!"
-    
+
     # A Verse-authored NPC Behavior that can be used within an NPC Character Definition or an NPC Spawner device's NPC Behavior Script Override.
     npc_with_editables := class(npc_behavior):
 
@@ -478,7 +393,6 @@ Currently, the following [types](https://dev.epicgames.com/documentation/en-us/f
   * [maps](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary#map) of editable types
   * [structs](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary#struct) of editable types
   * class [instances](https://dev.epicgames.com/documentation/en-us/fortnite/verse-glossary#instance)
-
 
 Several other editable types exist, each with their own definition:
 ### Editable Text Box
@@ -646,33 +560,3 @@ Editable containers allow you to choose whether reordering of elements is allowe
 Copy full snippet
 ```
 ![Editable Container](https://d1iv7db44yhgxn.cloudfront.net/documentation/images/229e9765-2799-44c7-ad10-c57ea0abe04f/editable-container.png)
-  * [ verse](https://dev.epicgames.com/community/search?query=verse)
-  * [ scripts](https://dev.epicgames.com/community/search?query=scripts)
-
-
-* * *
-[Developer Forums](https://forums.unrealengine.com/categories?tag=fortnite)
-[Learning Library](https://dev.epicgames.com/community/fortnite/learning)
-On this page
-  * [Exposing a Variable to the Editor](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#exposingavariabletotheeditor)
-  * [Adding a Verse Reference to a Creative Device in Your Level](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#addingaversereferencetoacreativedeviceinyourlevel)
-  * [Exposing an Array to the Editor](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#exposinganarraytotheeditor)
-  * [Exposing Custom Types to the Editor](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#exposingcustomtypestotheeditor)
-  * [Adding a Verse Reference to a Creative Device in Your Level](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#addingaversereferencetoacreativedeviceinyourlevel-2)
-  * [Tooltips and Categories](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#tooltipsandcategories)
-  * [NPC Spawner Editables](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#npcspawnereditables)
-  * [Component Editables](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#componenteditables)
-  * [Supported Editable Types](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#supportededitabletypes)
-  * [Editable Text Box](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#editabletextbox)
-  * [Editable Slider](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#editableslider)
-  * [Editable Number](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#editablenumber)
-  * [Editable Vector Slider](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#editablevectorslider)
-  * [Editable Vector Number](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#editablevectornumber)
-  * [Editable Container](https://dev.epicgames.com/documentation/en-us/fortnite/editable-properties-in-verse#editablecontainer)
-
-
-
-
-
-
----
