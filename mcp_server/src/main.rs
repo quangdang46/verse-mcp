@@ -235,14 +235,10 @@ impl ServerHandler for VerseMcpHandler {
                     .map(|limit| limit as usize);
 
                 match docs_query::query_docs(query, limit) {
-                    Ok(output) => {
-                        let json = serde_json::to_string_pretty(&output)
-                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
-                        Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(json)],
-                            is_error: Some(false),
-                        })
-                    }
+                    Ok(output) => Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(docs_query::format_query_response(&output))],
+                        is_error: Some(false),
+                    }),
                     Err(e) => {
                         let error_json = serde_json::json!({
                             "error": e.to_string(),

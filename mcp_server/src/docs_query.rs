@@ -3,6 +3,7 @@ use rusqlite::{params, Connection, OpenFlags};
 use serde::Serialize;
 use std::collections::HashSet;
 use std::env;
+use std::fmt::Write as _;
 use std::fs;
 use std::path::{Path, PathBuf};
 use std::sync::OnceLock;
@@ -54,7 +55,7 @@ impl SearchPlan {
             "''".to_string()
         };
 
-        let path_based_doc_type = "CASE WHEN d.path LIKE 'verse-api-pages-canonical/%' THEN 'api' WHEN d.path LIKE 'fortnite-docs-pages-canonical/%' THEN 'guide' ELSE 'doc' END";
+        let path_based_doc_type = "CASE WHEN d.path LIKE 'verse-api-pages-canonical/%' THEN 'api' WHEN d.path LIKE 'fortnite-docs-pages-canonical/%' THEN 'guide' WHEN d.path LIKE 'assets/%.digest.verse' THEN 'digest' ELSE 'doc' END";
         let doc_type_expr = if docs_columns.iter().any(|column| column == "doc_type") {
             format!("COALESCE(NULLIF(d.doc_type, ''), {path_based_doc_type})")
         } else {
@@ -122,6 +123,37 @@ pub fn query_docs(query: &str, limit: Option<usize>) -> Result<DocsQueryResponse
         query: normalized_query,
         results,
     })
+}
+
+pub fn format_query_response(response: &DocsQueryResponse) -> String {
+    if response.results.is_empty() {
+        return format!("No documentation matches found for \"{}\".", response.query);
+    }
+
+    let mut output = String::new();
+
+    for (index, result) in response.results.iter().enumerate() {
+        if index > 0 {
+            output.push_str("\n\n--------------------------------\n\n");
+        }
+
+        let _ = writeln!(output, "### {}", result.title);
+
+        if !result.source_url.is_empty() {
+            let _ = writeln!(output, "Source: {}", result.source_url);
+        } else {
+            let _ = writeln!(output, "Path: {}", result.path);
+        }
+
+        let _ = writeln!(output);
+        output.push_str(&result.snippet);
+
+        if !result.doc_type.is_empty() {
+            let _ = write!(output, "\n\nType: {}", result.doc_type);
+        }
+    }
+
+    output
 }
 
 fn normalize_query(query: &str) -> Result<String> {
@@ -379,6 +411,59 @@ mod tests {
         assert_eq!(
             normalize_snippet("... foo\n   bar\t baz ...".to_string()),
             "... foo bar baz ..."
+        );
+    }
+
+    #[test]
+    fn format_query_response_renders_source_url() {
+        let response = DocsQueryResponse {
+            query: "button device".to_string(),
+            results: vec![DocsQueryResult {
+                title: "Button Widget".to_string(),
+                path: "verse-api-pages-canonical/fortnitedotcom/ui/button_regular.md".to_string(),
+                source_url: "https://example.com/button".to_string(),
+                doc_type: "api".to_string(),
+                snippet: "Defines a text button widget.".to_string(),
+                score: -1.0,
+            }],
+        };
+
+        assert_eq!(
+            format_query_response(&response),
+            "### Button Widget\nSource: https://example.com/button\n\nDefines a text button widget.\n\nType: api"
+        );
+    }
+
+    #[test]
+    fn format_query_response_falls_back_to_path() {
+        let response = DocsQueryResponse {
+            query: "GetHUDController".to_string(),
+            results: vec![DocsQueryResult {
+                title: "Fortnite digest".to_string(),
+                path: "assets/Fortnite.digest.verse".to_string(),
+                source_url: "".to_string(),
+                doc_type: "digest".to_string(),
+                snippet: "(Playspace:fort_playspace).GetHUDController<native><public>():fort_hud_controller".to_string(),
+                score: -1.0,
+            }],
+        };
+
+        assert_eq!(
+            format_query_response(&response),
+            "### Fortnite digest\nPath: assets/Fortnite.digest.verse\n\n(Playspace:fort_playspace).GetHUDController<native><public>():fort_hud_controller\n\nType: digest"
+        );
+    }
+
+    #[test]
+    fn format_query_response_handles_empty_results() {
+        let response = DocsQueryResponse {
+            query: "missing symbol".to_string(),
+            results: vec![],
+        };
+
+        assert_eq!(
+            format_query_response(&response),
+            "No documentation matches found for \"missing symbol\"."
         );
     }
 }

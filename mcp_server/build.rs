@@ -8,6 +8,11 @@ use std::path::{Path, PathBuf};
 use walkdir::WalkDir;
 
 const DOCS_DIRS: &[&str] = &["verse-api-pages-canonical", "fortnite-docs-pages-canonical"];
+const DIGEST_FILES: &[&str] = &[
+    "assets/Fortnite.digest.verse",
+    "assets/UnrealEngine.digest.verse",
+    "assets/Verse.digest.verse",
+];
 const SKIP_TITLES: &[&str] = &["table of contents"];
 
 fn main() -> Result<(), Box<dyn Error>> {
@@ -26,6 +31,12 @@ fn main() -> Result<(), Box<dyn Error>> {
         println!(
             "cargo:rerun-if-changed={}",
             repo_root.join(docs_dir).display()
+        );
+    }
+    for digest_file in DIGEST_FILES {
+        println!(
+            "cargo:rerun-if-changed={}",
+            repo_root.join(digest_file).display()
         );
     }
 
@@ -47,7 +58,7 @@ fn build_database(repo_root: &Path, output_path: &Path) -> Result<(), Box<dyn Er
     create_schema(&conn)?;
 
     let mut rows = Vec::new();
-    for path in iter_markdown_files(repo_root) {
+    for path in iter_indexable_files(repo_root) {
         rows.push(read_doc(repo_root, &path)?);
     }
 
@@ -109,7 +120,7 @@ fn create_schema(conn: &Connection) -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-fn iter_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
+fn iter_indexable_files(repo_root: &Path) -> Vec<PathBuf> {
     let mut files = Vec::new();
 
     for docs_dir in DOCS_DIRS {
@@ -123,6 +134,8 @@ fn iter_markdown_files(repo_root: &Path) -> Vec<PathBuf> {
         );
     }
 
+    files.extend(DIGEST_FILES.iter().map(|path| repo_root.join(path)));
+
     files.sort();
     files
 }
@@ -134,17 +147,28 @@ fn read_doc(repo_root: &Path, path: &Path) -> Result<DocRow, Box<dyn Error>> {
         .strip_prefix(repo_root)?
         .to_string_lossy()
         .replace('\\', "/");
-    let title = extract_title(path, &lines);
-    let source_url = extract_source_url(&lines);
-    let content = normalize_content(&raw_md);
+    let doc_type = derive_doc_type(&relative_path);
+    let (title, source_url, content) = if path.extension().is_some_and(|ext| ext == "verse") {
+        (
+            extract_digest_title(path, &lines),
+            String::new(),
+            normalize_digest_content(&raw_md),
+        )
+    } else {
+        (
+            extract_title(path, &lines),
+            extract_source_url(&lines),
+            normalize_content(&raw_md),
+        )
+    };
 
     Ok(DocRow {
-        path: relative_path.clone(),
+        path: relative_path,
         title,
         content,
         raw_md,
         source_url,
-        doc_type: derive_doc_type(&relative_path),
+        doc_type,
         mtime: path
             .metadata()?
             .modified()?
@@ -216,6 +240,15 @@ fn fallback_title(path: &Path) -> String {
         })
 }
 
+fn extract_digest_title(path: &Path, lines: &[&str]) -> String {
+    lines
+        .iter()
+        .map(|line| line.trim())
+        .find_map(|line| line.split_once("<public> := module:").map(|(module, _)| module.trim()))
+        .map(ToOwned::to_owned)
+        .unwrap_or_else(|| fallback_title(path))
+}
+
 fn normalize_content(raw_md: &str) -> String {
     let source_url_re = Regex::new(r"(?m)^##\s+https?://\S+\s*$").unwrap();
     let copy_snippet_re = Regex::new(r"(?m)^Copy full snippet\s*$").unwrap();
@@ -234,11 +267,22 @@ fn normalize_content(raw_md: &str) -> String {
         .to_string()
 }
 
+fn normalize_digest_content(raw_md: &str) -> String {
+    let blank_lines_re = Regex::new(r"\n{3,}").unwrap();
+    let content = raw_md.replace("\r\n", "\n");
+    blank_lines_re
+        .replace_all(content.trim(), "\n\n")
+        .trim()
+        .to_string()
+}
+
 fn derive_doc_type(relative_path: &str) -> String {
     if relative_path.starts_with("verse-api-pages-canonical/") {
         "api".to_string()
     } else if relative_path.starts_with("fortnite-docs-pages-canonical/") {
         "guide".to_string()
+    } else if relative_path.starts_with("assets/") && relative_path.ends_with(".digest.verse") {
+        "digest".to_string()
     } else {
         "doc".to_string()
     }
