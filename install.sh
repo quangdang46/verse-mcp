@@ -44,7 +44,7 @@ Options:
   --system             Install into /usr/local/bin
   --easy-mode          Add destination to shell rc PATH
   --verify             Run installed binary with --version
-  --from-source        Build from source instead of downloading a release
+  --from-source        Developer-only: build from source instead of downloading a release
   --quiet, -q          Reduce output
   --uninstall          Remove installed binary
   -h, --help           Show this help
@@ -254,8 +254,7 @@ main() {
             [ -f "$bin_path" ] || die "Binary not found after extract"
             install_binary_atomic "$bin_path" "$DEST/$BINARY_NAME"
         else
-            log_warn "Binary download failed — building from source..."
-            build_from_source
+            die "Failed to download release binary from ${url}. For end users, install from a published release. For developer builds, rerun with --from-source after installing Rust and git."
         fi
     else
         build_from_source

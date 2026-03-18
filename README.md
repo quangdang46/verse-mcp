@@ -105,6 +105,8 @@ vm --transport http --host 127.0.0.1 --port 2003
 vm --transport http --port 8080
 ```
 
+`query-docs` works out of the box after installing `vm`. The docs index is built into the binary, and `vm` creates a private cached copy automatically on first docs query.
+
 ### MCP config
 
 ```json
@@ -139,6 +141,7 @@ I found 47 devices across 15 types.
 - [x] parallel scanning with rayon
 - [x] MCP server with stdio and HTTP (SSE) transport
 - [x] `scan_map_devices` with cache invalidation
+- [x] `query-docs` runtime retrieval from a built-in SQLite docs index
 
 ### Current focus
 - improve scan summaries for large maps

@@ -14,8 +14,16 @@ uasset_scan = { workspace = true }
 rmcp = { version = "0.1", features = ["server", "transport-io", "transport-sse-server"] }
 tokio = { workspace = true, features = ["io-std", "rt-multi-thread", "macros", "signal"] }
 tokio-util = "0.7"
+serde = { workspace = true, features = ["derive"] }
 serde_json = { workspace = true }
 anyhow = { workspace = true }
 tracing = { workspace = true }
 tracing-subscriber = { workspace = true }
 clap = { version = "4", features = ["derive"] }
+rusqlite = { version = "0.31", features = ["bundled"] }
+
+[build-dependencies]
+regex = { workspace = true }
+rusqlite = { version = "0.31", features = ["bundled"] }
+sha2 = "0.10"
+walkdir = { workspace = true }

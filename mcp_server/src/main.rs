@@ -13,6 +13,7 @@ use std::time::SystemTime;
 use tokio_util::sync::CancellationToken;
 use tracing_subscriber::EnvFilter;
 
+mod docs_query;
 mod tools;
 
 /// CLI arguments for the MCP server
@@ -151,7 +152,7 @@ impl ServerHandler for VerseMcpHandler {
                 name: "verse-mcp".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_string(),
             },
-            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for placed devices.".to_string()),
+            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for placed devices. Use query-docs to search the built-in documentation index.".to_string()),
         }
     }
 
@@ -177,12 +178,36 @@ impl ServerHandler for VerseMcpHandler {
         );
         scan_schema.insert("required".to_string(), serde_json::json!(["project_path"]));
 
+        let mut docs_schema = rmcp::model::JsonObject::new();
+        docs_schema.insert("type".to_string(), serde_json::json!("object"));
+        docs_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "query": {
+                    "type": "string",
+                    "description": "Natural-language or FTS-style Verse/Fortnite docs query"
+                },
+                "limit": {
+                    "type": "integer",
+                    "description": "Maximum number of ranked results to return (clamped to 1-10)"
+                }
+            }),
+        );
+        docs_schema.insert("required".to_string(), serde_json::json!(["query"]));
+
         Ok(rmcp::model::ListToolsResult {
-            tools: vec![rmcp::model::Tool {
-                name: "scan_map_devices".into(),
-                description: "Scan UEFN project for all placed devices. Returns device types, triggers, receivers, and settings. Results are cached and invalidated when files change.".into(),
-                input_schema: Arc::new(scan_schema),
-            }],
+            tools: vec![
+                rmcp::model::Tool {
+                    name: "scan_map_devices".into(),
+                    description: "Scan UEFN project for all placed devices. Returns device types, triggers, receivers, and settings. Results are cached and invalidated when files change.".into(),
+                    input_schema: Arc::new(scan_schema),
+                },
+                rmcp::model::Tool {
+                    name: "query-docs".into(),
+                    description: "Search the built-in SQLite Verse/Fortnite documentation index and return concise ranked excerpts.".into(),
+                    input_schema: Arc::new(docs_schema),
+                },
+            ],
             next_cursor: None,
         })
     }
@@ -194,6 +219,44 @@ impl ServerHandler for VerseMcpHandler {
     ) -> Result<rmcp::model::CallToolResult, rmcp::Error> {
         let name = params.name.as_ref();
         match name {
+            "query-docs" => {
+                let query = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("query"))
+                    .and_then(|v| v.as_str())
+                    .ok_or_else(|| rmcp::Error::invalid_params("query is required", None))?;
+
+                let limit = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("limit"))
+                    .and_then(|v| v.as_u64())
+                    .map(|limit| limit as usize);
+
+                match docs_query::query_docs(query, limit) {
+                    Ok(output) => {
+                        let json = serde_json::to_string_pretty(&output)
+                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(json)],
+                            is_error: Some(false),
+                        })
+                    }
+                    Err(e) => {
+                        let error_json = serde_json::json!({
+                            "error": e.to_string(),
+                            "error_type": std::any::type_name_of_val(&e)
+                        });
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(
+                                serde_json::to_string_pretty(&error_json).unwrap(),
+                            )],
+                            is_error: Some(true),
+                        })
+                    }
+                }
+            }
             "scan_map_devices" => {
                 let scan_path = params
                     .arguments
