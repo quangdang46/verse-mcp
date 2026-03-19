@@ -152,7 +152,7 @@ impl ServerHandler for VerseMcpHandler {
                 name: "verse-mcp".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_string(),
             },
-            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for placed devices. Use query-docs to search the built-in documentation index.".to_string()),
+            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for placed devices. Use query-docs with a required `query` string to search the built-in documentation index.".to_string()),
         }
     }
 
@@ -185,7 +185,7 @@ impl ServerHandler for VerseMcpHandler {
             serde_json::json!({
                 "query": {
                     "type": "string",
-                    "description": "Natural-language or FTS-style Verse/Fortnite docs query"
+                    "description": "Required. Pass a non-empty query string with the Verse/Fortnite topic to search for, for example `editable properties`, `npc behavior`, or `creative_device AND event`."
                 },
                 "limit": {
                     "type": "integer",
@@ -225,7 +225,7 @@ impl ServerHandler for VerseMcpHandler {
                     .as_ref()
                     .and_then(|args| args.get("query"))
                     .and_then(|v| v.as_str())
-                    .ok_or_else(|| rmcp::Error::invalid_params("query is required", None))?;
+                    .ok_or_else(|| rmcp::Error::invalid_params("query is required; pass a non-empty `query` string argument to `query-docs`", None))?;
 
                 let limit = params
                     .arguments
