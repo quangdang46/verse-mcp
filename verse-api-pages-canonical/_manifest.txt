@@ -1020,3 +1020,16 @@ https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/ver
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/invalidatable/isvalid	versedotorg/verse/invalidatable/isvalid.md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/listenable/listenable(payload)	versedotorg/verse/listenable/listenable(payload).md
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/subscribable/subscribable(t)	versedotorg/verse/subscribable/subscribable(t).md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/classifiable_subset/classifiable_subset(element_type)/covarianceconstraint	versedotorg/verse/classifiable_subset/classifiable_subset(element_type)/covarianceconstraint.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/disposable/dispose	versedotorg/verse/disposable/dispose.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/enableable/disable	versedotorg/verse/enableable/disable.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/enableable/enable	versedotorg/verse/enableable/enable.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/enableable/isenabled	versedotorg/verse/enableable/isenabled.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/event/event(t)/await	versedotorg/verse/event/event(t)/await.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/event/event(t)/signal	versedotorg/verse/event/event(t)/signal.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/signalable/signalable(payload)	versedotorg/verse/signalable/signalable(payload).md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/subscribable/subscribable(t)/subscribe	versedotorg/verse/subscribable/subscribable(t)/subscribe.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/agentgroup	versedotorg/agentgroup.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/input	versedotorg/input.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/predicts	versedotorg/predicts.md
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/signalable/signalable(payload)/signal	versedotorg/verse/signalable/signalable(payload)/signal.md

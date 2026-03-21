@@ -1020,3 +1020,16 @@ https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/ver
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/invalidatable/isvalid
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/listenable/listenable(payload)
 https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/subscribable/subscribable(t)
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/classifiable_subset/classifiable_subset(element_type)/covarianceconstraint
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/disposable/dispose
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/enableable/disable
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/enableable/enable
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/enableable/isenabled
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/event/event(t)/await
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/event/event(t)/signal
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/signalable/signalable(payload)
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/subscribable/subscribable(t)/subscribe
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/agentgroup
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/input
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/predicts
+https://dev.epicgames.com/documentation/en-us/fortnite/verse-api/versedotorg/verse/signalable/signalable(payload)/signal
