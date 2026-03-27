@@ -159,26 +159,35 @@ pub fn query_docs(query: &str, options: DocsQueryOptions) -> Result<DocsQueryRes
     let search_plan = SearchPlan::build(&conn)?;
     let sql = search_plan.sql();
 
-    let total_matches: usize = conn
-        .query_row(&search_plan.count_sql(), params![fts_query.as_str()], |row| {
-            row.get::<_, i64>(0)
-        })? as usize;
+    let total_matches: usize = conn.query_row(
+        &search_plan.count_sql(),
+        params![fts_query.as_str()],
+        |row| row.get::<_, i64>(0),
+    )? as usize;
 
     let mut stmt = conn.prepare(&sql)?;
     let results = stmt
-        .query_map(params![fts_query.as_str(), limit as i64, offset as i64], |row| {
-            let content = truncate_text(normalize_content(row.get::<_, Option<String>>(5)?.unwrap_or_default()), MAX_CONTENT_CHARS);
-            Ok(DocsQueryResult {
-                title: row.get(0)?,
-                path: row.get(1)?,
-                source_url: row.get(2)?,
-                doc_type: row.get(3)?,
-                snippet: normalize_snippet(row.get::<_, Option<String>>(4)?.unwrap_or_default()),
-                content_truncated: content.1,
-                content: content.0,
-                score: row.get(6)?,
-            })
-        })?
+        .query_map(
+            params![fts_query.as_str(), limit as i64, offset as i64],
+            |row| {
+                let content = truncate_text(
+                    normalize_content(row.get::<_, Option<String>>(5)?.unwrap_or_default()),
+                    MAX_CONTENT_CHARS,
+                );
+                Ok(DocsQueryResult {
+                    title: row.get(0)?,
+                    path: row.get(1)?,
+                    source_url: row.get(2)?,
+                    doc_type: row.get(3)?,
+                    snippet: normalize_snippet(
+                        row.get::<_, Option<String>>(4)?.unwrap_or_default(),
+                    ),
+                    content_truncated: content.1,
+                    content: content.0,
+                    score: row.get(6)?,
+                })
+            },
+        )?
         .collect::<std::result::Result<Vec<_>, _>>()?;
 
     let mut warnings = Vec::new();
@@ -217,7 +226,10 @@ pub fn query_docs(query: &str, options: DocsQueryOptions) -> Result<DocsQueryRes
 
 pub fn format_query_response(response: &DocsQueryResponse) -> String {
     if response.results.is_empty() {
-        return format!("No documentation matches found for \"{}\".", response.normalized_query);
+        return format!(
+            "No documentation matches found for \"{}\".",
+            response.normalized_query
+        );
     }
 
     let mut output = String::new();
@@ -232,7 +244,11 @@ pub fn format_query_response(response: &DocsQueryResponse) -> String {
 
     if response.pagination.has_more {
         if let Some(next_offset) = response.pagination.next_offset {
-            let _ = writeln!(output, "More results available. Use offset={} to continue.", next_offset);
+            let _ = writeln!(
+                output,
+                "More results available. Use offset={} to continue.",
+                next_offset
+            );
         }
     }
 
@@ -494,22 +510,35 @@ pub fn fetch_doc_source(url: &str) -> Result<FetchedSource> {
     Ok(fetch_source(&client, url))
 }
 
-fn fetch_sources(results: &[DocsQueryResult], max_fetches: usize, warnings: &mut Vec<String>) -> Vec<FetchedSource> {
+fn fetch_sources(
+    results: &[DocsQueryResult],
+    max_fetches: usize,
+    warnings: &mut Vec<String>,
+) -> Vec<FetchedSource> {
     if max_fetches == 0 {
-        warnings.push("Source URL fetching was requested with max_fetches=0, so no links were fetched.".to_string());
+        warnings.push(
+            "Source URL fetching was requested with max_fetches=0, so no links were fetched."
+                .to_string(),
+        );
         return Vec::new();
     }
 
     let client = match Client::builder().timeout(Duration::from_secs(10)).build() {
         Ok(client) => client,
         Err(error) => {
-            warnings.push(format!("Could not initialize HTTP client for source fetches: {error}"));
+            warnings.push(format!(
+                "Could not initialize HTTP client for source fetches: {error}"
+            ));
             return Vec::new();
         }
     };
 
     let mut fetched = Vec::new();
-    for result in results.iter().filter(|result| !result.source_url.is_empty()).take(max_fetches) {
+    for result in results
+        .iter()
+        .filter(|result| !result.source_url.is_empty())
+        .take(max_fetches)
+    {
         fetched.push(fetch_source(&client, &result.source_url));
     }
 

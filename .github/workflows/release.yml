@@ -3,36 +3,14 @@ name: Release
 on:
   push:
     tags:
-      - 'uefn_scan_cli-v*'
-      - 'mcp_server-v*'
-      - 'release-all-v*'
+      - 'v*'
 
 env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  prepare:
-    name: Select crates
-    runs-on: ubuntu-latest
-    outputs:
-      crates: ${{ steps.select.outputs.crates }}
-    steps:
-      - id: select
-        shell: bash
-        run: |
-          case "${GITHUB_REF_NAME}" in
-            uefn_scan_cli-v*) echo 'crates=["uefn_scan_cli"]' >> "$GITHUB_OUTPUT" ;;
-            mcp_server-v*) echo 'crates=["mcp_server"]' >> "$GITHUB_OUTPUT" ;;
-            release-all-v*) echo 'crates=["uefn_scan_cli","mcp_server"]' >> "$GITHUB_OUTPUT" ;;
-            *)
-              echo "Unsupported tag: ${GITHUB_REF_NAME}" >&2
-              exit 1
-              ;;
-          esac
-
   build:
-    name: Build ${{ matrix.suffix }}
-    needs: prepare
+    name: Build (${{ matrix.target }})
     runs-on: ${{ matrix.runner }}
     strategy:
       fail-fast: false
@@ -75,26 +53,15 @@ jobs:
         if: matrix.use_cross
         shell: bash
         run: cargo install cross --git https://github.com/cross-rs/cross
-      - name: Build selected crates on Unix
+      - name: Build workspace binaries on Unix
         if: runner.os != 'Windows'
         shell: bash
-        env:
-          CRATES_JSON: ${{ needs.prepare.outputs.crates }}
         run: |
+          set -euo pipefail
           mkdir -p dist
-          for crate in $(echo "$CRATES_JSON" | jq -r '.[]'); do
-            case "$crate" in
-              uefn_scan_cli)
-                bin="verse-scan"
-                ;;
-              mcp_server)
-                bin="vm"
-                ;;
-              *)
-                echo "Unsupported crate: $crate" >&2
-                exit 1
-                ;;
-            esac
+          for spec in "uefn_scan_cli:verse-scan" "mcp_server:vm"; do
+            crate="${spec%%:*}"
+            bin="${spec##*:}"
 
             if [ "${{ matrix.use_cross }}" = 'true' ]; then
               cross build --release -p "$crate" --target "${{ matrix.target }}"
@@ -106,28 +73,21 @@ jobs:
             tar -C "target/${{ matrix.target }}/release" -czf "dist/${archive}" "$bin"
             shasum -a 256 "dist/${archive}" > "dist/${archive}.sha256"
           done
-      - name: Build selected crates on Windows
+      - name: Build workspace binaries on Windows
         if: runner.os == 'Windows'
         shell: pwsh
-        env:
-          CRATES_JSON: ${{ needs.prepare.outputs.crates }}
         run: |
           New-Item -ItemType Directory -Force -Path dist | Out-Null
-          $crates = $env:CRATES_JSON | ConvertFrom-Json
-          foreach ($crate in $crates) {
-            switch ($crate) {
-              'uefn_scan_cli' { $bin = 'verse-scan' }
-              'mcp_server' { $bin = 'vm' }
-              default {
-                Write-Error "Unsupported crate: $crate"
-                exit 1
-              }
-            }
+          $pairs = @(
+            @{ crate = 'uefn_scan_cli'; bin = 'verse-scan' },
+            @{ crate = 'mcp_server'; bin = 'vm' }
+          )
 
-            cargo build --release -p $crate --target "${{ matrix.target }}"
+          foreach ($pair in $pairs) {
+            cargo build --release -p $pair.crate --target "${{ matrix.target }}"
 
-            $archive = "$bin-${{ matrix.suffix }}.${{ matrix.archive_ext }}"
-            Compress-Archive -Path "target/${{ matrix.target }}/release/$bin.exe" -DestinationPath "dist/$archive" -Force
+            $archive = "$($pair.bin)-${{ matrix.suffix }}.${{ matrix.archive_ext }}"
+            Compress-Archive -Path "target/${{ matrix.target }}/release/$($pair.bin).exe" -DestinationPath "dist/$archive" -Force
             $hash = (Get-FileHash "dist/$archive" -Algorithm SHA256).Hash.ToLower()
             Set-Content -Path "dist/$archive.sha256" -Value "$hash  $archive"
           }
@@ -155,5 +115,3 @@ jobs:
         with:
           files: dist/*
           generate_release_notes: true
-
-

@@ -2,7 +2,6 @@
 set -euo pipefail
 umask 022
 
-# === Config ===
 BINARY_NAME="vm"
 OWNER="quangdang46"
 REPO="verse-mcp"
@@ -18,18 +17,20 @@ DOWNLOAD_TIMEOUT=120
 LOCK_DIR="/tmp/${BINARY_NAME}-install.lock.d"
 TMP=""
 
-# === Logging ===
 log_info()    { [ "$QUIET" -eq 1 ] && return; echo "[${BINARY_NAME}] $*" >&2; }
 log_warn()    { echo "[${BINARY_NAME}] WARN: $*" >&2; }
 log_success() { [ "$QUIET" -eq 1 ] && return; echo "✓ $*" >&2; }
 die()         { echo "ERROR: $*" >&2; exit 1; }
 
-# === Cleanup & lock ===
 cleanup() { rm -rf "$TMP" "$LOCK_DIR" 2>/dev/null || true; }
 trap cleanup EXIT
+
 acquire_lock() {
-    mkdir "$LOCK_DIR" 2>/dev/null || die "Another install is running. rm -rf $LOCK_DIR"
-    echo $$ > "$LOCK_DIR/pid"
+    if mkdir "$LOCK_DIR" 2>/dev/null; then
+        echo $$ > "$LOCK_DIR/pid"
+        return 0
+    fi
+    die "Another install is running. If stuck: rm -rf $LOCK_DIR"
 }
 
 usage() {
@@ -44,7 +45,7 @@ Options:
   --system             Install into /usr/local/bin
   --easy-mode          Add destination to shell rc PATH
   --verify             Run installed binary with --version
-  --from-source        Developer-only: build from source instead of downloading a release
+  --from-source        Build from source instead of downloading a release
   --quiet, -q          Reduce output
   --uninstall          Remove installed binary
   -h, --help           Show this help
@@ -52,7 +53,6 @@ EOF
     exit 0
 }
 
-# === Args ===
 while [ $# -gt 0 ]; do
     case "$1" in
         --dest)
@@ -104,7 +104,6 @@ while [ $# -gt 0 ]; do
     esac
 done
 
-# === Uninstall ===
 do_uninstall() {
     rm -f "$DEST/$BINARY_NAME"
     for rc in "$HOME/.bashrc" "$HOME/.zshrc"; do
@@ -115,7 +114,6 @@ do_uninstall() {
 }
 [ "$UNINSTALL" -eq 1 ] && do_uninstall
 
-# === Platform ===
 detect_platform() {
     local os arch
     case "$(uname -s)" in
@@ -132,7 +130,6 @@ detect_platform() {
     echo "${os}-${arch}"
 }
 
-# === Version ===
 resolve_version() {
     [ -n "$VERSION" ] && return 0
     VERSION=$(curl -fsSL \
@@ -145,11 +142,10 @@ resolve_version() {
             "https://github.com/${OWNER}/${REPO}/releases/latest" \
             2>/dev/null | sed -E 's|.*/tag/||') || true
     fi
-    [[ "$VERSION" =~ ^[A-Za-z0-9._-]+$ ]] || die "Could not resolve version"
+    [[ "$VERSION" =~ ^v[0-9] ]] || die "Could not resolve version"
     log_info "Latest: $VERSION"
 }
 
-# === Download ===
 download_file() {
     local url="$1" dest="$2"
     local partial="${dest}.part"
@@ -168,7 +164,6 @@ download_file() {
     return 1
 }
 
-# === Atomic install ===
 install_binary_atomic() {
     local src="$1" dest="$2"
     local tmp="${dest}.tmp.$$"
@@ -176,7 +171,6 @@ install_binary_atomic() {
     mv -f "$tmp" "$dest" || { rm -f "$tmp"; die "Failed to install binary"; }
 }
 
-# === PATH ===
 maybe_add_path() {
     case ":$PATH:" in *":$DEST:"*) return 0 ;; esac
     if [ "$EASY" -eq 1 ]; then
@@ -191,7 +185,6 @@ maybe_add_path() {
     fi
 }
 
-# === Source build ===
 build_from_source() {
     command -v cargo >/dev/null || die "Rust/cargo not found. Install: https://rustup.rs"
     command -v git >/dev/null || die "git not found"
@@ -212,7 +205,6 @@ print_summary() {
     echo "    $BINARY_NAME --help"
 }
 
-# === Main ===
 main() {
     acquire_lock
     TMP=$(mktemp -d)
@@ -254,7 +246,8 @@ main() {
             [ -f "$bin_path" ] || die "Binary not found after extract"
             install_binary_atomic "$bin_path" "$DEST/$BINARY_NAME"
         else
-            die "Failed to download release binary from ${url}. For end users, install from a published release. For developer builds, rerun with --from-source after installing Rust and git."
+            log_warn "Binary download failed — building from source..."
+            build_from_source
         fi
     else
         build_from_source
@@ -262,9 +255,7 @@ main() {
 
     maybe_add_path
 
-    if [ "$VERIFY" -eq 1 ]; then
-        "$DEST/$BINARY_NAME" --version
-    fi
+    [ "$VERIFY" -eq 1 ] && "$DEST/$BINARY_NAME" --version
 
     print_summary
 }
