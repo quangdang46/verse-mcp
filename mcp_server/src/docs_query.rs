@@ -137,14 +137,13 @@ impl SearchPlan {
     }
 
     fn count_sql(&self) -> String {
-        format!(
-            r#"
+        r#"
             SELECT COUNT(*)
             FROM docs_fts
             JOIN docs d ON d.id = docs_fts.rowid
             WHERE docs_fts MATCH ?1
             "#
-        )
+        .to_string()
     }
 }
 
