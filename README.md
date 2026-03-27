@@ -28,16 +28,20 @@ It extracts placed-device information such as:
 | Tool | Input | Output |
 |---|---|---|
 | `scan_map_devices` | `project_path`, `force_refresh` (optional) | Full placed-device scan output grouped by type |
-| `query-docs` | `query` | Relevant Verse documentation excerpts and Verse code examples matching the query |
+| `query-docs` | `query`, `limit` (optional), `offset` (optional), `fetch_source_urls` (optional), `max_fetches` (optional) | Ranked Verse docs with full indexed content by default, plus optional fetched source page content |
+| `fetch-doc-source` | `url` | Fetch and normalize one returned documentation URL into agent-friendly text and JSON metadata |
 
 ### `query-docs` implementation notes
 
-Retrieves relevant Verse documentation excerpts and Verse code examples matching the query.
+Retrieves ranked Verse documentation matches from the packaged SQLite index.
 
 Output:
-- matching documentation excerpts
-- relevant Verse code examples
-- concise results focused on the requested topic
+- full indexed content for each returned match by default
+- snippet preview and ranking metadata
+- pagination metadata (`limit`, `offset`, `has_more`, `next_offset`)
+- optional fetched `source_url` page content when requested
+
+Use `fetch-doc-source` when you want a second-step fetch of one returned `source_url` without increasing the default `query-docs` payload.
 
 This tool is Verse-only for this project, so the `query` should focus on Verse or Fortnite UEFN topics.
 

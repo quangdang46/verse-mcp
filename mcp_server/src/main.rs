@@ -5,7 +5,7 @@
 
 use anyhow::Result;
 use clap::Parser;
-use rmcp::model::{Annotated, CallToolRequestMethod};
+use rmcp::model::{Annotated, CallToolRequestMethod, Content};
 use rmcp::{ServerHandler, ServiceExt};
 use std::path::PathBuf;
 use std::sync::{Arc, Mutex};
@@ -189,11 +189,36 @@ impl ServerHandler for VerseMcpHandler {
                 },
                 "limit": {
                     "type": "integer",
-                    "description": "Maximum number of ranked results to return (clamped to 1-10)"
+                    "description": "Maximum number of ranked results to return (clamped to 1-10)."
+                },
+                "offset": {
+                    "type": "integer",
+                    "description": "Zero-based result offset for pagination."
+                },
+                "fetch_source_urls": {
+                    "type": "boolean",
+                    "description": "When true, fetch the returned source_url pages for the selected results and include their normalized text in the response."
+                },
+                "max_fetches": {
+                    "type": "integer",
+                    "description": "Maximum number of source_url pages to fetch when fetch_source_urls=true (clamped to 0-5)."
                 }
             }),
         );
         docs_schema.insert("required".to_string(), serde_json::json!(["query"]));
+
+        let mut fetch_doc_schema = rmcp::model::JsonObject::new();
+        fetch_doc_schema.insert("type".to_string(), serde_json::json!("object"));
+        fetch_doc_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "url": {
+                    "type": "string",
+                    "description": "Required. The source URL to fetch and normalize into plain text."
+                }
+            }),
+        );
+        fetch_doc_schema.insert("required".to_string(), serde_json::json!(["url"]));
 
         Ok(rmcp::model::ListToolsResult {
             tools: vec![
@@ -204,8 +229,13 @@ impl ServerHandler for VerseMcpHandler {
                 },
                 rmcp::model::Tool {
                     name: "query-docs".into(),
-                    description: "Search the built-in SQLite Verse/Fortnite documentation index and return concise ranked excerpts.".into(),
+                    description: "Search the built-in SQLite Verse/Fortnite documentation index and return ranked results with full indexed content by default, plus optional fetched source_url page content.".into(),
                     input_schema: Arc::new(docs_schema),
+                },
+                rmcp::model::Tool {
+                    name: "fetch-doc-source".into(),
+                    description: "Fetch and normalize one documentation source URL into agent-friendly text and JSON metadata.".into(),
+                    input_schema: Arc::new(fetch_doc_schema),
                 },
             ],
             next_cursor: None,
@@ -220,37 +250,91 @@ impl ServerHandler for VerseMcpHandler {
         let name = params.name.as_ref();
         match name {
             "query-docs" => {
-                let query = params
-                    .arguments
-                    .as_ref()
+                let args = params.arguments.as_ref();
+                let query = args
                     .and_then(|args| args.get("query"))
                     .and_then(|v| v.as_str())
                     .ok_or_else(|| rmcp::Error::invalid_params("query is required; pass a non-empty `query` string argument to `query-docs`", None))?;
 
-                let limit = params
-                    .arguments
-                    .as_ref()
+                let limit = args
                     .and_then(|args| args.get("limit"))
                     .and_then(|v| v.as_u64())
                     .map(|limit| limit as usize);
 
-                match docs_query::query_docs(query, limit) {
-                    Ok(output) => Ok(rmcp::model::CallToolResult {
-                        content: vec![Annotated::text(docs_query::format_query_response(&output))],
-                        is_error: Some(false),
-                    }),
-                    Err(e) => {
-                        let error_json = serde_json::json!({
-                            "error": e.to_string(),
-                            "error_type": std::any::type_name_of_val(&e)
-                        });
+                let offset = args
+                    .and_then(|args| args.get("offset"))
+                    .and_then(|v| v.as_u64())
+                    .map(|offset| offset as usize);
+
+                let fetch_source_urls = args
+                    .and_then(|args| args.get("fetch_source_urls"))
+                    .and_then(|v| v.as_bool())
+                    .unwrap_or(false);
+
+                let max_fetches = args
+                    .and_then(|args| args.get("max_fetches"))
+                    .and_then(|v| v.as_u64())
+                    .map(|value| value as usize);
+
+                let options = docs_query::DocsQueryOptions {
+                    limit,
+                    offset,
+                    fetch_source_urls,
+                    max_fetches,
+                };
+
+                match docs_query::query_docs(query, options) {
+                    Ok(output) => {
+                        let summary = docs_query::format_query_response(&output);
+                        let structured = Content::json(&output)
+                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
                         Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(
-                                serde_json::to_string_pretty(&error_json).unwrap(),
-                            )],
-                            is_error: Some(true),
+                            content: vec![Annotated::text(summary), structured],
+                            is_error: Some(false),
                         })
                     }
+                    Err(e) => Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(format!(
+                            "query-docs failed: {}. Fix the query input and try again. Example queries: `editable properties`, `npc behavior`, or `creative_device AND event`.",
+                            e
+                        ))],
+                        is_error: Some(true),
+                    }),
+                }
+            }
+            "fetch-doc-source" => {
+                let url = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("url"))
+                    .and_then(|v| v.as_str())
+                    .ok_or_else(|| {
+                        rmcp::Error::invalid_params(
+                            "url is required; pass a non-empty `url` string argument to `fetch-doc-source`",
+                            None,
+                        )
+                    })?;
+
+                match docs_query::fetch_doc_source(url) {
+                    Ok(output) => {
+                        let summary = format!(
+                            "Fetched source {} with status {}.",
+                            output.url, output.status
+                        );
+                        let structured = Content::json(&output)
+                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(summary), structured],
+                            is_error: Some(false),
+                        })
+                    }
+                    Err(e) => Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(format!(
+                            "fetch-doc-source failed: {}. Pass a valid documentation URL and try again.",
+                            e
+                        ))],
+                        is_error: Some(true),
+                    }),
                 }
             }
             "scan_map_devices" => {
