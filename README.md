@@ -6,6 +6,61 @@
 
 ---
 
+## Why This Exists
+
+I'm transitioning from **web developer → game developer** and hit the same wall most Verse beginners hit: the syntax is fine, but integrating Verse with UEFN is where things get painful.
+
+The specific friction points:
+
+- **Properties and settings** live in the UEFN Details panel — not in code, not in docs
+- **Device options** aren't always controllable from Verse, and it's not obvious which ones are
+- **Game UI** — configuring it, wiring it to players, updating it correctly in multiplayer — is easy to get wrong in subtle ways
+- **AI assistants hallucinate** Verse API names constantly, because training data for Verse is sparse
+
+I looked for existing solutions — something like a "Verse MCP for UEFN" — and found nothing that was:
+
+- **Project-aware** (able to read your actual code and digest files)
+- **Digest-grounded** (using the managed Verse digest set as a source of truth)
+- **Focused on the hard parts**: UI wiring, `@editable` properties, multiplayer patterns
+
+So I built this.
+
+---
+
+## What It Solves
+
+### 1. "Does this API actually exist?"
+
+The MCP lets the AI or user guess naturally, then grounds that guess against your **managed digest files** and:
+
+- Confirms whether a symbol is real
+- Returns its actual signature
+- Suggests likely matches for partial, approximate, or natural-language queries
+- Prevents hallucinated method names before they reach your code
+
+### 2. "What `@editable` fields do I have, and where do I set them in UEFN?"
+
+The MCP parses your `.verse` source files and:
+
+- Lists all `@editable` fields in your project
+- Generates a wiring checklist (Details panel → reference/value assignment)
+- Flags common mistakes: unused editables, unchecked optionals, missing null guards
+
+### 3. "How do I write UI correctly — especially for multiplayer?"
+
+The MCP provides UI scaffolding based on proven Verse patterns:
+
+- Canvas and widget boilerplate (pure Verse UI, no UMG)
+- Per-player widget storage patterns (prevents UI overlap and state bleed between players)
+- Clean update/remove templates with correct lifecycle handling
+
+### 4. "What is this device called in Verse?"
+
+If I want to use the TRACK DUMMY device, I need to know its device name in Verse, but in Verse, the device name isn't the same as "TRACK DUMMY."
+So, how can I find the name that's used for this device in Verse?
+
+---
+
 ## What it does
 
 This project reads UEFN map assets directly from:
