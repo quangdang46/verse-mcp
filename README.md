@@ -86,6 +86,8 @@ It extracts placed-device information such as:
 | `query-docs` | `query`, `limit` (optional), `offset` (optional), `fetch_source_urls` (optional), `max_fetches` (optional) | Ranked Verse docs with full indexed content by default, plus optional fetched source page content |
 | `fetch-doc-source` | `url` | Fetch and normalize one returned documentation URL into agent-friendly text and JSON metadata |
 | `reload-project-metadata` | `project_path` | Drops cached project scan metadata so the next scan rebuilds without restarting the MCP server |
+| `list-agent-workflows` | none | Lists the markdown-defined Verse troubleshooting workflows bundled with the server |
+| `get-agent-workflow` | `name` | Loads one workflow body and metadata so an agent can follow it directly |
 
 ### `query-docs` implementation notes
 
@@ -123,6 +125,17 @@ request because the provided path is not a scanable UEFN project root.
 
 If you need to invalidate a project's cached scan state without restarting `vm`,
 call `reload-project-metadata` first and then run `scan_map_devices` again.
+
+### Agent workflows
+
+`verse-mcp` now ships markdown-defined workflows under `workflows/` for common
+agent tasks such as UI wiring, editable-property auditing, digest-grounded
+symbol lookup, and device setup diagnosis.
+
+Agent flow:
+- call `list-agent-workflows`
+- pick a workflow name
+- call `get-agent-workflow` to load the full instructions and follow them
 
 ---
 

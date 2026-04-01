@@ -182,6 +182,14 @@ impl GroundingEngine {
         }
     }
 
+    pub fn list_agent_workflows(&self) -> Result<crate::WorkflowCatalog> {
+        crate::workflows::list_workflows()
+    }
+
+    pub fn get_agent_workflow(&self, name: &str) -> Result<crate::AgentWorkflow> {
+        crate::workflows::get_workflow(name)
+    }
+
     fn try_cached_response(
         &self,
         cache_key: &Path,

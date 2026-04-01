@@ -182,6 +182,21 @@ impl ServerHandler for VerseMcpHandler {
         );
         reload_metadata_schema.insert("required".to_string(), serde_json::json!(["project_path"]));
 
+        let list_workflows_schema = rmcp::model::JsonObject::new();
+
+        let mut get_workflow_schema = rmcp::model::JsonObject::new();
+        get_workflow_schema.insert("type".to_string(), serde_json::json!("object"));
+        get_workflow_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "name": {
+                    "type": "string",
+                    "description": "Required. Workflow name from list-agent-workflows."
+                }
+            }),
+        );
+        get_workflow_schema.insert("required".to_string(), serde_json::json!(["name"]));
+
         Ok(rmcp::model::ListToolsResult {
             tools: vec![
                 rmcp::model::Tool {
@@ -203,6 +218,16 @@ impl ServerHandler for VerseMcpHandler {
                     name: "reload-project-metadata".into(),
                     description: "Drop cached project scan metadata for one UEFN project so the next scan rebuilds state without restarting the server.".into(),
                     input_schema: Arc::new(reload_metadata_schema),
+                },
+                rmcp::model::Tool {
+                    name: "list-agent-workflows".into(),
+                    description: "List markdown-defined Verse troubleshooting workflows available to an agent client.".into(),
+                    input_schema: Arc::new(list_workflows_schema),
+                },
+                rmcp::model::Tool {
+                    name: "get-agent-workflow".into(),
+                    description: "Load one markdown-defined Verse troubleshooting workflow by name.".into(),
+                    input_schema: Arc::new(get_workflow_schema),
                 },
             ],
             next_cursor: None,
@@ -383,6 +408,58 @@ impl ServerHandler for VerseMcpHandler {
                     content: vec![Annotated::text(summary), structured],
                     is_error: Some(false),
                 })
+            }
+            "list-agent-workflows" => match self.grounding.list_agent_workflows() {
+                Ok(response) => {
+                    let summary = format!(
+                        "Loaded {} agent workflow(s) from {}.",
+                        response.workflows.len(),
+                        response.root
+                    );
+                    let structured = Content::json(&response)
+                        .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
+                    Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(summary), structured],
+                        is_error: Some(false),
+                    })
+                }
+                Err(e) => Ok(rmcp::model::CallToolResult {
+                    content: vec![Annotated::text(format!(
+                        "list-agent-workflows failed: {}. Ensure the workflows directory is present and readable.",
+                        e
+                    ))],
+                    is_error: Some(true),
+                }),
+            },
+            "get-agent-workflow" => {
+                let name = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("name"))
+                    .and_then(|v| v.as_str())
+                    .ok_or_else(|| rmcp::Error::invalid_params("name is required", None))?;
+
+                match self.grounding.get_agent_workflow(name) {
+                    Ok(response) => {
+                        let summary = format!(
+                            "Loaded workflow {} from {}.",
+                            response.name, response.source_path
+                        );
+                        let structured = Content::json(&response)
+                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
+                        Ok(rmcp::model::CallToolResult {
+                            content: vec![Annotated::text(summary), structured],
+                            is_error: Some(false),
+                        })
+                    }
+                    Err(e) => Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(format!(
+                            "get-agent-workflow failed: {}. Call list-agent-workflows first to discover valid names.",
+                            e
+                        ))],
+                        is_error: Some(true),
+                    }),
+                }
             }
             _ => Err(rmcp::Error::method_not_found::<CallToolRequestMethod>()),
         }
