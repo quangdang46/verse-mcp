@@ -85,6 +85,7 @@ It extracts placed-device information such as:
 | `scan_map_devices` | `project_path`, `force_refresh` (optional) | Full placed-device scan output grouped by type |
 | `query-docs` | `query`, `limit` (optional), `offset` (optional), `fetch_source_urls` (optional), `max_fetches` (optional) | Ranked Verse docs with full indexed content by default, plus optional fetched source page content |
 | `fetch-doc-source` | `url` | Fetch and normalize one returned documentation URL into agent-friendly text and JSON metadata |
+| `reload-project-metadata` | `project_path` | Drops cached project scan metadata so the next scan rebuilds without restarting the MCP server |
 
 ### `query-docs` implementation notes
 
@@ -112,6 +113,16 @@ Examples of good queries for this project:
 Examples of bad queries:
 - `verse`
 - `uefn docs`
+
+### `scan_map_devices` policy notes
+
+`scan_map_devices` now reports the scan-policy decision in structured output. The
+policy layer explicitly explains whether the server reused cached scan metadata,
+forced a fresh scan, refreshed because `.uasset` mtimes changed, or denied the
+request because the provided path is not a scanable UEFN project root.
+
+If you need to invalidate a project's cached scan state without restarting `vm`,
+call `reload-project-metadata` first and then run `scan_map_devices` again.
 
 ---
 

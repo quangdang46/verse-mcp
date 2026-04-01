@@ -1,4 +1,4 @@
-use anyhow::Result;
+use anyhow::{bail, Result};
 use serde::Serialize;
 use std::collections::HashMap;
 use std::path::{Path, PathBuf};
@@ -18,6 +18,11 @@ pub struct ScanProjectRequest {
     pub force_refresh: bool,
 }
 
+#[derive(Debug, Clone, Serialize)]
+pub struct ReloadMetadataRequest {
+    pub project_path: PathBuf,
+}
+
 #[derive(Debug, Clone, Serialize, PartialEq, Eq)]
 #[serde(rename_all = "snake_case")]
 pub enum ScanCacheState {
@@ -27,10 +32,28 @@ pub enum ScanCacheState {
     ModifiedRefresh,
 }
 
+#[derive(Debug, Clone, Serialize, PartialEq, Eq)]
+#[serde(rename_all = "snake_case")]
+pub enum ScanPolicyAction {
+    FreshScan,
+    UseCachedScan,
+    ReloadMetadata,
+    NoCachedMetadata,
+    Deny,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct ScanPolicyDecision {
+    pub action: ScanPolicyAction,
+    pub allowed: bool,
+    pub reason: String,
+    pub explanation: String,
+}
+
 #[derive(Debug, Clone, Serialize)]
 pub struct ScanExecutionMeta {
+    pub policy: ScanPolicyDecision,
     pub cache_state: ScanCacheState,
-    pub reason: String,
     pub cached_at_epoch_ms: u128,
     pub max_mtime_epoch_ms: Option<u128>,
 }
@@ -40,6 +63,14 @@ pub struct ScanProjectResponse {
     #[serde(flatten)]
     pub output: uasset_scan::ScanOutput,
     pub execution: ScanExecutionMeta,
+}
+
+#[derive(Debug, Clone, Serialize)]
+pub struct ReloadMetadataResponse {
+    pub project_path: String,
+    pub policy: ScanPolicyDecision,
+    pub dropped_cached_scan: bool,
+    pub cached_projects_remaining: usize,
 }
 
 #[derive(Debug, Default)]
@@ -65,7 +96,11 @@ impl GroundingEngine {
         crate::docs::fetch_doc_source(url)
     }
 
-    pub fn scan_project(&self, request: &ScanProjectRequest) -> Result<ScanProjectResponse> {
+    pub fn evaluate_scan_policy(&self, request: &ScanProjectRequest) -> ScanPolicyDecision {
+        if let Some(denied) = deny_unless_scannable(&request.project_path) {
+            return denied;
+        }
+
         let cache_key = normalize_cache_key(&request.project_path);
         let current_mtime = max_project_mtime(&request.project_path);
         let cached_max_mtime = {
@@ -73,16 +108,28 @@ impl GroundingEngine {
             cache.get(&cache_key).map(|entry| entry.max_mtime)
         };
 
-        if let Some(response) =
-            self.try_cached_response(&cache_key, request.force_refresh, current_mtime)
-        {
-            return Ok(response);
+        classify_scan_request(request.force_refresh, cached_max_mtime, current_mtime)
+    }
+
+    pub fn scan_project(&self, request: &ScanProjectRequest) -> Result<ScanProjectResponse> {
+        let policy = self.evaluate_scan_policy(request);
+        if !policy.allowed {
+            bail!(policy.reason.clone());
+        }
+
+        let cache_key = normalize_cache_key(&request.project_path);
+        let current_mtime = max_project_mtime(&request.project_path);
+        if policy.action == ScanPolicyAction::UseCachedScan {
+            if let Some(response) =
+                self.try_cached_response(&cache_key, current_mtime, policy.clone())
+            {
+                return Ok(response);
+            }
         }
 
         let output = uasset_scan::scan_project(&request.project_path)?;
         let max_mtime = max_project_mtime(&request.project_path);
         let cached_at = SystemTime::now();
-        let decision = classify_scan_request(request.force_refresh, cached_max_mtime, max_mtime);
 
         {
             let mut cache = self.lock_cache();
@@ -98,26 +145,58 @@ impl GroundingEngine {
 
         Ok(ScanProjectResponse {
             output,
-            execution: execution_meta(&decision, cached_at, max_mtime),
+            execution: execution_meta(policy, cached_at, max_mtime),
         })
+    }
+
+    pub fn reload_project_metadata(
+        &self,
+        request: &ReloadMetadataRequest,
+    ) -> ReloadMetadataResponse {
+        let cache_key = normalize_cache_key(&request.project_path);
+        let project_path = request.project_path.display().to_string();
+        let mut cache = self.lock_cache();
+        let removed = cache.remove(&cache_key).is_some();
+        let remaining = cache.len();
+        let policy = if removed {
+            ScanPolicyDecision {
+                action: ScanPolicyAction::ReloadMetadata,
+                allowed: true,
+                reason: "cleared cached project scan metadata".to_string(),
+                explanation: "The next scan will rebuild metadata for this project without restarting the MCP server.".to_string(),
+            }
+        } else {
+            ScanPolicyDecision {
+                action: ScanPolicyAction::NoCachedMetadata,
+                allowed: true,
+                reason: "project had no cached scan metadata".to_string(),
+                explanation: "No in-memory scan cache existed for this project, so there was nothing to reload.".to_string(),
+            }
+        };
+
+        ReloadMetadataResponse {
+            project_path,
+            policy,
+            dropped_cached_scan: removed,
+            cached_projects_remaining: remaining,
+        }
     }
 
     fn try_cached_response(
         &self,
         cache_key: &Path,
-        force_refresh: bool,
         current_mtime: SystemTime,
+        policy: ScanPolicyDecision,
     ) -> Option<ScanProjectResponse> {
         let cache = self.lock_cache();
         let entry = cache.get(cache_key)?;
-        let decision = classify_scan_request(force_refresh, Some(entry.max_mtime), current_mtime);
-        if decision.cache_state != ScanCacheState::Hit {
+        if current_mtime > entry.max_mtime {
             return None;
         }
 
         Some(ScanProjectResponse {
             output: entry.output.clone(),
-            execution: execution_meta(&decision, entry.cached_at, entry.max_mtime),
+            execution: execution_meta(policy, entry.cached_at, entry.max_mtime),
         })
     }
 
@@ -136,7 +215,14 @@ pub fn format_scan_response(response: &ScanProjectResponse) -> String {
         response.output.total_devices,
         response.output.skipped,
         cache_state_label(&response.execution.cache_state),
-        response.execution.reason
+        response.execution.policy.reason
+    )
+}
+
+pub fn format_reload_metadata_response(response: &ReloadMetadataResponse) -> String {
+    format!(
+        "Metadata reload for {}: {} ({})",
+        response.project_path, response.policy.reason, response.policy.explanation
     )
 }
 
@@ -183,44 +269,121 @@ fn max_project_mtime(project_path: &Path) -> SystemTime {
     max_mtime
 }
 
+fn deny_unless_scannable(project_path: &Path) -> Option<ScanPolicyDecision> {
+    if !project_path.exists() {
+        return Some(ScanPolicyDecision {
+            action: ScanPolicyAction::Deny,
+            allowed: false,
+            reason: "project path does not exist".to_string(),
+            explanation: format!(
+                "{} does not exist on disk. Pass a valid UEFN project root.",
+                project_path.display()
+            ),
+        });
+    }
+
+    if !project_path.is_dir() {
+        return Some(ScanPolicyDecision {
+            action: ScanPolicyAction::Deny,
+            allowed: false,
+            reason: "project path is not a directory".to_string(),
+            explanation: format!(
+                "{} is not a directory. Pass the UEFN project root directory instead of a file.",
+                project_path.display()
+            ),
+        });
+    }
+
+    let content_root = project_path.join("Content");
+    let has_scan_roots = [
+        content_root.join("__ExternalActors__"),
+        content_root.join("__ExternalObjects__"),
+    ]
+    .iter()
+    .any(|path| path.exists());
+
+    if !has_scan_roots {
+        return Some(ScanPolicyDecision {
+            action: ScanPolicyAction::Deny,
+            allowed: false,
+            reason: "project is missing external actor/object scan roots".to_string(),
+            explanation: "The project does not contain Content/__ExternalActors__ or Content/__ExternalObjects__, so scan_map_devices cannot read placed-device metadata.".to_string(),
+        });
+    }
+
+    None
+}
+
 fn classify_scan_request(
     force_refresh: bool,
     cached_max_mtime: Option<SystemTime>,
     current_max_mtime: SystemTime,
-) -> ScanDecision {
+) -> ScanPolicyDecision {
     if force_refresh {
-        return ScanDecision {
-            cache_state: ScanCacheState::ForcedRefresh,
+        return ScanPolicyDecision {
+            action: ScanPolicyAction::FreshScan,
+            allowed: true,
             reason: "force_refresh requested".to_string(),
+            explanation: "Bypassing the in-memory cache and rebuilding project metadata from disk."
+                .to_string(),
         };
     }
 
     match cached_max_mtime {
-        None => ScanDecision {
-            cache_state: ScanCacheState::Miss,
+        None => ScanPolicyDecision {
+            action: ScanPolicyAction::FreshScan,
+            allowed: true,
             reason: "no cached scan output for project".to_string(),
+            explanation: "No cached metadata exists yet, so a fresh project scan is required."
+                .to_string(),
         },
-        Some(cached_max_mtime) if current_max_mtime > cached_max_mtime => ScanDecision {
-            cache_state: ScanCacheState::ModifiedRefresh,
+        Some(cached_max_mtime) if current_max_mtime > cached_max_mtime => ScanPolicyDecision {
+            action: ScanPolicyAction::FreshScan,
+            allowed: true,
             reason: "project assets changed since the cached scan".to_string(),
+            explanation:
+                "A newer .uasset modification time was detected, so the cached metadata must be rebuilt."
+                    .to_string(),
         },
-        Some(_) => ScanDecision {
-            cache_state: ScanCacheState::Hit,
+        Some(_) => ScanPolicyDecision {
+            action: ScanPolicyAction::UseCachedScan,
+            allowed: true,
             reason: "reused cached scan output".to_string(),
+            explanation:
+                "The in-memory scan cache is still fresh for this project, so no disk re-scan is needed."
+                    .to_string(),
         },
     }
 }
 
 fn execution_meta(
-    decision: &ScanDecision,
+    policy: ScanPolicyDecision,
     cached_at: SystemTime,
     max_mtime: SystemTime,
 ) -> ScanExecutionMeta {
     ScanExecutionMeta {
-        cache_state: decision.cache_state.clone(),
-        reason: decision.reason.clone(),
+        cache_state: cache_state_from_policy(&policy),
+        policy,
         cached_at_epoch_ms: system_time_to_epoch_ms(cached_at),
         max_mtime_epoch_ms: system_time_to_epoch_ms_opt(max_mtime),
+    }
+}
+
+fn cache_state_from_policy(policy: &ScanPolicyDecision) -> ScanCacheState {
+    match policy.action {
+        ScanPolicyAction::UseCachedScan => ScanCacheState::Hit,
+        ScanPolicyAction::FreshScan if policy.reason == "force_refresh requested" => {
+            ScanCacheState::ForcedRefresh
+        }
+        ScanPolicyAction::FreshScan
+            if policy.reason == "project assets changed since the cached scan" =>
+        {
+            ScanCacheState::ModifiedRefresh
+        }
+        ScanPolicyAction::FreshScan
+        | ScanPolicyAction::ReloadMetadata
+        | ScanPolicyAction::NoCachedMetadata
+        | ScanPolicyAction::Deny => ScanCacheState::Miss,
     }
 }
 
@@ -232,12 +395,6 @@ fn system_time_to_epoch_ms(time: SystemTime) -> u128 {
 
 fn system_time_to_epoch_ms_opt(time: SystemTime) -> Option<u128> {
     (time > SystemTime::UNIX_EPOCH).then(|| system_time_to_epoch_ms(time))
-}
-
-#[derive(Debug, Clone)]
-struct ScanDecision {
-    cache_state: ScanCacheState,
-    reason: String,
 }
 
 #[cfg(test)]
@@ -253,20 +410,20 @@ mod tests {
         let earlier = now.checked_sub(Duration::from_secs(10)).unwrap();
 
         assert_eq!(
-            classify_scan_request(false, None, now).cache_state,
-            ScanCacheState::Miss
+            classify_scan_request(false, None, now).action,
+            ScanPolicyAction::FreshScan
         );
         assert_eq!(
-            classify_scan_request(false, Some(now), now).cache_state,
-            ScanCacheState::Hit
+            classify_scan_request(false, Some(now), now).action,
+            ScanPolicyAction::UseCachedScan
         );
         assert_eq!(
-            classify_scan_request(true, Some(now), now).cache_state,
-            ScanCacheState::ForcedRefresh
+            classify_scan_request(true, Some(now), now).reason,
+            "force_refresh requested"
         );
         assert_eq!(
-            classify_scan_request(false, Some(earlier), now).cache_state,
-            ScanCacheState::ModifiedRefresh
+            classify_scan_request(false, Some(earlier), now).reason,
+            "project assets changed since the cached scan"
         );
     }
 
@@ -342,6 +499,44 @@ mod tests {
             second.execution.cache_state,
             ScanCacheState::ModifiedRefresh
         );
+
+        let _ = fs::remove_dir_all(temp_root);
+    }
+
+    #[test]
+    fn evaluate_scan_policy_denies_missing_project_paths() {
+        let engine = GroundingEngine::default();
+        let policy = engine.evaluate_scan_policy(&ScanProjectRequest {
+            project_path: std::env::temp_dir().join("verse-mcp-missing-project-does-not-exist"),
+            force_refresh: false,
+        });
+
+        assert_eq!(policy.action, ScanPolicyAction::Deny);
+        assert!(!policy.allowed);
+        assert_eq!(policy.reason, "project path does not exist");
+    }
+
+    #[test]
+    fn reload_project_metadata_clears_cached_scan_without_restart() {
+        let temp_root = temp_project_root("reload-metadata");
+        let project_path = write_invalid_uasset_project(&temp_root, "device.uasset");
+        let engine = GroundingEngine::default();
+        let request = ScanProjectRequest {
+            project_path: project_path.clone(),
+            force_refresh: false,
+        };
+
+        let first = engine.scan_project(&request).unwrap();
+        assert_eq!(first.execution.cache_state, ScanCacheState::Miss);
+
+        let reload = engine.reload_project_metadata(&ReloadMetadataRequest {
+            project_path: project_path.clone(),
+        });
+        assert_eq!(reload.policy.action, ScanPolicyAction::ReloadMetadata);
+        assert!(reload.dropped_cached_scan);
+
+        let second = engine.scan_project(&request).unwrap();
+        assert_eq!(second.execution.cache_state, ScanCacheState::Miss);
 
         let _ = fs::remove_dir_all(temp_root);
     }

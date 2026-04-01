@@ -6,8 +6,8 @@
 use anyhow::Result;
 use clap::Parser;
 use grounding_engine::{
-    format_query_response, format_scan_response, DocsQueryOptions, GroundingEngine,
-    ScanProjectRequest,
+    format_query_response, format_reload_metadata_response, format_scan_response, DocsQueryOptions,
+    GroundingEngine, ReloadMetadataRequest, ScanProjectRequest,
 };
 use rmcp::model::{Annotated, CallToolRequestMethod, Content};
 use rmcp::{ServerHandler, ServiceExt};
@@ -101,7 +101,7 @@ impl ServerHandler for VerseMcpHandler {
                 name: "verse-mcp".to_string(),
                 version: env!("CARGO_PKG_VERSION").to_string(),
             },
-            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for placed devices. Use query-docs with a required `query` string to search the built-in documentation index.".to_string()),
+            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for placed devices, query-docs to search the built-in documentation index, and reload-project-metadata to drop cached project scan metadata without restarting the server.".to_string()),
         }
     }
 
@@ -169,6 +169,19 @@ impl ServerHandler for VerseMcpHandler {
         );
         fetch_doc_schema.insert("required".to_string(), serde_json::json!(["url"]));
 
+        let mut reload_metadata_schema = rmcp::model::JsonObject::new();
+        reload_metadata_schema.insert("type".to_string(), serde_json::json!("object"));
+        reload_metadata_schema.insert(
+            "properties".to_string(),
+            serde_json::json!({
+                "project_path": {
+                    "type": "string",
+                    "description": "Required. Path to the UEFN project whose cached scan metadata should be dropped."
+                }
+            }),
+        );
+        reload_metadata_schema.insert("required".to_string(), serde_json::json!(["project_path"]));
+
         Ok(rmcp::model::ListToolsResult {
             tools: vec![
                 rmcp::model::Tool {
@@ -185,6 +198,11 @@ impl ServerHandler for VerseMcpHandler {
                     name: "fetch-doc-source".into(),
                     description: "Fetch and normalize one documentation source URL into agent-friendly text and JSON metadata.".into(),
                     input_schema: Arc::new(fetch_doc_schema),
+                },
+                rmcp::model::Tool {
+                    name: "reload-project-metadata".into(),
+                    description: "Drop cached project scan metadata for one UEFN project so the next scan rebuilds state without restarting the server.".into(),
+                    input_schema: Arc::new(reload_metadata_schema),
                 },
             ],
             next_cursor: None,
@@ -308,6 +326,19 @@ impl ServerHandler for VerseMcpHandler {
                     project_path: scan_path,
                     force_refresh,
                 };
+                let policy = self.grounding.evaluate_scan_policy(&request);
+                if !policy.allowed {
+                    let denial = serde_json::json!({
+                        "project_path": request.project_path.display().to_string(),
+                        "policy": policy,
+                    });
+                    let denial_text = serde_json::to_string_pretty(&denial)
+                        .unwrap_or_else(|_| denial.to_string());
+                    return Ok(rmcp::model::CallToolResult {
+                        content: vec![Annotated::text(denial_text)],
+                        is_error: Some(true),
+                    });
+                }
 
                 match self.grounding.scan_project(&request) {
                     Ok(output) => {
@@ -332,6 +363,26 @@ impl ServerHandler for VerseMcpHandler {
                         })
                     }
                 }
+            }
+            "reload-project-metadata" => {
+                let project_path = params
+                    .arguments
+                    .as_ref()
+                    .and_then(|args| args.get("project_path"))
+                    .and_then(|v| v.as_str())
+                    .map(PathBuf::from)
+                    .ok_or_else(|| rmcp::Error::invalid_params("project_path is required", None))?;
+
+                let response = self
+                    .grounding
+                    .reload_project_metadata(&ReloadMetadataRequest { project_path });
+                let summary = format_reload_metadata_response(&response);
+                let structured = Content::json(&response)
+                    .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
+                Ok(rmcp::model::CallToolResult {
+                    content: vec![Annotated::text(summary), structured],
+                    is_error: Some(false),
+                })
             }
             _ => Err(rmcp::Error::method_not_found::<CallToolRequestMethod>()),
         }
