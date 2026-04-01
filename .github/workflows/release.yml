@@ -27,12 +27,12 @@ jobs:
             archive_ext: tar.gz
             use_cross: true
           - target: x86_64-apple-darwin
-            runner: macos-latest
+            runner: macos-13
             suffix: macos-x86_64
             archive_ext: tar.gz
             use_cross: false
           - target: aarch64-apple-darwin
-            runner: macos-latest
+            runner: macos-14
             suffix: macos-aarch64
             archive_ext: tar.gz
             use_cross: false
@@ -51,8 +51,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - name: Install cross
         if: matrix.use_cross
-        shell: bash
-        run: cargo install cross --git https://github.com/cross-rs/cross
+        uses: taiki-e/install-action@cross
       - name: Build workspace binaries on Unix
         if: runner.os != 'Windows'
         shell: bash
