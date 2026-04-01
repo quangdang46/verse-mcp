@@ -5,16 +5,16 @@
 
 use anyhow::Result;
 use clap::Parser;
+use grounding_engine::{
+    format_query_response, format_scan_response, DocsQueryOptions, GroundingEngine,
+    ScanProjectRequest,
+};
 use rmcp::model::{Annotated, CallToolRequestMethod, Content};
 use rmcp::{ServerHandler, ServiceExt};
 use std::path::PathBuf;
-use std::sync::{Arc, Mutex};
-use std::time::SystemTime;
+use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
 use tracing_subscriber::EnvFilter;
-
-mod docs_query;
-mod tools;
 
 /// CLI arguments for the MCP server
 #[derive(Parser, Debug)]
@@ -35,48 +35,6 @@ struct Cli {
     port: u16,
 }
 
-/// Cache entry for scan results
-#[derive(Debug, Clone)]
-struct ScanCache {
-    /// Cached scan output
-    output: uasset_scan::ScanOutput,
-    /// Maximum mtime of scanned files when cache was created
-    max_mtime: SystemTime,
-    /// When the cache was created (for future time-based expiration)
-    #[allow(dead_code)]
-    cached_at: SystemTime,
-}
-
-/// Get the maximum modification time of scanned directories
-///
-/// Scans both __ExternalActors__ and __ExternalObjects__ for cache invalidation.
-fn get_max_mtime(project_path: &std::path::Path) -> SystemTime {
-    let content_root = project_path.join("Content");
-    let scan_dirs = vec![
-        content_root.join("__ExternalActors__"),
-        content_root.join("__ExternalObjects__"),
-    ];
-    let mut max_mtime = SystemTime::UNIX_EPOCH;
-
-    for scan_dir in scan_dirs {
-        if let Ok(entries) = std::fs::read_dir(&scan_dir) {
-            for entry in entries.flatten() {
-                if entry.path().extension().is_some_and(|ext| ext == "uasset") {
-                    if let Ok(metadata) = entry.metadata() {
-                        if let Ok(mtime) = metadata.modified() {
-                            if mtime > max_mtime {
-                                max_mtime = mtime;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-
-    max_mtime
-}
-
 /// MCP server entry point
 #[tokio::main]
 async fn main() -> Result<()> {
@@ -93,7 +51,7 @@ async fn main() -> Result<()> {
     );
 
     let handler = VerseMcpHandler {
-        cache: Mutex::new(None),
+        grounding: GroundingEngine::default(),
     };
 
     match cli.transport.as_str() {
@@ -126,18 +84,9 @@ async fn main() -> Result<()> {
 }
 
 /// Verse MCP Handler implementation
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct VerseMcpHandler {
-    /// Cache for scan results (uses Mutex for interior mutability)
-    cache: Mutex<Option<ScanCache>>,
-}
-
-impl Clone for VerseMcpHandler {
-    fn clone(&self) -> Self {
-        Self {
-            cache: Mutex::new(self.cache.lock().unwrap().clone()),
-        }
-    }
+    grounding: GroundingEngine,
 }
 
 impl ServerHandler for VerseMcpHandler {
@@ -276,16 +225,16 @@ impl ServerHandler for VerseMcpHandler {
                     .and_then(|v| v.as_u64())
                     .map(|value| value as usize);
 
-                let options = docs_query::DocsQueryOptions {
+                let options = DocsQueryOptions {
                     limit,
                     offset,
                     fetch_source_urls,
                     max_fetches,
                 };
 
-                match docs_query::query_docs(query, options) {
+                match self.grounding.query_docs(query, options) {
                     Ok(output) => {
-                        let summary = docs_query::format_query_response(&output);
+                        let summary = format_query_response(&output);
                         let structured = Content::json(&output)
                             .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
                         Ok(rmcp::model::CallToolResult {
@@ -315,7 +264,7 @@ impl ServerHandler for VerseMcpHandler {
                         )
                     })?;
 
-                match docs_query::fetch_doc_source(url) {
+                match self.grounding.fetch_doc_source(url) {
                     Ok(output) => {
                         let summary = format!(
                             "Fetched source {} with status {}.",
@@ -355,53 +304,18 @@ impl ServerHandler for VerseMcpHandler {
                     .and_then(|v| v.as_bool())
                     .unwrap_or(false);
 
-                let should_scan = {
-                    let cache_guard = self.cache.lock().unwrap();
-                    if force_refresh {
-                        tracing::info!("Force refresh requested, bypassing cache");
-                        true
-                    } else if let Some(ref cached) = *cache_guard {
-                        let current_mtime = get_max_mtime(&scan_path);
-                        if current_mtime > cached.max_mtime {
-                            tracing::info!("Cache invalidated: files modified since last scan");
-                            true
-                        } else {
-                            tracing::info!("Using cached scan result");
-                            false
-                        }
-                    } else {
-                        tracing::info!("No cache found, performing fresh scan");
-                        true
-                    }
+                let request = ScanProjectRequest {
+                    project_path: scan_path,
+                    force_refresh,
                 };
 
-                if !should_scan {
-                    let cache_guard = self.cache.lock().unwrap();
-                    if let Some(ref cached) = *cache_guard {
-                        let json = serde_json::to_string_pretty(&cached.output)
-                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
-                        return Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(json)],
-                            is_error: Some(false),
-                        });
-                    }
-                }
-
-                match tools::scan_map_devices(&scan_path) {
+                match self.grounding.scan_project(&request) {
                     Ok(output) => {
-                        {
-                            let mut cache_guard = self.cache.lock().unwrap();
-                            *cache_guard = Some(ScanCache {
-                                max_mtime: get_max_mtime(&scan_path),
-                                cached_at: SystemTime::now(),
-                                output: output.clone(),
-                            });
-                        }
-
-                        let json = serde_json::to_string_pretty(&output)
+                        let summary = format_scan_response(&output);
+                        let structured = Content::json(&output)
                             .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
                         Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(json)],
+                            content: vec![Annotated::text(summary), structured],
                             is_error: Some(false),
                         })
                     }
@@ -410,10 +324,10 @@ impl ServerHandler for VerseMcpHandler {
                             "error": e.to_string(),
                             "error_type": std::any::type_name_of_val(&e)
                         });
+                        let error_text = serde_json::to_string_pretty(&error_json)
+                            .unwrap_or_else(|_| error_json.to_string());
                         Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(
-                                serde_json::to_string_pretty(&error_json).unwrap(),
-                            )],
+                            content: vec![Annotated::text(error_text)],
                             is_error: Some(true),
                         })
                     }

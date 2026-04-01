@@ -9,7 +9,7 @@ name = "verse-scan"
 path = "src/main.rs"
 
 [dependencies]
-uasset_scan = { workspace = true }
+grounding_engine = { workspace = true }
 clap = { workspace = true }
 serde_json = { workspace = true }
 anyhow = { workspace = true }

@@ -6,6 +6,7 @@
 
 use anyhow::Result;
 use clap::Parser;
+use grounding_engine::{GroundingEngine, ScanProjectRequest};
 use std::path::PathBuf;
 use tracing_subscriber::EnvFilter;
 
@@ -44,7 +45,12 @@ fn main() -> Result<()> {
     eprintln!("[verse-scan] Project: {}", args.dir.display());
 
     // Scan the project
-    let output = uasset_scan::scan_project(&args.dir)?;
+    let engine = GroundingEngine::default();
+    let response = engine.scan_project(&ScanProjectRequest {
+        project_path: args.dir.clone(),
+        force_refresh: false,
+    })?;
+    let output = response.output;
 
     eprintln!("[verse-scan] Files: {} .uasset", output.total_files);
     eprintln!("[verse-scan] Devices: {} parsed", output.total_devices);

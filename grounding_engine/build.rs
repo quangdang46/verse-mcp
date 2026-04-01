@@ -26,7 +26,7 @@ fn main() -> Result<(), Box<dyn Error>> {
     let manifest_dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR")?);
     let repo_root = manifest_dir
         .parent()
-        .ok_or("mcp_server must live under repo root")?;
+        .ok_or("grounding_engine must live under repo root")?;
     let out_dir = PathBuf::from(env::var("OUT_DIR")?);
     let db_path = out_dir.join("verse-docs.db");
 
@@ -285,10 +285,6 @@ fn normalize_content(raw_md: &str) -> String {
         .to_string()
 }
 
-fn is_junk_doc(raw_md: &str) -> bool {
-    JUNK_MARKERS.iter().any(|marker| raw_md.contains(marker))
-}
-
 fn normalize_digest_content(raw_md: &str) -> String {
     let blank_lines_re = Regex::new(r"\n{3,}").unwrap();
     let content = raw_md.replace("\r\n", "\n");
@@ -296,6 +292,10 @@ fn normalize_digest_content(raw_md: &str) -> String {
         .replace_all(content.trim(), "\n\n")
         .trim()
         .to_string()
+}
+
+fn is_junk_doc(raw_md: &str) -> bool {
+    JUNK_MARKERS.iter().any(|marker| raw_md.contains(marker))
 }
 
 fn derive_doc_type(relative_path: &str) -> String {

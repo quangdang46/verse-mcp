@@ -1,6 +1,7 @@
 [workspace]
 resolver = "2"
 members = [
+    "grounding_engine",
     "uasset_scan",
     "uefn_scan_cli",
     "mcp_server",
@@ -45,3 +46,4 @@ tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # Internal crates
 uasset_scan = { path = "uasset_scan" }
+grounding_engine = { path = "grounding_engine" }
