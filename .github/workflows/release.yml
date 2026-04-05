@@ -12,6 +12,11 @@ jobs:
   build:
     name: Build (${{ matrix.target }})
     runs-on: ${{ matrix.runner }}
+    env:
+      # Isolate per-target artifacts so cross jobs do not reuse incompatible
+      # host build-script binaries restored from the shared cache.
+      CARGO_TARGET_DIR: target/build-${{ matrix.suffix }}
+      BUILD_OUTPUT_DIR: target/build-${{ matrix.suffix }}/${{ matrix.target }}/release
     strategy:
       fail-fast: false
       matrix:
@@ -64,7 +69,7 @@ jobs:
             fi
 
             archive="${bin}-${{ matrix.suffix }}.${{ matrix.archive_ext }}"
-            tar -C "target/${{ matrix.target }}/release" -czf "dist/${archive}" "$bin"
+            tar -C "${BUILD_OUTPUT_DIR}" -czf "dist/${archive}" "$bin"
             shasum -a 256 "dist/${archive}" > "dist/${archive}.sha256"
           done
       - name: Build workspace binaries on Windows
@@ -81,7 +86,7 @@ jobs:
             cargo build --release -p $pair.crate --target "${{ matrix.target }}"
 
             $archive = "$($pair.bin)-${{ matrix.suffix }}.${{ matrix.archive_ext }}"
-            Compress-Archive -Path "target/${{ matrix.target }}/release/$($pair.bin).exe" -DestinationPath "dist/$archive" -Force
+            Compress-Archive -Path "$env:BUILD_OUTPUT_DIR/$($pair.bin).exe" -DestinationPath "dist/$archive" -Force
             $hash = (Get-FileHash "dist/$archive" -Algorithm SHA256).Hash.ToLower()
             Set-Content -Path "dist/$archive.sha256" -Value "$hash  $archive"
           }
