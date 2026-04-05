@@ -142,7 +142,7 @@ Agent flow:
 ## Tech Stack
 
 - **Rust** — MCP server + `.uasset` binary parser
-- **rmcp** — MCP protocol implementation with stdio and HTTP (SSE) transport
+- **rmcp** — MCP protocol implementation with stdio and streamable HTTP transport
 - **rayon** — parallel scanning
 - **tokio / tokio-util** — async runtime and cancellation handling
 - **unreal_asset** — UE asset parsing support
@@ -190,6 +190,8 @@ vm --transport http --port 8080
 
 `query-docs` works out of the box after installing `vm`. The docs index is built into the binary, and `vm` creates a private cached copy automatically on first docs query.
 
+When you use `--transport http`, `vm` exposes a streamable HTTP MCP endpoint at `http://127.0.0.1:2003/mcp`.
+
 ### MCP config
 
 ```json
@@ -197,6 +199,18 @@ vm --transport http --port 8080
   "mcpServers": {
     "verse-mcp": {
       "command": "vm"
+    }
+  }
+}
+```
+
+### HTTP MCP config
+
+```json
+{
+  "mcpServers": {
+    "verse-mcp-http": {
+      "url": "http://127.0.0.1:2003/mcp"
     }
   }
 }
@@ -222,7 +236,7 @@ I found 47 devices across 15 types.
 - [x] `.uasset` parser for placed devices
 - [x] scans both `__ExternalActors__` and `__ExternalObjects__`
 - [x] parallel scanning with rayon
-- [x] MCP server with stdio and HTTP (SSE) transport
+- [x] MCP server with stdio and streamable HTTP transport
 - [x] `scan_map_devices` with cache invalidation
 - [x] `query-docs` runtime retrieval from a built-in SQLite docs index
 

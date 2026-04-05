@@ -4,13 +4,18 @@
 //! - Scanning UEFN projects for devices
 
 use anyhow::Result;
+use axum::Router;
 use clap::Parser;
 use grounding_engine::{
     format_query_response, format_reload_metadata_response, format_scan_response, DocsQueryOptions,
     GroundingEngine, ReloadMetadataRequest, ScanProjectRequest,
 };
-use rmcp::model::{Annotated, CallToolRequestMethod, Content};
+use rmcp::model::{CallToolRequestMethod, Content};
+use rmcp::transport::streamable_http_server::{
+    session::local::LocalSessionManager, StreamableHttpServerConfig, StreamableHttpService,
+};
 use rmcp::{ServerHandler, ServiceExt};
+use serde::Serialize;
 use std::path::PathBuf;
 use std::sync::Arc;
 use tokio_util::sync::CancellationToken;
@@ -50,9 +55,7 @@ async fn main() -> Result<()> {
         cli.transport
     );
 
-    let handler = VerseMcpHandler {
-        grounding: GroundingEngine::default(),
-    };
+    let handler = VerseMcpHandler::new();
 
     match cli.transport.as_str() {
         "http" => {
@@ -60,15 +63,19 @@ async fn main() -> Result<()> {
             tracing::info!("Starting HTTP server on {}", addr);
 
             let bind_addr: std::net::SocketAddr = addr.parse()?;
-            let sse_server: rmcp::transport::SseServer =
-                rmcp::transport::SseServer::serve(bind_addr).await?;
-            let token: CancellationToken = sse_server.with_service(move || handler.clone());
+            let shutdown = CancellationToken::new();
+            let router = build_http_router(handler.clone(), shutdown.clone());
+            let listener = tokio::net::TcpListener::bind(bind_addr).await?;
 
-            tracing::info!("HTTP server listening on {}", addr);
-            tokio::signal::ctrl_c().await?;
-            tracing::info!("Shutting down HTTP server...");
-            token.cancel();
-            token.cancelled().await;
+            tracing::info!("HTTP server listening on http://{}/mcp", addr);
+            axum::serve(listener, router)
+                .with_graceful_shutdown(async move {
+                    let _ = tokio::signal::ctrl_c().await;
+                    tracing::info!("Shutting down HTTP server...");
+                    shutdown.cancel();
+                    shutdown.cancelled().await;
+                })
+                .await?;
         }
         _ => {
             tracing::info!("Using stdio transport");
@@ -89,27 +96,56 @@ struct VerseMcpHandler {
     grounding: GroundingEngine,
 }
 
+impl VerseMcpHandler {
+    fn new() -> Self {
+        Self {
+            grounding: GroundingEngine::default(),
+        }
+    }
+}
+
+fn build_http_router(handler: VerseMcpHandler, shutdown: CancellationToken) -> Router {
+    let config = StreamableHttpServerConfig::default()
+        .with_stateful_mode(false)
+        .with_json_response(true)
+        .with_sse_keep_alive(None)
+        .with_cancellation_token(shutdown.child_token());
+    let service: StreamableHttpService<VerseMcpHandler, LocalSessionManager> =
+        StreamableHttpService::new(move || Ok(handler.clone()), Default::default(), config);
+
+    Router::new().nest_service("/mcp", service)
+}
+
+fn ok_with_structured<T: Serialize>(
+    summary: impl Into<String>,
+    value: &T,
+) -> Result<rmcp::model::CallToolResult, rmcp::ErrorData> {
+    let structured = serde_json::to_value(value)
+        .map_err(|e| rmcp::ErrorData::internal_error(e.to_string(), None))?;
+    let mut result = rmcp::model::CallToolResult::structured(structured);
+    result.content.insert(0, Content::text(summary.into()));
+    Ok(result)
+}
+
+fn err_with_text(message: impl Into<String>) -> rmcp::model::CallToolResult {
+    rmcp::model::CallToolResult::error(vec![Content::text(message.into())])
+}
+
 impl ServerHandler for VerseMcpHandler {
     fn get_info(&self) -> rmcp::model::ServerInfo {
-        rmcp::model::ServerInfo {
-            protocol_version: rmcp::model::ProtocolVersion::default(),
-            capabilities: rmcp::model::ServerCapabilities {
-                tools: Some(rmcp::model::ToolsCapability { list_changed: None }),
-                ..Default::default()
-            },
-            server_info: rmcp::model::Implementation {
-                name: "verse-mcp".to_string(),
-                version: env!("CARGO_PKG_VERSION").to_string(),
-            },
-            instructions: Some("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for placed devices, query-docs to search the built-in documentation index, and reload-project-metadata to drop cached project scan metadata without restarting the server.".to_string()),
-        }
+        rmcp::model::ServerInfo::new(rmcp::model::ServerCapabilities::builder().enable_tools().build())
+            .with_server_info(rmcp::model::Implementation::new(
+                "verse-mcp",
+                env!("CARGO_PKG_VERSION"),
+            ))
+            .with_instructions("Verse MCP Server for UEFN/Verse development. Use scan_map_devices to scan your project for placed devices, query-docs to search the built-in documentation index, and reload-project-metadata to drop cached project scan metadata without restarting the server.")
     }
 
     async fn list_tools(
         &self,
-        _pagination: Option<rmcp::model::PaginatedRequestParamInner>,
+        _pagination: Option<rmcp::model::PaginatedRequestParams>,
         _context: rmcp::service::RequestContext<rmcp::service::RoleServer>,
-    ) -> Result<rmcp::model::ListToolsResult, rmcp::Error> {
+    ) -> Result<rmcp::model::ListToolsResult, rmcp::ErrorData> {
         let mut scan_schema = rmcp::model::JsonObject::new();
         scan_schema.insert("type".to_string(), serde_json::json!("object"));
         scan_schema.insert(
@@ -182,7 +218,9 @@ impl ServerHandler for VerseMcpHandler {
         );
         reload_metadata_schema.insert("required".to_string(), serde_json::json!(["project_path"]));
 
-        let list_workflows_schema = rmcp::model::JsonObject::new();
+        let mut list_workflows_schema = rmcp::model::JsonObject::new();
+        list_workflows_schema.insert("type".to_string(), serde_json::json!("object"));
+        list_workflows_schema.insert("properties".to_string(), serde_json::json!({}));
 
         let mut get_workflow_schema = rmcp::model::JsonObject::new();
         get_workflow_schema.insert("type".to_string(), serde_json::json!("object"));
@@ -197,48 +235,45 @@ impl ServerHandler for VerseMcpHandler {
         );
         get_workflow_schema.insert("required".to_string(), serde_json::json!(["name"]));
 
-        Ok(rmcp::model::ListToolsResult {
-            tools: vec![
-                rmcp::model::Tool {
-                    name: "scan_map_devices".into(),
-                    description: "Scan UEFN project for all placed devices. Returns device types, triggers, receivers, and settings. Results are cached and invalidated when files change.".into(),
-                    input_schema: Arc::new(scan_schema),
-                },
-                rmcp::model::Tool {
-                    name: "query-docs".into(),
-                    description: "Search the built-in SQLite Verse/Fortnite documentation index and return ranked results with full indexed content by default, plus optional fetched source_url page content.".into(),
-                    input_schema: Arc::new(docs_schema),
-                },
-                rmcp::model::Tool {
-                    name: "fetch-doc-source".into(),
-                    description: "Fetch and normalize one documentation source URL into agent-friendly text and JSON metadata.".into(),
-                    input_schema: Arc::new(fetch_doc_schema),
-                },
-                rmcp::model::Tool {
-                    name: "reload-project-metadata".into(),
-                    description: "Drop cached project scan metadata for one UEFN project so the next scan rebuilds state without restarting the server.".into(),
-                    input_schema: Arc::new(reload_metadata_schema),
-                },
-                rmcp::model::Tool {
-                    name: "list-agent-workflows".into(),
-                    description: "List markdown-defined Verse troubleshooting workflows available to an agent client.".into(),
-                    input_schema: Arc::new(list_workflows_schema),
-                },
-                rmcp::model::Tool {
-                    name: "get-agent-workflow".into(),
-                    description: "Load one markdown-defined Verse troubleshooting workflow by name.".into(),
-                    input_schema: Arc::new(get_workflow_schema),
-                },
-            ],
-            next_cursor: None,
-        })
+        Ok(rmcp::model::ListToolsResult::with_all_items(vec![
+            rmcp::model::Tool::new(
+                "scan_map_devices",
+                "Scan UEFN project for all placed devices. Returns device types, triggers, receivers, and settings. Results are cached and invalidated when files change.",
+                Arc::new(scan_schema),
+            ),
+            rmcp::model::Tool::new(
+                "query-docs",
+                "Search the built-in SQLite Verse/Fortnite documentation index and return ranked results with full indexed content by default, plus optional fetched source_url page content.",
+                Arc::new(docs_schema),
+            ),
+            rmcp::model::Tool::new(
+                "fetch-doc-source",
+                "Fetch and normalize one documentation source URL into agent-friendly text and JSON metadata.",
+                Arc::new(fetch_doc_schema),
+            ),
+            rmcp::model::Tool::new(
+                "reload-project-metadata",
+                "Drop cached project scan metadata for one UEFN project so the next scan rebuilds state without restarting the server.",
+                Arc::new(reload_metadata_schema),
+            ),
+            rmcp::model::Tool::new(
+                "list-agent-workflows",
+                "List markdown-defined Verse troubleshooting workflows available to an agent client.",
+                Arc::new(list_workflows_schema),
+            ),
+            rmcp::model::Tool::new(
+                "get-agent-workflow",
+                "Load one markdown-defined Verse troubleshooting workflow by name.",
+                Arc::new(get_workflow_schema),
+            ),
+        ]))
     }
 
     async fn call_tool(
         &self,
-        params: rmcp::model::CallToolRequestParam,
+        params: rmcp::model::CallToolRequestParams,
         _context: rmcp::service::RequestContext<rmcp::service::RoleServer>,
-    ) -> Result<rmcp::model::CallToolResult, rmcp::Error> {
+    ) -> Result<rmcp::model::CallToolResult, rmcp::ErrorData> {
         let name = params.name.as_ref();
         match name {
             "query-docs" => {
@@ -246,7 +281,7 @@ impl ServerHandler for VerseMcpHandler {
                 let query = args
                     .and_then(|args| args.get("query"))
                     .and_then(|v| v.as_str())
-                    .ok_or_else(|| rmcp::Error::invalid_params("query is required; pass a non-empty `query` string argument to `query-docs`", None))?;
+                    .ok_or_else(|| rmcp::ErrorData::invalid_params("query is required; pass a non-empty `query` string argument to `query-docs`", None))?;
 
                 let limit = args
                     .and_then(|args| args.get("limit"))
@@ -278,20 +313,12 @@ impl ServerHandler for VerseMcpHandler {
                 match self.grounding.query_docs(query, options) {
                     Ok(output) => {
                         let summary = format_query_response(&output);
-                        let structured = Content::json(&output)
-                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
-                        Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(summary), structured],
-                            is_error: Some(false),
-                        })
+                        ok_with_structured(summary, &output)
                     }
-                    Err(e) => Ok(rmcp::model::CallToolResult {
-                        content: vec![Annotated::text(format!(
+                    Err(e) => Ok(err_with_text(format!(
                             "query-docs failed: {}. Fix the query input and try again. Example queries: `editable properties`, `npc behavior`, or `creative_device AND event`.",
                             e
-                        ))],
-                        is_error: Some(true),
-                    }),
+                        ))),
                 }
             }
             "fetch-doc-source" => {
@@ -301,7 +328,7 @@ impl ServerHandler for VerseMcpHandler {
                     .and_then(|args| args.get("url"))
                     .and_then(|v| v.as_str())
                     .ok_or_else(|| {
-                        rmcp::Error::invalid_params(
+                        rmcp::ErrorData::invalid_params(
                             "url is required; pass a non-empty `url` string argument to `fetch-doc-source`",
                             None,
                         )
@@ -313,20 +340,12 @@ impl ServerHandler for VerseMcpHandler {
                             "Fetched source {} with status {}.",
                             output.url, output.status
                         );
-                        let structured = Content::json(&output)
-                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
-                        Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(summary), structured],
-                            is_error: Some(false),
-                        })
+                        ok_with_structured(summary, &output)
                     }
-                    Err(e) => Ok(rmcp::model::CallToolResult {
-                        content: vec![Annotated::text(format!(
+                    Err(e) => Ok(err_with_text(format!(
                             "fetch-doc-source failed: {}. Pass a valid documentation URL and try again.",
                             e
-                        ))],
-                        is_error: Some(true),
-                    }),
+                        ))),
                 }
             }
             "scan_map_devices" => {
@@ -336,7 +355,7 @@ impl ServerHandler for VerseMcpHandler {
                     .and_then(|args| args.get("project_path"))
                     .and_then(|v| v.as_str())
                     .map(PathBuf::from)
-                    .ok_or_else(|| rmcp::Error::invalid_params("project_path is required", None))?;
+                    .ok_or_else(|| rmcp::ErrorData::invalid_params("project_path is required", None))?;
 
                 tracing::info!("Scanning project at: {}", scan_path.display());
 
@@ -359,21 +378,13 @@ impl ServerHandler for VerseMcpHandler {
                     });
                     let denial_text = serde_json::to_string_pretty(&denial)
                         .unwrap_or_else(|_| denial.to_string());
-                    return Ok(rmcp::model::CallToolResult {
-                        content: vec![Annotated::text(denial_text)],
-                        is_error: Some(true),
-                    });
+                    return Ok(err_with_text(denial_text));
                 }
 
                 match self.grounding.scan_project(&request) {
                     Ok(output) => {
                         let summary = format_scan_response(&output);
-                        let structured = Content::json(&output)
-                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
-                        Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(summary), structured],
-                            is_error: Some(false),
-                        })
+                        ok_with_structured(summary, &output)
                     }
                     Err(e) => {
                         let error_json = serde_json::json!({
@@ -382,10 +393,7 @@ impl ServerHandler for VerseMcpHandler {
                         });
                         let error_text = serde_json::to_string_pretty(&error_json)
                             .unwrap_or_else(|_| error_json.to_string());
-                        Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(error_text)],
-                            is_error: Some(true),
-                        })
+                        Ok(err_with_text(error_text))
                     }
                 }
             }
@@ -396,18 +404,13 @@ impl ServerHandler for VerseMcpHandler {
                     .and_then(|args| args.get("project_path"))
                     .and_then(|v| v.as_str())
                     .map(PathBuf::from)
-                    .ok_or_else(|| rmcp::Error::invalid_params("project_path is required", None))?;
+                    .ok_or_else(|| rmcp::ErrorData::invalid_params("project_path is required", None))?;
 
                 let response = self
                     .grounding
                     .reload_project_metadata(&ReloadMetadataRequest { project_path });
                 let summary = format_reload_metadata_response(&response);
-                let structured = Content::json(&response)
-                    .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
-                Ok(rmcp::model::CallToolResult {
-                    content: vec![Annotated::text(summary), structured],
-                    is_error: Some(false),
-                })
+                ok_with_structured(summary, &response)
             }
             "list-agent-workflows" => match self.grounding.list_agent_workflows() {
                 Ok(response) => {
@@ -416,20 +419,12 @@ impl ServerHandler for VerseMcpHandler {
                         response.workflows.len(),
                         response.root
                     );
-                    let structured = Content::json(&response)
-                        .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
-                    Ok(rmcp::model::CallToolResult {
-                        content: vec![Annotated::text(summary), structured],
-                        is_error: Some(false),
-                    })
+                    ok_with_structured(summary, &response)
                 }
-                Err(e) => Ok(rmcp::model::CallToolResult {
-                    content: vec![Annotated::text(format!(
+                Err(e) => Ok(err_with_text(format!(
                         "list-agent-workflows failed: {}. Ensure the workflows directory is present and readable.",
                         e
-                    ))],
-                    is_error: Some(true),
-                }),
+                    ))),
             },
             "get-agent-workflow" => {
                 let name = params
@@ -437,7 +432,7 @@ impl ServerHandler for VerseMcpHandler {
                     .as_ref()
                     .and_then(|args| args.get("name"))
                     .and_then(|v| v.as_str())
-                    .ok_or_else(|| rmcp::Error::invalid_params("name is required", None))?;
+                    .ok_or_else(|| rmcp::ErrorData::invalid_params("name is required", None))?;
 
                 match self.grounding.get_agent_workflow(name) {
                     Ok(response) => {
@@ -445,23 +440,103 @@ impl ServerHandler for VerseMcpHandler {
                             "Loaded workflow {} from {}.",
                             response.name, response.source_path
                         );
-                        let structured = Content::json(&response)
-                            .map_err(|e| rmcp::Error::internal_error(e.to_string(), None))?;
-                        Ok(rmcp::model::CallToolResult {
-                            content: vec![Annotated::text(summary), structured],
-                            is_error: Some(false),
-                        })
+                        ok_with_structured(summary, &response)
                     }
-                    Err(e) => Ok(rmcp::model::CallToolResult {
-                        content: vec![Annotated::text(format!(
+                    Err(e) => Ok(err_with_text(format!(
                             "get-agent-workflow failed: {}. Call list-agent-workflows first to discover valid names.",
                             e
-                        ))],
-                        is_error: Some(true),
-                    }),
+                        ))),
                 }
             }
-            _ => Err(rmcp::Error::method_not_found::<CallToolRequestMethod>()),
+            _ => Err(rmcp::ErrorData::method_not_found::<CallToolRequestMethod>()),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::{build_http_router, VerseMcpHandler};
+    use anyhow::Result;
+    use serde_json::json;
+    use tokio_util::sync::CancellationToken;
+
+    #[tokio::test]
+    async fn http_transport_exposes_tools_on_mcp_endpoint() -> Result<()> {
+        let shutdown = CancellationToken::new();
+        let router = build_http_router(VerseMcpHandler::new(), shutdown.clone());
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:0").await?;
+        let addr = listener.local_addr()?;
+        let shutdown_wait = shutdown.clone();
+        let server = tokio::spawn(async move {
+            axum::serve(listener, router)
+                .with_graceful_shutdown(async move {
+                    shutdown_wait.cancelled().await;
+                })
+                .await
+        });
+
+        let client = reqwest::Client::new();
+        let endpoint = format!("http://{addr}/mcp");
+
+        let initialize = client
+            .post(&endpoint)
+            .header(reqwest::header::CONTENT_TYPE, "application/json")
+            .header(
+                reqwest::header::ACCEPT,
+                "application/json, text/event-stream",
+            )
+            .json(&json!({
+                "jsonrpc": "2.0",
+                "id": 1,
+                "method": "initialize",
+                "params": {
+                    "protocolVersion": "2025-03-26",
+                    "capabilities": {},
+                    "clientInfo": {
+                        "name": "verse-mcp-test",
+                        "version": "0.1.0"
+                    }
+                }
+            }))
+            .send()
+            .await?;
+
+        assert_eq!(initialize.status(), reqwest::StatusCode::OK);
+        let initialize_json: serde_json::Value = initialize.json().await?;
+        assert_eq!(initialize_json["result"]["serverInfo"]["name"], "verse-mcp");
+
+        let list_tools = client
+            .post(&endpoint)
+            .header(reqwest::header::CONTENT_TYPE, "application/json")
+            .header(
+                reqwest::header::ACCEPT,
+                "application/json, text/event-stream",
+            )
+            .json(&json!({
+                "jsonrpc": "2.0",
+                "id": 2,
+                "method": "tools/list",
+                "params": {}
+            }))
+            .send()
+            .await?;
+
+        assert_eq!(list_tools.status(), reqwest::StatusCode::OK);
+        let list_tools_json: serde_json::Value = list_tools.json().await?;
+        let tools = list_tools_json["result"]["tools"]
+            .as_array()
+            .ok_or_else(|| anyhow::anyhow!("tools/list should return a tool array"))?;
+        let tool_names = tools
+            .iter()
+            .filter_map(|tool| tool["name"].as_str())
+            .collect::<Vec<_>>();
+
+        assert!(tool_names.contains(&"scan_map_devices"));
+        assert!(tool_names.contains(&"query-docs"));
+        assert!(tool_names.contains(&"fetch-doc-source"));
+
+        shutdown.cancel();
+        server.await??;
+        Ok(())
     }
 }
